@@ -3,29 +3,29 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Cat Volleyball Online & Lobby List</title>
+<title>Cat Volleyball Online - Skins & Rank</title>
 <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 <style>
 * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
-body { background: #0f172a; color: #fff; text-align: center; font-family: sans-serif; margin: 0; padding: 8px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; height: 100dvh; overflow: hidden; touch-action: none; }
+body { background: #0f172a; color: #fff; text-align: center; font-family: sans-serif; margin: 0; padding: 6px 8px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; height: 100dvh; overflow: hidden; touch-action: none; }
 
 /* 상단 헤더 바 */
 .top-bar { width: 100%; max-width: 800px; display: flex; justify-content: space-between; align-items: center; padding: 2px 4px; gap: 6px; }
-h1 { font-size: 1rem; margin: 0; white-space: nowrap; }
+h1 { font-size: 0.98rem; margin: 0; white-space: nowrap; }
 .top-right { display: flex; align-items: center; gap: 6px; }
-.spec-badge { background: rgba(168, 85, 247, 0.25); border: 1.5px solid #c084fc; color: #e9d5ff; border-radius: 8px; padding: 4px 8px; font-size: 0.78rem; font-weight: bold; display: none; }
-.home-btn { background: #334155; color: #fff; border: 1.5px solid #64748b; border-radius: 8px; padding: 5px 10px; font-size: 0.8rem; font-weight: bold; cursor: pointer; }
+.spec-badge { background: rgba(168, 85, 247, 0.25); border: 1.5px solid #c084fc; color: #e9d5ff; border-radius: 8px; padding: 4px 8px; font-size: 0.75rem; font-weight: bold; display: none; }
+.home-btn { background: #334155; color: #fff; border: 1.5px solid #64748b; border-radius: 8px; padding: 4px 9px; font-size: 0.78rem; font-weight: bold; cursor: pointer; }
 .home-btn:active { background: #475569; }
 
 /* 게임 캔버스 래퍼 */
-.game-wrapper { position: relative; width: 100%; max-width: 800px; max-height: 58dvh; aspect-ratio: 800 / 450; }
+.game-wrapper { position: relative; width: 100%; max-width: 800px; max-height: 59dvh; aspect-ratio: 800 / 450; }
 canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%; display: block; background: #0284c7; transform: translateZ(0); }
 
 /* 메인 대기화면(로비) 오버레이 */
 .lobby-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(15, 23, 42, 0.88);
+  background: rgba(15, 23, 42, 0.9);
   backdrop-filter: blur(4px);
   border-radius: 10px;
   border: 3px solid #38bdf8;
@@ -33,49 +33,113 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 10px 12px;
+  padding: 8px 12px;
   z-index: 10;
 }
-.lobby-title { font-size: 1.18rem; font-weight: bold; color: #fde047; margin-bottom: 8px; text-shadow: 0 2px 6px rgba(0,0,0,0.6); }
-.menu-box { width: 100%; max-width: 350px; display: flex; flex-direction: column; gap: 7px; }
+.lobby-header { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 380px; margin-bottom: 6px; gap: 6px; }
+.lobby-title { font-size: 1.05rem; font-weight: bold; color: #fde047; white-space: nowrap; }
+.rank-pill {
+  background: rgba(30, 41, 59, 0.95);
+  border: 1.5px solid #facc15;
+  border-radius: 20px;
+  padding: 3px 9px;
+  font-size: 0.72rem;
+  font-weight: bold;
+  color: #fef08a;
+  white-space: nowrap;
+}
 
-/* 닉네임 입력 칸 */
-.nick-row { display: flex; align-items: center; gap: 6px; background: #1e293b; border: 1.5px solid #38bdf8; border-radius: 10px; padding: 3px 10px; }
-.nick-label { font-size: 0.8rem; color: #7dd3fc; font-weight: bold; white-space: nowrap; }
+.menu-box { width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: 6px; }
+
+/* 닉네임 + 스킨 상점 버튼 행 */
+.profile-row { display: flex; gap: 6px; width: 100%; }
+.nick-row { flex: 1.35; display: flex; align-items: center; gap: 5px; background: #1e293b; border: 1.5px solid #38bdf8; border-radius: 10px; padding: 3px 8px; }
+.nick-label { font-size: 0.76rem; color: #7dd3fc; font-weight: bold; white-space: nowrap; }
 .nick-input {
-  flex: 1;
+  width: 100%;
   background: transparent;
   border: none;
   color: #fff;
-  font-size: 0.9rem;
+  font-size: 0.86rem;
   font-weight: bold;
-  padding: 4px;
+  padding: 3px;
   outline: none;
   user-select: text;
   -webkit-user-select: text;
 }
+.btn-skin-open {
+  flex: 1;
+  background: linear-gradient(135deg, #9333ea, #7e22ce);
+  border: 1.5px solid #d8b4fe;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 5px 8px;
+  white-space: nowrap;
+}
 
 .menu-btn {
   width: 100%;
-  padding: 9px 12px;
+  padding: 8px 12px;
   border-radius: 11px;
   border: none;
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   font-weight: bold;
   color: #fff;
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
 }
 .menu-btn:active { transform: scale(0.97); }
 .btn-ai { background: linear-gradient(135deg, #0284c7, #0369a1); border: 1.5px solid #7dd3fc; }
 .btn-create { background: linear-gradient(135deg, #ea580c, #c2410c); border: 1.5px solid #fdba74; }
 .btn-list { background: linear-gradient(135deg, #16a34a, #15803d); border: 1.5px solid #86efac; }
 
+/* 스킨 & 이펙트 꾸미기 패널 */
+.skin-panel {
+  display: none;
+  flex-direction: column;
+  width: 100%;
+  max-width: 420px;
+  gap: 6px;
+}
+.skin-scroll {
+  width: 100%;
+  max-height: 155px;
+  overflow-y: auto;
+  background: rgba(30, 41, 59, 0.95);
+  border: 1.5px solid #a855f7;
+  border-radius: 10px;
+  padding: 7px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  text-align: left;
+}
+.skin-cat-title { font-size: 0.74rem; font-weight: bold; color: #d8b4fe; margin-bottom: 3px; }
+.skin-grid { display: flex; flex-wrap: wrap; gap: 5px; }
+.skin-chip {
+  flex: 1 1 30%;
+  min-width: 95px;
+  background: #0f172a;
+  border: 1.5px solid #475569;
+  border-radius: 8px;
+  padding: 5px 6px;
+  color: #e2e8f0;
+  font-size: 0.74rem;
+  text-align: center;
+  cursor: pointer;
+}
+.skin-chip.equipped { border-color: #facc15; background: rgba(250, 204, 21, 0.16); color: #fef08a; font-weight: bold; }
+.skin-chip.locked { border-color: #9333ea; color: #c084fc; }
+.skin-sub { display: block; font-size: 0.65rem; opacity: 0.85; margin-top: 2px; }
+
 /* 방 리스트 패널 */
-.list-panel { display: none; flex-direction: column; align-items: center; gap: 6px; width: 100%; max-width: 360px; }
+.list-panel { display: none; flex-direction: column; align-items: center; gap: 6px; width: 100%; max-width: 380px; }
 .room-list-box {
   width: 100%;
-  max-height: 115px;
+  max-height: 112px;
   overflow-y: auto;
   background: rgba(30, 41, 59, 0.92);
   border: 1.5px solid #475569;
@@ -92,49 +156,49 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   background: #0f172a;
   border: 1px solid #38bdf8;
   border-radius: 8px;
-  padding: 6px 10px;
-  font-size: 0.82rem;
+  padding: 5px 9px;
+  font-size: 0.8rem;
 }
 .room-item-info { text-align: left; }
 .room-item-title { font-weight: bold; color: #fde047; }
-.room-item-sub { font-size: 0.72rem; color: #94a3b8; }
+.room-item-sub { font-size: 0.7rem; color: #94a3b8; }
 .room-item-btn {
   background: #16a34a;
   color: #fff;
   border: none;
   border-radius: 6px;
-  padding: 5px 10px;
-  font-size: 0.78rem;
+  padding: 5px 9px;
+  font-size: 0.75rem;
   font-weight: bold;
   cursor: pointer;
 }
 .room-item-btn.spec { background: #7e22ce; }
 
-.join-row { display: flex; gap: 6px; width: 100%; }
+.join-row { display: flex; gap: 5px; width: 100%; }
 .code-input {
   flex: 1.2;
-  padding: 7px;
-  border-radius: 9px;
+  padding: 6px;
+  border-radius: 8px;
   border: 1.5px solid #64748b;
   background: #1e293b;
   color: #fff;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: bold;
   text-align: center;
   text-transform: uppercase;
   user-select: text;
   -webkit-user-select: text;
 }
-.btn-small { flex: 0.8; padding: 7px; border-radius: 9px; font-size: 0.82rem; }
+.btn-small { flex: 0.8; padding: 6px; border-radius: 8px; font-size: 0.78rem; }
 
 /* 방 생성 후 대기 패널 */
-.wait-panel { display: none; flex-direction: column; align-items: center; gap: 7px; width: 100%; max-width: 340px; }
+.wait-panel { display: none; flex-direction: column; align-items: center; gap: 6px; width: 100%; max-width: 350px; }
 .room-badge {
   background: #1e293b;
   border: 2px dashed #fde047;
   border-radius: 10px;
-  padding: 7px 16px;
-  font-size: 1.15rem;
+  padding: 6px 14px;
+  font-size: 1.1rem;
   font-weight: bold;
   color: #fde047;
   letter-spacing: 1px;
@@ -144,17 +208,36 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 .wait-actions { display: flex; gap: 8px; width: 100%; }
 .btn-copy { flex: 1.5; background: #16a34a; border: 1.5px solid #86efac; }
 .btn-cancel { flex: 1; background: #475569; border: 1.5px solid #94a3b8; }
-.lobby-status { font-size: 0.78rem; color: #bae6fd; margin-top: 5px; min-height: 16px; }
+.lobby-status { font-size: 0.75rem; color: #bae6fd; margin-top: 4px; min-height: 15px; }
+
+/* 광고/보상 해금 확인 모달 */
+.reward-modal {
+  display: none;
+  position: absolute;
+  inset: 14px;
+  background: rgba(15, 23, 42, 0.97);
+  border: 2px solid #facc15;
+  border-radius: 12px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  z-index: 20;
+  gap: 8px;
+}
+.reward-modal h3 { margin: 0; color: #fde047; font-size: 1rem; }
+.reward-modal p { margin: 0; font-size: 0.8rem; color: #e2e8f0; line-height: 1.4; }
+.reward-btns { display: flex; gap: 8px; width: 100%; max-width: 260px; margin-top: 4px; }
 
 /* 모바일 터치 패드 */
-.controls { width: 100%; max-width: 800px; flex: 1; max-height: 160px; display: flex; justify-content: space-between; align-items: stretch; gap: 12px; padding: 8px 4px 10px; }
+.controls { width: 100%; max-width: 800px; flex: 1; max-height: 155px; display: flex; justify-content: space-between; align-items: stretch; gap: 12px; padding: 6px 4px 8px; }
 .dpad-group { flex: 1.1; display: flex; gap: 8px; }
 .action-group { flex: 1.1; display: flex; gap: 8px; }
-.touch-btn { flex: 1; height: 100%; min-height: 82px; border-radius: 18px; border: 2.5px solid rgba(255,255,255,0.45); background: rgba(255,255,255,0.14); color: #fff; font-size: 1.5rem; font-weight: bold; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.touch-btn { flex: 1; height: 100%; min-height: 78px; border-radius: 18px; border: 2.5px solid rgba(255,255,255,0.45); background: rgba(255,255,255,0.14); color: #fff; font-size: 1.45rem; font-weight: bold; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .touch-btn:active, .touch-btn.active { background: rgba(56,189,248,0.65); border-color: #7dd3fc; transform: scale(0.96); }
-.jump-btn { background: rgba(56,189,248,0.25); border-color: rgba(125,211,252,0.6); font-size: 1.2rem; }
-.spike-btn { background: rgba(249,115,22,0.45); border-color: #fb923c; font-size: 1.1rem; }
-.sub-label { font-size: 0.72rem; font-weight: normal; opacity: 0.85; margin-top: 2px; }
+.jump-btn { background: rgba(56,189,248,0.25); border-color: rgba(125,211,252,0.6); font-size: 1.15rem; }
+.spike-btn { background: rgba(249,115,22,0.45); border-color: #fb923c; font-size: 1.05rem; }
+.sub-label { font-size: 0.7rem; font-weight: normal; opacity: 0.85; margin-top: 2px; }
 
 /* 관전자 전용 안내 바 */
 .spectator-banner {
@@ -162,18 +245,18 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   width: 100%;
   max-width: 800px;
   flex: 1;
-  max-height: 130px;
+  max-height: 125px;
   background: rgba(88, 28, 135, 0.35);
   border: 2px solid #a855f7;
   border-radius: 16px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 12px;
-  margin: 8px 0;
+  padding: 10px;
+  margin: 6px 0;
 }
-.spectator-banner strong { font-size: 1.05rem; color: #f3e8ff; margin-bottom: 4px; }
-.spectator-banner span { font-size: 0.82rem; color: #d8b4fe; }
+.spectator-banner strong { font-size: 1rem; color: #f3e8ff; margin-bottom: 4px; }
+.spectator-banner span { font-size: 0.8rem; color: #d8b4fe; }
 </style>
 </head>
 <body>
@@ -191,13 +274,19 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 
   <!-- 대기화면(로비) -->
   <div class="lobby-overlay" id="lobbyOverlay">
-    <div class="lobby-title">🏐 냐옹이 배구 챔피언십</div>
+    <div class="lobby-header">
+      <div class="lobby-title">🏐 냐옹이 배구</div>
+      <div class="rank-pill" id="rankSummaryBadge">🥉 브론즈 · 0승 0패 (0%)</div>
+    </div>
 
     <!-- 1. 기본 메인 메뉴 -->
     <div class="menu-box" id="mainMenuBox">
-      <div class="nick-row">
-        <span class="nick-label">닉네임</span>
-        <input type="text" class="nick-input" id="nickInput" maxlength="8" placeholder="닉네임 입력 (최대 8자)">
+      <div class="profile-row">
+        <div class="nick-row">
+          <span class="nick-label">닉네임</span>
+          <input type="text" class="nick-input" id="nickInput" maxlength="8" placeholder="닉네임 입력">
+        </div>
+        <button class="btn-skin-open" id="btnOpenSkins">🎨 스킨·이펙트</button>
       </div>
 
       <button class="menu-btn btn-ai" id="btnStartAI">🐱 1인 플레이 (AI 대전)</button>
@@ -205,10 +294,16 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
       <button class="menu-btn btn-list" id="btnOpenRoomList">🔍 참여하기 (방 리스트 보기)</button>
     </div>
 
-    <!-- 2. 공개 방 리스트 및 코드 직접 입력 패널 -->
+    <!-- 2. 스킨 & 이펙트 선택 패널 (24시간 기간제 해금) -->
+    <div class="skin-panel" id="skinPanel">
+      <div class="skin-scroll" id="skinScrollContainer"></div>
+      <button class="menu-btn btn-ai btn-small" id="btnCloseSkins">선택 완료 (돌아가기)</button>
+    </div>
+
+    <!-- 3. 공개 방 리스트 및 코드 직접 입력 패널 -->
     <div class="list-panel" id="listPanel">
       <div class="room-list-box" id="roomListBox">
-        <div style="padding:18px; color:#94a3b8; font-size:0.82rem;">열려 있는 방을 찾는 중...</div>
+        <div style="padding:16px; color:#94a3b8; font-size:0.8rem;">열려 있는 방을 찾는 중...</div>
       </div>
       <div class="join-row">
         <input type="text" class="code-input" id="roomCodeInput" placeholder="코드 직접입력">
@@ -218,17 +313,27 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
       </div>
     </div>
 
-    <!-- 3. 방 생성 후 대기 화면 -->
+    <!-- 4. 방 생성 후 대기 화면 -->
     <div class="wait-panel" id="waitPanel">
-      <div style="font-size:0.82rem; color:#e2e8f0;">공개 로비에 등록되었습니다! 친구가 방 리스트에서 바로 찾을 수 있어요.</div>
-      <div class="room-badge" id="roomCodeDisplay">CAT-LOBBY-1</div>
+      <div style="font-size:0.8rem; color:#e2e8f0;">공개 로비에 등록되었습니다! 친구가 방 리스트에서 바로 찾을 수 있어요.</div>
+      <div class="room-badge" id="roomCodeDisplay">CAT-ROOM-1</div>
       <div class="wait-actions">
         <button class="menu-btn btn-copy" id="btnCopyCode">📋 방코드 복사</button>
         <button class="menu-btn btn-cancel" id="btnCancelRoom">취소</button>
       </div>
     </div>
 
-    <div class="lobby-status" id="lobbyStatus">닉네임을 정하고 게임 모드를 선택하세요!</div>
+    <!-- 보상형 24시간 해금 팝업 (추후 광고 SDK 연결 포인트) -->
+    <div class="reward-modal" id="rewardModal">
+      <h3 id="rewardModalTitle">🎁 스킨 24시간 무료 체험</h3>
+      <p id="rewardModalDesc">짧은 광고(또는 이벤트 응원) 후 선택한 아이템을 24시간 동안 자유롭게 사용할 수 있습니다!</p>
+      <div class="reward-btns">
+        <button class="menu-btn btn-create btn-small" id="btnConfirmUnlock">🎬 24시간 열기</button>
+        <button class="menu-btn btn-cancel btn-small" id="btnCancelUnlock">닫기</button>
+      </div>
+    </div>
+
+    <div class="lobby-status" id="lobbyStatus">닉네임과 스킨을 고르고 게임을 시작하세요!</div>
   </div>
 </div>
 
@@ -257,13 +362,248 @@ window.onload = function() {
   var TAU = 6.283185;
   function mul(a, b) { return a / (1 / b); }
 
-  // 공개 로비 슬롯 1~10번 (별도 서버 없이 방 리스트 탐색용)
-  var LOBBY_SLOTS = [];
-  for (var s = 1; s <= 10; s++) {
-    LOBBY_SLOTS.push("CAT-ROOM-" + s);
+  var HOURS_24_MS = 24 * 60 * 60 * 1000;
+
+  // --- 1. 스킨 & 이펙트 카탈로그 정의 ---
+  var CAT_SKINS = {
+    cream:   { id: 'cream',   name: '크림냥(기본)', free: true,  simple: true,  color: '#fef3c7', shadow: '#78350f', light: '#ffffff', stripe: '#d97706', earInner: '#fda4af' },
+    gray:    { id: 'gray',    name: '그레이냥(기본)', free: true, simple: true,  color: '#cbd5e1', shadow: '#1e293b', light: '#f1f5f9', stripe: '#64748b', earInner: '#fda4af' },
+    cheese:  { id: 'cheese',  name: '치즈냥',       free: false, simple: false, color: '#f59e0b', shadow: '#78350f', light: '#fde68a', stripe: '#92400e', earInner: '#fda4af' },
+    persian: { id: 'persian', name: '페르시안냥',   free: false, simple: false, color: '#ffffff', shadow: '#0f172a', light: '#bae6fd', stripe: '#1e293b', earInner: '#fda4af' },
+    black:   { id: 'black',   name: '검둥이냥',     free: false, simple: false, color: '#1e293b', shadow: '#020617', light: '#475569', stripe: '#0f172a', earInner: '#fb7185' }
+  };
+
+  var BALL_SKINS = {
+    classic:    { id: 'classic',    name: '비치볼(기본)', free: true },
+    watermelon: { id: 'watermelon', name: '수박공',       free: false },
+    rainbow:    { id: 'rainbow',    name: '무지개공',     free: false }
+  };
+
+  var SPIKE_SKINS = {
+    fire:      { id: 'fire',      name: '🔥 불꽃슛(기본)', free: true },
+    lightning: { id: 'lightning', name: '⚡ 번개슛',       free: false },
+    ice:       { id: 'ice',       name: '❄️ 얼음슛',       free: false }
+  };
+
+  // --- 2. 로컬 저장소 기반 24시간 스킨 해금 & 전적/랭크 관리 ---
+  var userState = {
+    equippedCat: 'cream',
+    equippedBall: 'classic',
+    equippedSpike: 'fire',
+    unlocks: {}, // { 'cat_cheese': expireTimestampMs, ... }
+    wins: 0,
+    losses: 0
+  };
+
+  function loadUserState() {
+    try {
+      var raw = localStorage.getItem('cat_volley_save_v1');
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        if (parsed.equippedCat && CAT_SKINS[parsed.equippedCat]) userState.equippedCat = parsed.equippedCat;
+        if (parsed.equippedBall && BALL_SKINS[parsed.equippedBall]) userState.equippedBall = parsed.equippedBall;
+        if (parsed.equippedSpike && SPIKE_SKINS[parsed.equippedSpike]) userState.equippedSpike = parsed.equippedSpike;
+        if (parsed.unlocks) userState.unlocks = parsed.unlocks;
+        if (typeof parsed.wins === 'number') userState.wins = parsed.wins;
+        if (typeof parsed.losses === 'number') userState.losses = parsed.losses;
+      }
+    } catch (e) {}
+    validateExpiredUnlocks();
   }
 
-  // --- 동적 배경 (시간 흐름: 낮 -> 노을 -> 밤 -> 아침) ---
+  function saveUserState() {
+    try {
+      localStorage.setItem('cat_volley_save_v1', JSON.stringify(userState));
+    } catch (e) {}
+  }
+
+  function isItemUnlocked(key, isFree) {
+    if (isFree) return true;
+    var exp = userState.unlocks[key];
+    return !!(exp && exp > Date.now());
+  }
+
+  function getRemainingHoursText(key) {
+    var exp = userState.unlocks[key];
+    if (!exp || exp <= Date.now()) return "";
+    var diffMs = exp - Date.now();
+    var hrs = Math.ceil(diffMs / (60 * 60 * 1000));
+    return hrs + "시간 남음";
+  }
+
+  function validateExpiredUnlocks() {
+    var changed = false;
+    if (!isItemUnlocked('cat_' + userState.equippedCat, CAT_SKINS[userState.equippedCat].free)) {
+      userState.equippedCat = 'cream';
+      changed = true;
+    }
+    if (!isItemUnlocked('ball_' + userState.equippedBall, BALL_SKINS[userState.equippedBall].free)) {
+      userState.equippedBall = 'classic';
+      changed = true;
+    }
+    if (!isItemUnlocked('spike_' + userState.equippedSpike, SPIKE_SKINS[userState.equippedSpike].free)) {
+      userState.equippedSpike = 'fire';
+      changed = true;
+    }
+    if (changed) saveUserState();
+  }
+
+  // 승률 기반 랭크 티어 계산 함수
+  function getRankInfo(wins, losses) {
+    var total = wins + losses;
+    var rate = total > 0 ? Math.round((wins / total) * 100) : 0;
+    var tier = "🥉 브론즈";
+    if (total >= 15 && rate >= 75) tier = "👑 챌린저냥";
+    else if (total >= 10 && rate >= 65) tier = "💎 다이아";
+    else if (total >= 5 && rate >= 55) tier = "🥇 골드";
+    else if (total >= 2 && rate >= 40) tier = "🥈 실버";
+    return {
+      tier: tier,
+      rate: rate,
+      total: total,
+      summary: tier + " · " + wins + "승 " + losses + "패 (" + rate + "%)"
+    };
+  }
+
+  function refreshRankUI() {
+    var info = getRankInfo(userState.wins, userState.losses);
+    document.getElementById("rankSummaryBadge").innerText = info.summary;
+    return info;
+  }
+
+  function recordMatchResult(isWin) {
+    if (isWin) userState.wins++;
+    else userState.losses++;
+    saveUserState();
+    refreshRankUI();
+  }
+
+  loadUserState();
+  refreshRankUI();
+
+  // --- 3. 스킨 선택 UI & 24시간 해금 모달 ---
+  var pendingUnlock = null;
+  var rewardModal = document.getElementById("rewardModal");
+
+  function openRewardModal(unlockKey, displayName, onSuccess) {
+    pendingUnlock = { key: unlockKey, name: displayName, cb: onSuccess };
+    document.getElementById("rewardModalTitle").innerText = "🎁 [" + displayName + "] 24시간 열기";
+    document.getElementById("rewardModalDesc").innerText =
+      "지금 해금하면 24시간 동안 [" + displayName + "] 아이템을 무제한 장착할 수 있습니다!";
+    rewardModal.style.display = "flex";
+  }
+
+  document.getElementById("btnConfirmUnlock").onclick = function() {
+    if (!pendingUnlock) return;
+    // 추후 구글/게임포털 보상형 광고 승인 시 이 위치에 광고 SDK 호출 코드를 연결합니다.
+    userState.unlocks[pendingUnlock.key] = Date.now() + HOURS_24_MS;
+    if (pendingUnlock.cb) pendingUnlock.cb();
+    saveUserState();
+    rewardModal.style.display = "none";
+    renderSkinPanel();
+    lobbyStatus.innerText = "🎉 [" + pendingUnlock.name + "] 24시간 사용이 활성화되었습니다!";
+    pendingUnlock = null;
+  };
+
+  document.getElementById("btnCancelUnlock").onclick = function() {
+    rewardModal.style.display = "none";
+    pendingUnlock = null;
+  };
+
+  function renderSkinPanel() {
+    validateExpiredUnlocks();
+    var box = document.getElementById("skinScrollContainer");
+    box.innerHTML = "";
+
+    // 1) 고양이 스킨 섹션
+    var catSec = document.createElement("div");
+    catSec.innerHTML = '<div class="skin-cat-title">🐱 고양이 캐릭터 스킨</div>';
+    var catGrid = document.createElement("div");
+    catGrid.className = "skin-grid";
+    Object.keys(CAT_SKINS).forEach(function(k) {
+      var sk = CAT_SKINS[k];
+      var uKey = "cat_" + k;
+      var unlocked = isItemUnlocked(uKey, sk.free);
+      var equipped = (userState.equippedCat === k);
+      var btn = document.createElement("button");
+      btn.className = "skin-chip" + (equipped ? " equipped" : (!unlocked ? " locked" : ""));
+      var sub = sk.free ? "무료 기본" : (unlocked ? getRemainingHoursText(uKey) : "🔒 24시간 열기");
+      btn.innerHTML = (equipped ? "✅ " : "") + sk.name + '<span class="skin-sub">' + sub + '</span>';
+      btn.onclick = function() {
+        if (unlocked) {
+          userState.equippedCat = k;
+          saveUserState();
+          renderSkinPanel();
+        } else {
+          openRewardModal(uKey, sk.name, function() { userState.equippedCat = k; });
+        }
+      };
+      catGrid.appendChild(btn);
+    });
+    catSec.appendChild(catGrid);
+    box.appendChild(catSec);
+
+    // 2) 배구공 스킨 섹션
+    var ballSec = document.createElement("div");
+    ballSec.innerHTML = '<div class="skin-cat-title">🏐 배구공 스킨</div>';
+    var ballGrid = document.createElement("div");
+    ballGrid.className = "skin-grid";
+    Object.keys(BALL_SKINS).forEach(function(k) {
+      var sk = BALL_SKINS[k];
+      var uKey = "ball_" + k;
+      var unlocked = isItemUnlocked(uKey, sk.free);
+      var equipped = (userState.equippedBall === k);
+      var btn = document.createElement("button");
+      btn.className = "skin-chip" + (equipped ? " equipped" : (!unlocked ? " locked" : ""));
+      var sub = sk.free ? "무료 기본" : (unlocked ? getRemainingHoursText(uKey) : "🔒 24시간 열기");
+      btn.innerHTML = (equipped ? "✅ " : "") + sk.name + '<span class="skin-sub">' + sub + '</span>';
+      btn.onclick = function() {
+        if (unlocked) {
+          userState.equippedBall = k;
+          saveUserState();
+          renderSkinPanel();
+        } else {
+          openRewardModal(uKey, sk.name, function() { userState.equippedBall = k; });
+        }
+      };
+      ballGrid.appendChild(btn);
+    });
+    ballSec.appendChild(ballGrid);
+    box.appendChild(ballSec);
+
+    // 3) 스파이크 이펙트 섹션
+    var spkSec = document.createElement("div");
+    spkSec.innerHTML = '<div class="skin-cat-title">💥 스파이크(강타) 이펙트</div>';
+    var spkGrid = document.createElement("div");
+    spkGrid.className = "skin-grid";
+    Object.keys(SPIKE_SKINS).forEach(function(k) {
+      var sk = SPIKE_SKINS[k];
+      var uKey = "spike_" + k;
+      var unlocked = isItemUnlocked(uKey, sk.free);
+      var equipped = (userState.equippedSpike === k);
+      var btn = document.createElement("button");
+      btn.className = "skin-chip" + (equipped ? " equipped" : (!unlocked ? " locked" : ""));
+      var sub = sk.free ? "무료 기본" : (unlocked ? getRemainingHoursText(uKey) : "🔒 24시간 열기");
+      btn.innerHTML = (equipped ? "✅ " : "") + sk.name + '<span class="skin-sub">' + sub + '</span>';
+      btn.onclick = function() {
+        if (unlocked) {
+          userState.equippedSpike = k;
+          saveUserState();
+          renderSkinPanel();
+        } else {
+          openRewardModal(uKey, sk.name, function() { userState.equippedSpike = k; });
+        }
+      };
+      spkGrid.appendChild(btn);
+    });
+    spkSec.appendChild(spkGrid);
+    box.appendChild(spkSec);
+  }
+
+  // --- 4. 공개 로비 슬롯 및 배경 애니메이션 ---
+  var LOBBY_SLOTS = [];
+  for (var s = 1; s <= 10; s++) LOBBY_SLOTS.push("CAT-ROOM-" + s);
+
   var worldTime = 0.08;
   var clouds = [
     { x: 120, y: 82, s: 1.0, spd: 0.32 },
@@ -272,12 +612,7 @@ window.onload = function() {
   ];
   var stars = [];
   for (var si = 0; si < 38; si++) {
-    stars.push({
-      x: Math.random() * 800,
-      y: 12 + Math.random() * 230,
-      r: 0.8 + Math.random() * 1.5,
-      phase: Math.random() * TAU
-    });
+    stars.push({ x: Math.random() * 800, y: 12 + Math.random() * 230, r: 0.8 + Math.random() * 1.5, phase: Math.random() * TAU });
   }
   var shootingStar = { active: false, x: 0, y: 0, vx: 0, vy: 0, life: 0 };
   var birds = [
@@ -285,7 +620,7 @@ window.onload = function() {
     { x: -95, y: 80, spd: 1.7, phase: 1.2 },
     { x: -125, y: 112, spd: 1.7, phase: 2.4 }
   ];
-  var superman = { active: false, x: -120, y: 88, spd: 4.6, cooldown: 900 };
+  var heroCat = { active: false, x: -120, y: 88, spd: 4.4, cooldown: 1200 };
 
   function lerp(a, b, t) { return a + mul(b - a, t); }
   function lerpColor(c1, c2, t) {
@@ -333,19 +668,18 @@ window.onload = function() {
       }
     }
 
-    // 슈퍼맨 출현 빈도를 대폭 낮춰 가끔씩 깜짝 이벤트로만 등장 (쿨다운 + 낮은 확률)
-    if (superman.cooldown > 0) superman.cooldown -= dt;
-    if (worldTime >= 0.12 && worldTime <= 0.32 && superman.cooldown <= 0) {
-      if (!superman.active && Math.random() < mul(0.0014, dt)) {
-        superman.active = true;
-        superman.x = -110;
-        superman.y = 65 + Math.random() * 55;
-        superman.cooldown = 2400; // 최소 약 40초 쿨다운
+    if (heroCat.cooldown > 0) heroCat.cooldown -= dt;
+    if (worldTime >= 0.12 && worldTime <= 0.32 && heroCat.cooldown <= 0) {
+      if (!heroCat.active && Math.random() < mul(0.0012, dt)) {
+        heroCat.active = true;
+        heroCat.x = -110;
+        heroCat.y = 65 + Math.random() * 55;
+        heroCat.cooldown = 2600;
       }
     }
-    if (superman.active) {
-      superman.x += mul(superman.spd, dt);
-      if (superman.x > 920) superman.active = false;
+    if (heroCat.active) {
+      heroCat.x += mul(heroCat.spd, dt);
+      if (heroCat.x > 920) heroCat.active = false;
     }
   }
 
@@ -374,37 +708,30 @@ window.onload = function() {
     return { top: '#0284c7', bot: '#7dd3fc', sand: '#fde047', line: '#eab308' };
   }
 
-  var p1 = {
-    x: 150, y: 340, vx: 0, vy: 0, r: 26, maxSpeed: 7.5,
-    type: 'tabby', name: '치즈냥',
-    color: '#f59e0b', shadow: '#78350f', light: '#fde68a', stripe: '#92400e', earInner: '#fda4af',
-    hitTimer: 0, squash: 1
-  };
-  var p2 = {
-    x: 650, y: 340, vx: 0, vy: 0, r: 26, maxSpeed: 7.5,
-    type: 'persian', name: '페르시안냥',
-    color: '#ffffff', shadow: '#0f172a', light: '#bae6fd', stripe: '#1e293b', earInner: '#fda4af',
-    hitTimer: 0, squash: 1
-  };
+  // --- 5. 플레이어 및 공 객체 ---
+  var p1 = { x: 150, y: 340, vx: 0, vy: 0, r: 26, maxSpeed: 7.5, side: 1, name: '크림냥', tier: '🥉 브론즈', skin: 'cream', spikeSkin: 'fire', hitTimer: 0, squash: 1 };
+  var p2 = { x: 650, y: 340, vx: 0, vy: 0, r: 26, maxSpeed: 7.5, side: 2, name: '그레이냥', tier: '🥉 브론즈', skin: 'gray', spikeSkin: 'fire', hitTimer: 0, squash: 1 };
 
-  var ball = { x: 400, y: 150, vx: 1.6, vy: -2.2, r: 20, isFire: false };
+  // spikeType: 'none' | 'fire' | 'lightning' | 'ice'
+  var ball = { x: 400, y: 150, vx: 1.6, vy: -2.2, r: 20, spikeType: 'none', skin: 'classic' };
   var particles = [];
-  var score1 = 0, score2 = 0, gameOver = false, winnerText = "", keys = {};
+  var score1 = 0, score2 = 0, gameOver = false, matchRecorded = false, winnerText = "", keys = {};
   var lastTime = performance.now();
 
   var gameState = 'lobby';
   var netMode = 'ai';
   var peer = null;
   var scanPeer = null;
+  var conn = null;
   var player2Conn = null;
   var spectatorConns = [];
-  var spectatorNames = [];
   var remoteKeys = {};
   var myRoomId = "";
   var isHostingRoom = false;
 
   var lobbyOverlay = document.getElementById("lobbyOverlay");
   var mainMenuBox = document.getElementById("mainMenuBox");
+  var skinPanel = document.getElementById("skinPanel");
   var listPanel = document.getElementById("listPanel");
   var roomListBox = document.getElementById("roomListBox");
   var waitPanel = document.getElementById("waitPanel");
@@ -439,18 +766,11 @@ window.onload = function() {
     textArea.select();
     textArea.setSelectionRange(0, 99999);
     var success = false;
-    try {
-      success = document.execCommand("copy");
-    } catch (err) {
-      success = false;
-    }
+    try { success = document.execCommand("copy"); } catch (err) { success = false; }
     document.body.removeChild(textArea);
-
-    if (success) {
-      lobbyStatus.innerText = "✅ 복사 완료! [" + text + "] 친구에게 보내거나 리스트에서 입장하세요.";
-    } else {
-      lobbyStatus.innerText = "방 코드 [" + text + "] 를 길게 눌러 복사해 주세요.";
-    }
+    lobbyStatus.innerText = success
+      ? "✅ 복사 완료! [" + text + "] 친구에게 보내거나 방 리스트에서 입장하세요."
+      : "방 코드 [" + text + "] 를 길게 눌러 복사해 주세요.";
   }
 
   function updateSpecBadge(count) {
@@ -465,7 +785,7 @@ window.onload = function() {
   function resetPositions() {
     p1.x = 150; p1.y = 340; p1.vx = 0; p1.vy = 0; p1.squash = 1;
     p2.x = 650; p2.y = 340; p2.vx = 0; p2.vy = 0; p2.squash = 1;
-    ball.x = 400; ball.y = 150; ball.vx = 1.6; ball.vy = -2.2; ball.isFire = false;
+    ball.x = 400; ball.y = 150; ball.vx = 1.6; ball.vy = -2.2; ball.spikeType = 'none';
     particles = [];
   }
 
@@ -477,7 +797,7 @@ window.onload = function() {
   }
 
   function resetGame() {
-    score1 = 0; score2 = 0; gameOver = false;
+    score1 = 0; score2 = 0; gameOver = false; matchRecorded = false;
     resetPositions();
     if (netMode === 'host') {
       broadcastToAll({ type: 'reset' });
@@ -505,11 +825,8 @@ window.onload = function() {
     try { sessionStorage.removeItem('cat_host_room'); } catch (e) {}
 
     if (player2Conn) { player2Conn.close(); player2Conn = null; }
-    for (var i = 0; i < spectatorConns.length; i++) {
-      spectatorConns[i].close();
-    }
+    for (var i = 0; i < spectatorConns.length; i++) spectatorConns[i].close();
     spectatorConns = [];
-    spectatorNames = [];
     updateSpecBadge(0);
 
     if (peer) { try { peer.destroy(); } catch (e) {} peer = null; }
@@ -518,41 +835,54 @@ window.onload = function() {
     netMode = 'ai';
     gameState = 'lobby';
     gameOver = false;
-    p1.name = '치즈냥';
-    p2.name = '페르시안냥';
+    matchRecorded = false;
+    validateExpiredUnlocks();
+    p1.skin = userState.equippedCat;
+    p2.skin = 'gray';
+    ball.skin = userState.equippedBall;
     resetPositions();
 
     lobbyOverlay.style.display = 'flex';
     mainMenuBox.style.display = 'flex';
+    skinPanel.style.display = 'none';
     listPanel.style.display = 'none';
     waitPanel.style.display = 'none';
+    rewardModal.style.display = 'none';
     btnHome.style.display = 'none';
     controlsArea.style.display = 'flex';
     spectatorBanner.style.display = 'none';
-    lobbyStatus.innerText = msg || "닉네임을 정하고 게임 모드를 선택하세요!";
+    refreshRankUI();
+    lobbyStatus.innerText = msg || "닉네임과 스킨을 고르고 게임을 시작하세요!";
   }
 
-  // 비어있는 공개 로비 슬롯(CAT-ROOM-1 ~ 10)을 순서대로 찾아 방 개설
+  // --- 6. 방 생성 & 공개 방 리스트 스캔 ---
   function tryCreateHostSlot(slotIndex, fixedCode) {
     if (typeof Peer === 'undefined') {
       lobbyStatus.innerText = "인터넷 연결이 필요합니다.";
       return;
     }
     if (!fixedCode && slotIndex >= LOBBY_SLOTS.length) {
-      lobbyStatus.innerText = "현재 공개방 10개가 모두 가득 찼습니다. 잠시 후 다시 시도하세요.";
+      lobbyStatus.innerText = "현재 공개방 10개가 모두 가득 찼습니다.";
       mainMenuBox.style.display = 'flex';
       waitPanel.style.display = 'none';
       return;
     }
 
+    validateExpiredUnlocks();
     var targetId = fixedCode || LOBBY_SLOTS[slotIndex];
     if (peer) { try { peer.destroy(); } catch (e) {} }
 
     isHostingRoom = true;
-    p1.name = getMyNick('치즈냥');
+    var rInfo = getRankInfo(userState.wins, userState.losses);
+    p1.name = getMyNick(CAT_SKINS[userState.equippedCat].name.replace('(기본)', ''));
+    p1.tier = rInfo.tier;
+    p1.skin = userState.equippedCat;
+    p1.spikeSkin = userState.equippedSpike;
+    ball.skin = userState.equippedBall;
     myRoomId = targetId;
 
     mainMenuBox.style.display = 'none';
+    skinPanel.style.display = 'none';
     listPanel.style.display = 'none';
     waitPanel.style.display = 'flex';
     document.getElementById("roomCodeDisplay").innerText = targetId;
@@ -570,13 +900,13 @@ window.onload = function() {
 
     tempPeer.on('connection', function(c) {
       c.on('data', function(data) {
-        // 참여자가 방 목록 조회를 위해 핑(probe)을 보낸 경우 방 정보만 응답하고 종료
         if (data && data.type === 'probe') {
           var isPlaying = (player2Conn && player2Conn.open);
           c.send({
             type: 'roomInfo',
             roomId: myRoomId,
             hostName: p1.name,
+            hostTier: p1.tier,
             p2Name: isPlaying ? p2.name : "",
             status: isPlaying ? 'playing' : 'waiting',
             specCount: spectatorConns.length
@@ -588,14 +918,14 @@ window.onload = function() {
         if (data && data.type === 'hello') {
           if (!player2Conn || !player2Conn.open) {
             player2Conn = c;
-            p2.name = data.nick || '페르시안냥';
-            c.send({ type: 'role', role: 'guest', p1Name: p1.name });
-            if (gameState !== 'playing') {
-              startMatch('host');
-            }
+            p2.name = data.nick || '그레이냥';
+            p2.tier = data.tier || '🥉 브론즈';
+            p2.skin = (data.catSkin && CAT_SKINS[data.catSkin]) ? data.catSkin : 'gray';
+            p2.spikeSkin = (data.spikeSkin && SPIKE_SKINS[data.spikeSkin]) ? data.spikeSkin : 'fire';
+            c.send({ type: 'role', role: 'guest', p1Name: p1.name, p1Tier: p1.tier, p1Skin: p1.skin, ballSkin: ball.skin });
+            if (gameState !== 'playing') startMatch('host');
           } else {
             spectatorConns.push(c);
-            spectatorNames.push(data.nick || '관전자');
             updateSpecBadge(spectatorConns.length);
             c.send({
               type: 'role',
@@ -618,7 +948,6 @@ window.onload = function() {
           var idx = spectatorConns.indexOf(c);
           if (idx !== -1) {
             spectatorConns.splice(idx, 1);
-            spectatorNames.splice(idx, 1);
             updateSpecBadge(spectatorConns.length);
           }
         }
@@ -626,19 +955,14 @@ window.onload = function() {
     });
 
     tempPeer.on('disconnected', function() {
-      if (isHostingRoom && peer && !peer.destroyed) {
-        peer.reconnect();
-      }
+      if (isHostingRoom && peer && !peer.destroyed) peer.reconnect();
     });
 
     tempPeer.on('error', function(err) {
       if (err && err.type === 'unavailable-id') {
         if (fixedCode) {
-          setTimeout(function() {
-            if (isHostingRoom) tryCreateHostSlot(0, fixedCode);
-          }, 1200);
+          setTimeout(function() { if (isHostingRoom) tryCreateHostSlot(0, fixedCode); }, 1200);
         } else {
-          // 이미 사용 중인 슬롯이면 다음 번호 슬롯 자동 시도
           tryCreateHostSlot(slotIndex + 1, null);
         }
       } else {
@@ -647,7 +971,6 @@ window.onload = function() {
     });
   }
 
-  // 공개 방 리스트(1~10번 슬롯) 실시간 탐색
   function scanOpenRooms() {
     if (typeof Peer === 'undefined') {
       lobbyStatus.innerText = "인터넷 연결이 필요합니다.";
@@ -655,7 +978,7 @@ window.onload = function() {
     }
     if (scanPeer) { try { scanPeer.destroy(); } catch (e) {} }
 
-    roomListBox.innerHTML = '<div style="padding:18px; color:#bae6fd; font-size:0.82rem;">🔍 열려 있는 방을 찾는 중...</div>';
+    roomListBox.innerHTML = '<div style="padding:16px; color:#bae6fd; font-size:0.8rem;">🔍 열려 있는 방을 찾는 중...</div>';
     lobbyStatus.innerText = "공개 방 목록을 조회하고 있습니다...";
 
     var foundRooms = [];
@@ -668,43 +991,32 @@ window.onload = function() {
         (function(slotId) {
           var c = sp.connect(slotId, { reliable: true });
           var done = false;
-
           var finishOne = function() {
             if (done) return;
             done = true;
             checkedCount++;
             renderRoomList(foundRooms, checkedCount >= LOBBY_SLOTS.length);
           };
-
-          c.on('open', function() {
-            c.send({ type: 'probe' });
-          });
-
+          c.on('open', function() { c.send({ type: 'probe' }); });
           c.on('data', function(data) {
             if (data && data.type === 'roomInfo') {
               foundRooms.push(data);
               finishOne();
             }
           });
-
           c.on('error', finishOne);
-          setTimeout(function() {
-            try { c.close(); } catch (e) {}
-            finishOne();
-          }, 1600);
+          setTimeout(function() { try { c.close(); } catch (e) {} finishOne(); }, 1600);
         })(LOBBY_SLOTS[i]);
       }
     });
 
-    sp.on('error', function() {
-      renderRoomList(foundRooms, true);
-    });
+    sp.on('error', function() { renderRoomList(foundRooms, true); });
   }
 
   function renderRoomList(rooms, isDone) {
     if (rooms.length === 0) {
       if (isDone) {
-        roomListBox.innerHTML = '<div style="padding:16px; color:#94a3b8; font-size:0.82rem;">현재 열린 방이 없습니다.<br>직접 방을 만들거나 코드를 입력해 보세요!</div>';
+        roomListBox.innerHTML = '<div style="padding:14px; color:#94a3b8; font-size:0.8rem;">현재 열린 방이 없습니다.<br>직접 방을 만들거나 코드를 입력해 보세요!</div>';
         lobbyStatus.innerText = "열린 방이 없으면 [방 만들기]로 호스트가 되어보세요.";
       }
       return;
@@ -715,7 +1027,6 @@ window.onload = function() {
       var r = rooms[i];
       var item = document.createElement("div");
       item.className = "room-item";
-
       var isWaiting = (r.status === 'waiting');
       var statusBadge = isWaiting
         ? "대기중 (1/2명) · 바로 대전 가능"
@@ -723,7 +1034,7 @@ window.onload = function() {
 
       item.innerHTML =
         '<div class="room-item-info">' +
-          '<div class="room-item-title">🐾 ' + r.hostName + '의 방 (' + r.roomId.replace('CAT-ROOM-', '') + '번)</div>' +
+          '<div class="room-item-title">[' + (r.hostTier || '🥉 브론즈') + '] ' + r.hostName + '의 방</div>' +
           '<div class="room-item-sub">' + statusBadge + '</div>' +
         '</div>';
 
@@ -731,9 +1042,7 @@ window.onload = function() {
       btn.className = isWaiting ? "room-item-btn" : "room-item-btn spec";
       btn.innerText = isWaiting ? "대전 입장" : "👀 관람";
       (function(targetRoomId) {
-        btn.onclick = function() {
-          joinRoomById(targetRoomId);
-        };
+        btn.onclick = function() { joinRoomById(targetRoomId); };
       })(r.roomId);
 
       item.appendChild(btn);
@@ -747,43 +1056,60 @@ window.onload = function() {
       lobbyStatus.innerText = "입장할 방을 선택하거나 코드를 입력하세요!";
       return;
     }
+    validateExpiredUnlocks();
     isHostingRoom = false;
     try { sessionStorage.removeItem('cat_host_room'); } catch (e) {}
     if (scanPeer) { try { scanPeer.destroy(); } catch (e) {} scanPeer = null; }
     if (peer) { try { peer.destroy(); } catch (e) {} }
 
-    var myNick = getMyNick('페르시안냥');
+    var rInfo = getRankInfo(userState.wins, userState.losses);
+    var myNick = getMyNick(CAT_SKINS[userState.equippedCat].name.replace('(기본)', ''));
     lobbyStatus.innerText = "[" + code + "] 방에 접속 중...";
     peer = new Peer();
 
     peer.on('open', function() {
       conn = peer.connect(code);
       conn.on('open', function() {
-        conn.send({ type: 'hello', nick: myNick });
+        conn.send({
+          type: 'hello',
+          nick: myNick,
+          tier: rInfo.tier,
+          catSkin: userState.equippedCat,
+          spikeSkin: userState.equippedSpike
+        });
 
         conn.on('data', function(data) {
           if (data.type === 'role') {
-            p1.name = data.p1Name || '치즈냥';
+            p1.name = data.p1Name || '크림냥';
+            p1.tier = data.p1Tier || '🥉 브론즈';
+            p1.skin = data.p1Skin || 'cream';
+            ball.skin = data.ballSkin || 'classic';
             if (data.role === 'guest') {
               p2.name = myNick;
+              p2.tier = rInfo.tier;
+              p2.skin = userState.equippedCat;
               startMatch('guest');
             } else {
-              p2.name = data.p2Name || '페르시안냥';
+              p2.name = data.p2Name || '그레이냥';
               updateSpecBadge(data.specCount || 1);
               document.getElementById("spectatorInfo").innerText =
                 "[" + p1.name + "] vs [" + p2.name + "] 실시간 대전을 관람 중입니다!";
               startMatch('spectator');
             }
           } else if (data.type === 'state') {
-            p1.x = data.p1.x; p1.y = data.p1.y; p1.vx = data.p1.vx; p1.hitTimer = data.p1.ht; p1.squash = data.p1.sq; p1.name = data.p1.nm;
-            p2.x = data.p2.x; p2.y = data.p2.y; p2.vx = data.p2.vx; p2.hitTimer = data.p2.ht; p2.squash = data.p2.sq; p2.name = data.p2.nm;
-            ball.x = data.b.x; ball.y = data.b.y; ball.isFire = data.b.f;
+            p1.x = data.p1.x; p1.y = data.p1.y; p1.vx = data.p1.vx; p1.hitTimer = data.p1.ht; p1.squash = data.p1.sq; p1.name = data.p1.nm; p1.tier = data.p1.tr; p1.skin = data.p1.sk;
+            p2.x = data.p2.x; p2.y = data.p2.y; p2.vx = data.p2.vx; p2.hitTimer = data.p2.ht; p2.squash = data.p2.sq; p2.name = data.p2.nm; p2.tier = data.p2.tr; p2.skin = data.p2.sk;
+            ball.x = data.b.x; ball.y = data.b.y; ball.spikeType = data.b.st; ball.skin = data.b.sk;
             score1 = data.s1; score2 = data.s2;
             gameOver = data.go; winnerText = data.wt;
+            if (gameOver && !matchRecorded && netMode === 'guest') {
+              matchRecorded = true;
+              recordMatchResult(score2 >= 15);
+            }
             if (typeof data.wtm === 'number') worldTime = data.wtm;
             updateSpecBadge(data.sc || 0);
           } else if (data.type === 'reset') {
-            gameOver = false; particles = [];
+            gameOver = false; matchRecorded = false; particles = [];
           }
         });
       });
@@ -799,36 +1125,54 @@ window.onload = function() {
   }
 
   document.addEventListener("visibilitychange", function() {
-    if (document.visibilityState === "visible") {
-      if (isHostingRoom) {
-        if (!peer || peer.destroyed) {
-          tryCreateHostSlot(0, myRoomId);
-        } else if (peer.disconnected) {
-          peer.reconnect();
-        }
-      }
+    if (document.visibilityState === "visible" && isHostingRoom) {
+      if (!peer || peer.destroyed) tryCreateHostSlot(0, myRoomId);
+      else if (peer.disconnected) peer.reconnect();
     }
   });
 
   try {
     var pendingRoom = sessionStorage.getItem('cat_host_room');
-    if (pendingRoom) {
-      tryCreateHostSlot(0, pendingRoom);
-    }
+    if (pendingRoom) tryCreateHostSlot(0, pendingRoom);
   } catch (e) {}
 
-  // 버튼 이벤트 바인딩
+  // --- 7. 로비 버튼 이벤트 ---
+  document.getElementById("btnOpenSkins").onclick = function() {
+    renderSkinPanel();
+    mainMenuBox.style.display = 'none';
+    skinPanel.style.display = 'flex';
+    lobbyStatus.innerText = "잠긴 스킨을 터치하면 24시간 무료로 열 수 있습니다!";
+  };
+
+  document.getElementById("btnCloseSkins").onclick = function() {
+    validateExpiredUnlocks();
+    p1.skin = userState.equippedCat;
+    ball.skin = userState.equippedBall;
+    skinPanel.style.display = 'none';
+    mainMenuBox.style.display = 'flex';
+    lobbyStatus.innerText = "스킨 장착 완료! 게임을 시작하세요.";
+  };
+
   document.getElementById("btnStartAI").onclick = function() {
+    validateExpiredUnlocks();
     isHostingRoom = false;
     try { sessionStorage.removeItem('cat_host_room'); } catch (e) {}
-    p1.name = getMyNick('치즈냥');
-    p2.name = '페르시안냥(AI)';
+    var rInfo = getRankInfo(userState.wins, userState.losses);
+    p1.name = getMyNick(CAT_SKINS[userState.equippedCat].name.replace('(기본)', ''));
+    p1.tier = rInfo.tier;
+    p1.skin = userState.equippedCat;
+    p1.spikeSkin = userState.equippedSpike;
+
+    p2.name = '그레이냥(AI)';
+    p2.tier = '🤖 AI';
+    p2.skin = (userState.equippedCat === 'gray') ? 'cream' : 'gray';
+    p2.spikeSkin = 'fire';
+
+    ball.skin = userState.equippedBall;
     startMatch('ai');
   };
 
-  document.getElementById("btnCreateRoom").onclick = function() {
-    tryCreateHostSlot(0, null);
-  };
+  document.getElementById("btnCreateRoom").onclick = function() { tryCreateHostSlot(0, null); };
 
   document.getElementById("btnOpenRoomList").onclick = function() {
     mainMenuBox.style.display = 'none';
@@ -836,39 +1180,27 @@ window.onload = function() {
     scanOpenRooms();
   };
 
-  document.getElementById("btnRefreshList").onclick = function() {
-    scanOpenRooms();
-  };
+  document.getElementById("btnRefreshList").onclick = function() { scanOpenRooms(); };
 
   document.getElementById("btnBackMain").onclick = function() {
     if (scanPeer) { try { scanPeer.destroy(); } catch (e) {} scanPeer = null; }
     listPanel.style.display = 'none';
     mainMenuBox.style.display = 'flex';
-    lobbyStatus.innerText = "닉네임을 정하고 게임 모드를 선택하세요!";
+    lobbyStatus.innerText = "닉네임과 스킨을 고르고 게임을 시작하세요!";
   };
 
   document.getElementById("btnJoinDirect").onclick = function() {
     var code = document.getElementById("roomCodeInput").value.trim().toUpperCase();
-    // 숫자만(예: 1) 입력해도 CAT-ROOM-1 로 자동 변환
     if (/^[1-9]$|^10$/.test(code)) code = "CAT-ROOM-" + code;
     joinRoomById(code);
   };
 
-  document.getElementById("btnCopyCode").onclick = function() {
-    copyTextSafe(myRoomId);
-  };
-  document.getElementById("roomCodeDisplay").onclick = function() {
-    copyTextSafe(myRoomId);
-  };
+  document.getElementById("btnCopyCode").onclick = function() { copyTextSafe(myRoomId); };
+  document.getElementById("roomCodeDisplay").onclick = function() { copyTextSafe(myRoomId); };
+  document.getElementById("btnCancelRoom").onclick = function() { returnToLobby("방 만들기를 취소했습니다."); };
+  btnHome.onclick = function() { returnToLobby(); };
 
-  document.getElementById("btnCancelRoom").onclick = function() {
-    returnToLobby("방 만들기를 취소했습니다.");
-  };
-
-  btnHome.onclick = function() {
-    returnToLobby();
-  };
-
+  // --- 8. 터치 및 키보드 조작 ---
   window.onkeydown = function(e) {
     keys[e.code] = true;
     if (gameState === 'playing' && gameOver && e.code === 'Space' && (netMode === 'ai' || netMode === 'host')) resetGame();
@@ -936,10 +1268,16 @@ window.onload = function() {
   bindBtn('btnJump', 'ArrowUp');
   bindBtn('btnSpike', 'Space');
 
+  // --- 9. 게임 물리 및 스파이크 이펙트 업데이트 ---
   function update(dt) {
     updateEnvironment(dt);
 
-    if (gameState !== 'playing') return;
+    if (gameState !== 'playing') {
+      // 대기화면에서는 내가 고른 고양이/공 스킨을 실시간 미리보기로 표시
+      p1.skin = userState.equippedCat;
+      ball.skin = userState.equippedBall;
+      return;
+    }
 
     if (netMode === 'guest' || netMode === 'spectator') {
       if (netMode === 'guest' && conn && conn.open) {
@@ -984,11 +1322,7 @@ window.onload = function() {
     p1.x += mul(p1.vx, dt);
     p1.y += mul(p1.vy, dt);
 
-    if (p1.y >= 340) {
-      p1.y = 340;
-      if (wasAir1) p1.squash = 0.82;
-      p1.vy = 0;
-    }
+    if (p1.y >= 340) { p1.y = 340; if (wasAir1) p1.squash = 0.82; p1.vy = 0; }
     p1.squash += mul(1 - p1.squash, 0.2) * dt;
     if (p1.x < p1.r + 6) { p1.x = p1.r + 6; p1.vx = 0; }
     if (p1.x > 390 - p1.r) { p1.x = 390 - p1.r; p1.vx = 0; }
@@ -1005,10 +1339,7 @@ window.onload = function() {
         p2.vx = mul(p2.vx, Math.pow(0.76, dt));
         if (Math.abs(p2.vx) < 0.15) p2.vx = 0;
       }
-      if (remoteKeys.U && p2.y >= 340) {
-        p2.vy = -10.8;
-        p2.squash = 1.22;
-      }
+      if (remoteKeys.U && p2.y >= 340) { p2.vy = -10.8; p2.squash = 1.22; }
     } else {
       var aiMax = 4.5;
       var targetX = ball.x > 400 ? ball.x + 10 : 650;
@@ -1032,11 +1363,7 @@ window.onload = function() {
     p2.x += mul(p2.vx, dt);
     p2.y += mul(p2.vy, dt);
 
-    if (p2.y >= 340) {
-      p2.y = 340;
-      if (wasAir2) p2.squash = 0.82;
-      p2.vy = 0;
-    }
+    if (p2.y >= 340) { p2.y = 340; if (wasAir2) p2.squash = 0.82; p2.vy = 0; }
     p2.squash += mul(1 - p2.squash, 0.2) * dt;
     if (p2.x < 410 + p2.r) { p2.x = 410 + p2.r; p2.vx = 0; }
     if (p2.x > 800 - p2.r - 6) { p2.x = 800 - p2.r - 6; p2.vx = 0; }
@@ -1062,21 +1389,31 @@ window.onload = function() {
     if (ball.y > 430) {
       if (ball.x < 400) {
         score2++;
-        if (score2 >= 15) { gameOver = true; winnerText = "🎉 " + p2.name + " 승리! (터치해 재시작)"; }
-        else { ball.x = 580; ball.y = 140; ball.vx = -1.6; ball.vy = -2.2; ball.isFire = false; particles = []; }
+        if (score2 >= 15) {
+          gameOver = true;
+          winnerText = "🎉 " + p2.name + " 승리! (터치해 재시작)";
+          if (!matchRecorded) { matchRecorded = true; recordMatchResult(false); }
+        } else {
+          ball.x = 580; ball.y = 140; ball.vx = -1.6; ball.vy = -2.2; ball.spikeType = 'none'; particles = [];
+        }
       } else {
         score1++;
-        if (score1 >= 15) { gameOver = true; winnerText = "🎉 " + p1.name + " 승리! (터치해 재시작)"; }
-        else { ball.x = 220; ball.y = 140; ball.vx = 1.6; ball.vy = -2.2; ball.isFire = false; particles = []; }
+        if (score1 >= 15) {
+          gameOver = true;
+          winnerText = "🎉 " + p1.name + " 승리! (터치해 재시작)";
+          if (!matchRecorded) { matchRecorded = true; recordMatchResult(true); }
+        } else {
+          ball.x = 220; ball.y = 140; ball.vx = 1.6; ball.vy = -2.2; ball.spikeType = 'none'; particles = [];
+        }
       }
     }
 
     if (netMode === 'host') {
       broadcastToAll({
         type: 'state',
-        p1: { x: p1.x, y: p1.y, vx: p1.vx, ht: p1.hitTimer, sq: p1.squash, nm: p1.name },
-        p2: { x: p2.x, y: p2.y, vx: p2.vx, ht: p2.hitTimer, sq: p2.squash, nm: p2.name },
-        b: { x: ball.x, y: ball.y, f: ball.isFire },
+        p1: { x: p1.x, y: p1.y, vx: p1.vx, ht: p1.hitTimer, sq: p1.squash, nm: p1.name, tr: p1.tier, sk: p1.skin },
+        p2: { x: p2.x, y: p2.y, vx: p2.vx, ht: p2.hitTimer, sq: p2.squash, nm: p2.name, tr: p2.tier, sk: p2.skin },
+        b: { x: ball.x, y: ball.y, st: ball.spikeType, sk: ball.skin },
         s1: score1, s2: score2, go: gameOver, wt: winnerText,
         sc: spectatorConns.length,
         wtm: worldTime
@@ -1084,15 +1421,29 @@ window.onload = function() {
     }
   }
 
+  // 스파이크 종류(불꽃 / 번개 / 얼음)별 전용 파티클 생성
   function updateParticles(dt) {
-    if (ball.isFire && particles.length < 35) {
+    if (ball.spikeType !== 'none' && particles.length < 38) {
+      var pColor = '#f97316';
+      var pKind = 'circle';
+      if (ball.spikeType === 'fire') {
+        pColor = Math.random() > 0.5 ? '#f97316' : '#facc15';
+      } else if (ball.spikeType === 'lightning') {
+        pColor = Math.random() > 0.4 ? '#38bdf8' : '#fef08a';
+        pKind = 'bolt';
+      } else if (ball.spikeType === 'ice') {
+        pColor = Math.random() > 0.4 ? '#bae6fd' : '#ffffff';
+        pKind = 'crystal';
+      }
+
       particles.push({
-        x: ball.x + mul(Math.random() - 0.5, 18),
-        y: ball.y + mul(Math.random() - 0.5, 18),
-        vx: mul(Math.random() - 0.5, 3.0) - mul(ball.vx, 0.25),
-        vy: mul(Math.random() - 0.5, 3.0) - mul(ball.vy, 0.25),
-        size: mul(Math.random(), 7) + 4,
-        color: Math.random() > 0.5 ? '#f97316' : '#facc15',
+        x: ball.x + mul(Math.random() - 0.5, 20),
+        y: ball.y + mul(Math.random() - 0.5, 20),
+        vx: mul(Math.random() - 0.5, 3.2) - mul(ball.vx, 0.25),
+        vy: mul(Math.random() - 0.5, 3.2) - mul(ball.vy, 0.25),
+        size: mul(Math.random(), 6) + 4,
+        color: pColor,
+        kind: pKind,
         life: 20
       });
     }
@@ -1116,38 +1467,50 @@ window.onload = function() {
       p.squash = 1.15;
       var angle = Math.atan2(dy, dx);
       if (isSpike) {
-        ball.isFire = true;
+        ball.spikeType = p.spikeSkin || 'fire';
         ball.vx = mul(Math.cos(angle), 12.2) + mul(p.vx, 0.3);
         ball.vy = mul(Math.sin(angle), 12.2) - 3.5;
       } else {
-        ball.isFire = false;
+        ball.spikeType = 'none';
         ball.vx = mul(Math.cos(angle), 6.5) + mul(p.vx, 0.25);
         ball.vy = mul(Math.sin(angle), 6.5) - 2.4;
       }
     }
   }
 
-  function traceCatHeadPath() {
+  // --- 10. 캐릭터 / 공 / 이펙트 그리기 ---
+  function traceCatHeadPath(isSimple) {
     ctx.beginPath();
-    ctx.moveTo(0, -25);
-    ctx.bezierCurveTo(18, -25, 29, -15, 29, 2);
-    ctx.bezierCurveTo(29, 16, 17, 22, 0, 22);
-    ctx.bezierCurveTo(-17, 22, -29, 16, -29, 2);
-    ctx.bezierCurveTo(-29, -15, -18, -25, 0, -25);
-    ctx.closePath();
+    if (isSimple) {
+      // 기본 고양이(크림냥/그레이냥): 깔끔하고 담백한 둥근 얼굴형
+      ctx.arc(0, -2, 26, 0, TAU);
+    } else {
+      // 해금 스킨(치즈/페르시안/검둥이): 모찌 볼살 디테일 얼굴형
+      ctx.moveTo(0, -25);
+      ctx.bezierCurveTo(18, -25, 29, -15, 29, 2);
+      ctx.bezierCurveTo(29, 16, 17, 22, 0, 22);
+      ctx.bezierCurveTo(-17, 22, -29, 16, -29, 2);
+      ctx.bezierCurveTo(-29, -15, -18, -25, 0, -25);
+      ctx.closePath();
+    }
   }
 
   function drawChar(p) {
+    var sk = CAT_SKINS[p.skin] || CAT_SKINS.cream;
+    var isSimple = sk.simple;
+
+    // 닉네임 + 랭크 티어 이름표
     ctx.save();
-    ctx.font = 'bold 14px sans-serif';
-    var nameWidth = ctx.measureText(p.name).width + 16;
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.78)';
+    var labelStr = p.tier ? (p.tier + " " + p.name) : p.name;
+    ctx.font = 'bold 12px sans-serif';
+    var nameWidth = ctx.measureText(labelStr).width + 14;
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.8)';
     ctx.beginPath();
-    ctx.roundRect(p.x - nameWidth / 2, p.y - 72, nameWidth, 22, 8);
+    ctx.roundRect(p.x - nameWidth / 2, p.y - 72, nameWidth, 21, 8);
     ctx.fill();
-    ctx.fillStyle = p.type === 'tabby' ? '#fde047' : '#e0f2fe';
+    ctx.fillStyle = p.side === 1 ? '#fde047' : '#e0f2fe';
     ctx.textAlign = 'center';
-    ctx.fillText(p.name, p.x, p.y - 56);
+    ctx.fillText(labelStr, p.x, p.y - 57);
     ctx.restore();
 
     ctx.save();
@@ -1155,158 +1518,140 @@ window.onload = function() {
     ctx.scale(2 - p.squash, p.squash);
     ctx.translate(0, -32);
 
-    var isTabby = (p.type === 'tabby');
-    var dir = isTabby ? 1 : -1;
+    var dir = p.side === 1 ? 1 : -1;
     var speedRatio = Math.abs(p.vx) / p.maxSpeed;
     var time = performance.now();
 
+    // 1. 꼬리
     var tailWag = mul(Math.sin(mul(time, 0.008)), 6);
     ctx.lineCap = 'round';
     ctx.strokeStyle = '#0f172a';
-    ctx.lineWidth = isTabby ? 9 : 11;
+    ctx.lineWidth = isSimple ? 8 : 10;
     ctx.beginPath();
     ctx.moveTo(mul(-dir, 12), 17);
     ctx.quadraticCurveTo(mul(-dir, 36), 2 + tailWag, mul(-dir, 28), -18 + tailWag);
     ctx.stroke();
 
-    ctx.strokeStyle = isTabby ? p.color : '#bae6fd';
-    ctx.lineWidth = isTabby ? 5 : 6.5;
+    ctx.strokeStyle = (sk.id === 'persian') ? '#bae6fd' : sk.color;
+    ctx.lineWidth = isSimple ? 4.5 : 6;
     ctx.stroke();
 
-    if (!isTabby) {
+    if (sk.id === 'persian') {
       ctx.fillStyle = '#0f172a';
       ctx.beginPath();
       ctx.arc(mul(-dir, 28), -18 + tailWag, 4.5, 0, TAU);
       ctx.fill();
     }
 
-    ctx.fillStyle = p.color;
+    // 2. 몸통
+    ctx.fillStyle = sk.color;
     ctx.beginPath();
     ctx.ellipse(0, 17, 16, 13, 0, 0, TAU);
     ctx.fill();
-    ctx.lineWidth = 2.6;
+    ctx.lineWidth = 2.5;
     ctx.strokeStyle = '#0f172a';
     ctx.stroke();
 
-    if (!isTabby) {
-      ctx.fillStyle = '#bae6fd';
+    if (!isSimple) {
+      if (sk.id === 'persian') {
+        ctx.fillStyle = '#bae6fd';
+        ctx.beginPath();
+        ctx.ellipse(mul(-dir, 4), 19, 10, 8, 0, 0, TAU);
+        ctx.fill();
+      }
+      ctx.fillStyle = sk.stripe;
       ctx.beginPath();
-      ctx.ellipse(mul(-dir, 4), 19, 10, 8, 0, 0, TAU);
-      ctx.fill();
-
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.arc(mul(dir, 3), 9, 6.2, 0, TAU);
-      ctx.arc(mul(dir, 8), 11, 5.2, 0, TAU);
-      ctx.arc(mul(-dir, 3), 10, 5.2, 0, TAU);
+      ctx.roundRect(mul(dir, 3), 12, 3.8, 8.5, 2);
+      ctx.roundRect(mul(dir, 8.5), 14, 3.8, 6.5, 2);
       ctx.fill();
     }
 
-    ctx.fillStyle = p.stripe;
-    ctx.beginPath();
-    ctx.roundRect(mul(dir, 3), 12, 3.8, 8.5, 2);
-    ctx.roundRect(mul(dir, 8.5), 14, 3.8, 6.5, 2);
-    ctx.fill();
-
+    // 3. 앞발
     var paw = mul(Math.sin(mul(time, 0.022)), mul(4.2, speedRatio));
-    ctx.fillStyle = isTabby ? '#fef3c7' : '#1e293b';
+    ctx.fillStyle = (sk.id === 'persian') ? '#1e293b' : '#ffffff';
     ctx.strokeStyle = '#0f172a';
     ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.arc(-8, 28 + paw, 5.2, 0, TAU); ctx.fill(); ctx.stroke();
-    ctx.beginPath(); ctx.arc(8, 28 - paw, 5.2, 0, TAU); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.arc(-8, 28 + paw, 5, 0, TAU); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.arc(8, 28 - paw, 5, 0, TAU); ctx.fill(); ctx.stroke();
 
-    var earBaseColor = isTabby ? p.color : '#334155';
+    // 4. 귀
+    var earBaseColor = (sk.id === 'persian') ? '#334155' : sk.color;
     ctx.fillStyle = earBaseColor;
     ctx.strokeStyle = '#0f172a';
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.moveTo(-23, -10);
-    ctx.quadraticCurveTo(-26, -34, -20, -36);
-    ctx.quadraticCurveTo(-13, -37, -7, -21);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
+    ctx.lineWidth = 2.4;
 
-    ctx.fillStyle = p.earInner;
-    ctx.beginPath();
-    ctx.moveTo(-20, -14);
-    ctx.quadraticCurveTo(-22, -29, -18.5, -31);
-    ctx.quadraticCurveTo(-15, -31, -11, -20);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.fillStyle = earBaseColor;
-    ctx.beginPath();
-    ctx.moveTo(23, -10);
-    ctx.quadraticCurveTo(26, -34, 20, -36);
-    ctx.quadraticCurveTo(13, -37, 7, -21);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.fillStyle = p.earInner;
-    ctx.beginPath();
-    ctx.moveTo(20, -14);
-    ctx.quadraticCurveTo(22, -29, 18.5, -31);
-    ctx.quadraticCurveTo(15, -31, 11, -20);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.fillStyle = p.color;
-    traceCatHeadPath();
-    ctx.fill();
-
-    ctx.save();
-    traceCatHeadPath();
-    ctx.clip();
-
-    if (isTabby) {
-      ctx.fillStyle = p.light;
+    if (isSimple) {
+      // 기본 고양이: 단정하고 심플한 삼각 둥근 귀
       ctx.beginPath();
-      ctx.ellipse(-6, -15, 13, 6, -0.25, 0, TAU);
-      ctx.fill();
+      ctx.moveTo(-21, -12); ctx.lineTo(-18, -34); ctx.lineTo(-6, -22); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(21, -12); ctx.lineTo(18, -34); ctx.lineTo(6, -22); ctx.closePath(); ctx.fill(); ctx.stroke();
     } else {
-      ctx.fillStyle = '#bae6fd';
+      // 해금 스킨: 자연스럽게 둥근 귀 + 안쪽 귓바퀴 디테일
       ctx.beginPath();
-      ctx.ellipse(0, -17, 27, 13, 0, 0, TAU);
-      ctx.fill();
+      ctx.moveTo(-23, -10); ctx.quadraticCurveTo(-26, -34, -20, -36); ctx.quadraticCurveTo(-13, -37, -7, -21); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = sk.earInner;
+      ctx.beginPath();
+      ctx.moveTo(-20, -14); ctx.quadraticCurveTo(-22, -29, -18.5, -31); ctx.quadraticCurveTo(-15, -31, -11, -20); ctx.closePath(); ctx.fill();
 
-      ctx.fillStyle = '#e0f2fe';
+      ctx.fillStyle = earBaseColor;
       ctx.beginPath();
-      ctx.arc(-22, 6, 10, 0, TAU);
-      ctx.arc(22, 6, 10, 0, TAU);
-      ctx.fill();
+      ctx.moveTo(23, -10); ctx.quadraticCurveTo(26, -34, 20, -36); ctx.quadraticCurveTo(13, -37, 7, -21); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = sk.earInner;
+      ctx.beginPath();
+      ctx.moveTo(20, -14); ctx.quadraticCurveTo(22, -29, 18.5, -31); ctx.quadraticCurveTo(15, -31, 11, -20); ctx.closePath(); ctx.fill();
     }
 
-    ctx.fillStyle = p.stripe;
-    ctx.beginPath();
-    ctx.roundRect(-7, -26, 2.8, 9, 1.5);
-    ctx.roundRect(-1.4, -26, 2.8, 11, 1.5);
-    ctx.roundRect(4.2, -26, 2.8, 9, 1.5);
+    // 5. 머리
+    ctx.fillStyle = sk.color;
+    traceCatHeadPath(isSimple);
     ctx.fill();
 
-    ctx.beginPath();
-    ctx.roundRect(-30, -1, 8.5, 2.5, 1.2);
-    ctx.roundRect(-30, 3.5, 7.5, 2.5, 1.2);
-    ctx.roundRect(21.5, -1, 8.5, 2.5, 1.2);
-    ctx.roundRect(22.5, 3.5, 7.5, 2.5, 1.2);
-    ctx.fill();
+    if (!isSimple) {
+      ctx.save();
+      traceCatHeadPath(false);
+      ctx.clip();
 
-    ctx.restore();
+      if (sk.id === 'persian') {
+        ctx.fillStyle = '#bae6fd';
+        ctx.beginPath(); ctx.ellipse(0, -17, 27, 13, 0, 0, TAU); ctx.fill();
+        ctx.fillStyle = '#e0f2fe';
+        ctx.beginPath(); ctx.arc(-22, 6, 10, 0, TAU); ctx.arc(22, 6, 10, 0, TAU); ctx.fill();
+      } else {
+        ctx.fillStyle = sk.light;
+        ctx.beginPath(); ctx.ellipse(-6, -15, 13, 6, -0.25, 0, TAU); ctx.fill();
+      }
 
-    ctx.lineWidth = 2.7;
+      // 이마 & 볼 줄무늬
+      ctx.fillStyle = sk.stripe;
+      ctx.beginPath();
+      ctx.roundRect(-7, -26, 2.8, 9, 1.5);
+      ctx.roundRect(-1.4, -26, 2.8, 11, 1.5);
+      ctx.roundRect(4.2, -26, 2.8, 9, 1.5);
+      ctx.roundRect(-30, -1, 8.5, 2.5, 1.2);
+      ctx.roundRect(-30, 3.5, 7.5, 2.5, 1.2);
+      ctx.roundRect(21.5, -1, 8.5, 2.5, 1.2);
+      ctx.roundRect(22.5, 3.5, 7.5, 2.5, 1.2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    ctx.lineWidth = 2.6;
     ctx.strokeStyle = '#0f172a';
-    traceCatHeadPath();
+    traceCatHeadPath(isSimple);
     ctx.stroke();
 
-    ctx.fillStyle = 'rgba(244, 63, 94, 0.36)';
+    // 6. 볼터치
+    ctx.fillStyle = 'rgba(244, 63, 94, 0.35)';
     ctx.beginPath();
-    ctx.ellipse(-15, 4, 4.8, 3.2, 0, 0, TAU);
-    ctx.ellipse(15, 4, 4.8, 3.2, 0, 0, TAU);
+    ctx.ellipse(-15, 4, 4.5, 3, 0, 0, TAU);
+    ctx.ellipse(15, 4, 4.5, 3, 0, 0, TAU);
     ctx.fill();
 
+    // 7. 눈 (검둥이냥은 매혹적인 황금빛 눈동자)
+    var isBlackCat = (sk.id === 'black');
     if (p.hitTimer > 0) {
-      ctx.strokeStyle = '#0f172a';
+      ctx.strokeStyle = isBlackCat ? '#facc15' : '#0f172a';
       ctx.lineWidth = 2.6;
       ctx.lineCap = 'round';
       ctx.beginPath();
@@ -1316,49 +1661,138 @@ window.onload = function() {
     } else {
       var eyeX1 = -8.5 + dir;
       var eyeX2 = 8.5 + dir;
-      ctx.fillStyle = '#0f172a';
+      ctx.fillStyle = isBlackCat ? '#facc15' : '#0f172a';
       ctx.beginPath();
       ctx.ellipse(eyeX1, -2.5, 3.8, 4.4, 0, 0, TAU);
       ctx.ellipse(eyeX2, -2.5, 3.8, 4.4, 0, 0, TAU);
       ctx.fill();
 
+      if (isBlackCat) {
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.ellipse(eyeX1, -2.5, 1.4, 3.5, 0, 0, TAU);
+        ctx.ellipse(eyeX2, -2.5, 1.4, 3.5, 0, 0, TAU);
+        ctx.fill();
+      }
+
       ctx.fillStyle = '#ffffff';
       ctx.beginPath();
-      ctx.arc(eyeX1 - 1.2, -4, 1.6, 0, TAU);
-      ctx.arc(eyeX2 - 1.2, -4, 1.6, 0, TAU);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(eyeX1 + 1.2, -1.2, 0.8, 0, TAU);
-      ctx.arc(eyeX2 + 1.2, -1.2, 0.8, 0, TAU);
+      ctx.arc(eyeX1 - 1.2, -4, 1.5, 0, TAU);
+      ctx.arc(eyeX2 - 1.2, -4, 1.5, 0, TAU);
       ctx.fill();
     }
 
+    // 8. 코 & 입
     var noseX = dir;
     ctx.fillStyle = '#fb7185';
     ctx.beginPath();
-    ctx.ellipse(noseX, 2.5, 2.6, 1.9, 0, 0, TAU);
+    ctx.ellipse(noseX, 2.5, 2.5, 1.8, 0, 0, TAU);
     ctx.fill();
 
-    ctx.strokeStyle = '#0f172a';
-    ctx.lineWidth = 1.7;
+    ctx.strokeStyle = isBlackCat ? '#e2e8f0' : '#0f172a';
+    ctx.lineWidth = 1.6;
     ctx.lineCap = 'round';
     ctx.beginPath();
-    ctx.arc(noseX - 2.6, 5.2, 2.6, 0.15, 2.9);
+    ctx.arc(noseX - 2.6, 5.2, 2.5, 0.15, 2.9);
     ctx.stroke();
     ctx.beginPath();
-    ctx.arc(noseX + 2.6, 5.2, 2.6, 0.25, 3.0);
+    ctx.arc(noseX + 2.6, 5.2, 2.5, 0.25, 3.0);
     ctx.stroke();
 
     ctx.restore();
   }
 
-  function drawSuperman(x, y) {
+  function drawBall() {
+    ctx.save();
+    ctx.translate(ball.x, ball.y);
+
+    // 스파이크 상태일 때 공 주변 오라 광채
+    if (ball.spikeType === 'fire') {
+      ctx.fillStyle = 'rgba(249, 115, 22, 0.35)';
+      ctx.beginPath(); ctx.arc(0, 0, ball.r + 7, 0, TAU); ctx.fill();
+    } else if (ball.spikeType === 'lightning') {
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.4)';
+      ctx.beginPath(); ctx.arc(0, 0, ball.r + 8, 0, TAU); ctx.fill();
+    } else if (ball.spikeType === 'ice') {
+      ctx.fillStyle = 'rgba(186, 230, 253, 0.45)';
+      ctx.beginPath(); ctx.arc(0, 0, ball.r + 8, 0, TAU); ctx.fill();
+    }
+
+    // 공 스킨 클리핑 내부 그리기
+    ctx.beginPath();
+    ctx.arc(0, 0, ball.r, 0, TAU);
+    ctx.clip();
+
+    if (ball.skin === 'watermelon') {
+      // 수박공
+      ctx.fillStyle = '#22c55e';
+      ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
+      ctx.strokeStyle = '#14532d';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(-10, -20); ctx.quadraticCurveTo(-4, 0, -10, 20);
+      ctx.moveTo(0, -20);   ctx.quadraticCurveTo(0, 0, 0, 20);
+      ctx.moveTo(10, -20);  ctx.quadraticCurveTo(4, 0, 10, 20);
+      ctx.stroke();
+    } else if (ball.skin === 'rainbow') {
+      // 무지개공
+      var rGrad = ctx.createLinearGradient(-ball.r, -ball.r, ball.r, ball.r);
+      rGrad.addColorStop(0, '#f43f5e');
+      rGrad.addColorStop(0.25, '#f59e0b');
+      rGrad.addColorStop(0.5, '#eab308');
+      rGrad.addColorStop(0.75, '#22c55e');
+      rGrad.addColorStop(1, '#3b82f6');
+      ctx.fillStyle = rGrad;
+      ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
+      ctx.strokeStyle = 'rgba(255,255,255,0.65)';
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(-6, -6, 14, 0, TAU); ctx.stroke();
+    } else {
+      // 기본 노란 비치볼
+      ctx.fillStyle = '#facc15';
+      ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
+      ctx.strokeStyle = '#ca8a04';
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(-7, 0, 15, -1.1, 1.1); ctx.stroke();
+      ctx.beginPath(); ctx.arc(7, 0, 15, 2.0, 4.2); ctx.stroke();
+    }
+
+    // 스파이크 오버레이 색조
+    if (ball.spikeType === 'fire') {
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.55)';
+      ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
+    } else if (ball.spikeType === 'lightning') {
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.5)';
+      ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
+    } else if (ball.spikeType === 'ice') {
+      ctx.fillStyle = 'rgba(224, 242, 254, 0.65)';
+      ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
+    }
+
+    ctx.restore();
+
+    // 공 테두리
+    ctx.save();
+    ctx.translate(ball.x, ball.y);
+    ctx.beginPath();
+    ctx.arc(0, 0, ball.r, 0, TAU);
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = ball.spikeType === 'fire' ? '#b91c1c'
+      : (ball.spikeType === 'lightning' ? '#0284c7'
+      : (ball.spikeType === 'ice' ? '#7dd3fc' : '#0f172a'));
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // 오리지널 초록 망토 냥이 히어로 (저작권 안전 창작 캐릭터)
+  function drawHeroCat(x, y) {
     ctx.save();
     ctx.translate(x, y);
     var wave = Math.sin(mul(performance.now(), 0.015));
 
-    ctx.fillStyle = '#ef4444';
-    ctx.strokeStyle = '#7f1d1d';
+    // 민트/에메랄드 망토
+    ctx.fillStyle = '#10b981';
+    ctx.strokeStyle = '#064e3b';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(-6, -4);
@@ -1369,34 +1803,26 @@ window.onload = function() {
     ctx.fill();
     ctx.stroke();
 
-    ctx.fillStyle = '#2563eb';
+    // 하얀 히어로 슈트
+    ctx.fillStyle = '#f8fafc';
     ctx.strokeStyle = '#0f172a';
     ctx.beginPath();
     ctx.roundRect(-24, -4, 24, 9, 4);
     ctx.fill();
     ctx.stroke();
 
-    ctx.fillStyle = '#dc2626';
+    // 노란 별 장식
+    ctx.fillStyle = '#facc15';
     ctx.beginPath();
-    ctx.roundRect(-27, -3.5, 6, 8, 2);
+    ctx.arc(-10, 0.5, 2.5, 0, TAU);
     ctx.fill();
 
-    ctx.fillStyle = '#2563eb';
-    ctx.beginPath();
-    ctx.roundRect(4, -5, 16, 5.5, 2.5);
-    ctx.fill();
-    ctx.stroke();
+    // 고양이 얼굴
     ctx.fillStyle = '#fde68a';
-    ctx.beginPath();
-    ctx.arc(21, -2.2, 3.2, 0, TAU);
-    ctx.fill();
-
-    ctx.fillStyle = '#f59e0b';
     ctx.beginPath();
     ctx.moveTo(0, -7); ctx.lineTo(3, -15); ctx.lineTo(7, -8);
     ctx.moveTo(6, -7); ctx.lineTo(10, -15); ctx.lineTo(13, -6);
     ctx.fill();
-
     ctx.beginPath();
     ctx.arc(7, -2, 8.5, 0, TAU);
     ctx.fill();
@@ -1406,7 +1832,6 @@ window.onload = function() {
     ctx.beginPath();
     ctx.arc(11, -3, 1.8, 0, TAU);
     ctx.fill();
-
     ctx.restore();
   }
 
@@ -1430,20 +1855,13 @@ window.onload = function() {
         var st = stars[i];
         var twinkle = 0.45 + mul(0.55, Math.abs(Math.sin(mul(now, 0.003) + st.phase)));
         ctx.fillStyle = "rgba(255, 255, 255, " + mul(nightAlpha, twinkle).toFixed(2) + ")";
-        ctx.beginPath();
-        ctx.arc(st.x, st.y, st.r, 0, TAU);
-        ctx.fill();
+        ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, TAU); ctx.fill();
       }
-
       ctx.globalAlpha = nightAlpha;
       ctx.fillStyle = '#fef08a';
-      ctx.beginPath();
-      ctx.arc(675, 78, 22, 0, TAU);
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(675, 78, 22, 0, TAU); ctx.fill();
       ctx.fillStyle = pal.top;
-      ctx.beginPath();
-      ctx.arc(684, 72, 19, 0, TAU);
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(684, 72, 19, 0, TAU); ctx.fill();
       ctx.restore();
     }
 
@@ -1452,18 +1870,10 @@ window.onload = function() {
       var grad = ctx.createLinearGradient(shootingStar.x, shootingStar.y, shootingStar.x + 55, shootingStar.y - 25);
       grad.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
       grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
-      ctx.strokeStyle = grad;
-      ctx.lineWidth = 2.5;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.moveTo(shootingStar.x, shootingStar.y);
-      ctx.lineTo(shootingStar.x + 55, shootingStar.y - 25);
-      ctx.stroke();
-
+      ctx.strokeStyle = grad; ctx.lineWidth = 2.5; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(shootingStar.x, shootingStar.y); ctx.lineTo(shootingStar.x + 55, shootingStar.y - 25); ctx.stroke();
       ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.arc(shootingStar.x, shootingStar.y, 2.5, 0, TAU);
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(shootingStar.x, shootingStar.y, 2.5, 0, TAU); ctx.fill();
       ctx.restore();
     }
 
@@ -1474,14 +1884,9 @@ window.onload = function() {
       var isSunset = worldTime > 0.34;
       ctx.save();
       ctx.fillStyle = isSunset ? 'rgba(251, 146, 60, 0.35)' : 'rgba(253, 224, 71, 0.28)';
-      ctx.beginPath();
-      ctx.arc(sunX, sunY, isSunset ? 42 : 34, 0, TAU);
-      ctx.fill();
-
+      ctx.beginPath(); ctx.arc(sunX, sunY, isSunset ? 42 : 34, 0, TAU); ctx.fill();
       ctx.fillStyle = isSunset ? '#fb7185' : '#fde047';
-      ctx.beginPath();
-      ctx.arc(sunX, sunY, isSunset ? 28 : 22, 0, TAU);
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(sunX, sunY, isSunset ? 28 : 22, 0, TAU); ctx.fill();
       ctx.restore();
     }
 
@@ -1491,14 +1896,8 @@ window.onload = function() {
       : "rgba(255, 255, 255, " + cloudAlpha.toFixed(2) + ")";
     for (var c = 0; c < clouds.length; c++) {
       var cl = clouds[c];
-      ctx.save();
-      ctx.translate(cl.x, cl.y);
-      ctx.scale(cl.s, cl.s);
-      ctx.beginPath();
-      ctx.arc(-28, 4, 24, 0, TAU);
-      ctx.arc(0, -6, 34, 0, TAU);
-      ctx.arc(30, 6, 22, 0, TAU);
-      ctx.fill();
+      ctx.save(); ctx.translate(cl.x, cl.y); ctx.scale(cl.s, cl.s);
+      ctx.beginPath(); ctx.arc(-28, 4, 24, 0, TAU); ctx.arc(0, -6, 34, 0, TAU); ctx.arc(30, 6, 22, 0, TAU); ctx.fill();
       ctx.restore();
     }
 
@@ -1506,9 +1905,7 @@ window.onload = function() {
       var bd = birds[b];
       if (bd.x > -40 && bd.x < 840) {
         var wingY = mul(Math.sin(bd.phase), 5);
-        ctx.strokeStyle = 'rgba(15, 23, 42, 0.72)';
-        ctx.lineWidth = 2;
-        ctx.lineCap = 'round';
+        ctx.strokeStyle = 'rgba(15, 23, 42, 0.72)'; ctx.lineWidth = 2; ctx.lineCap = 'round';
         ctx.beginPath();
         ctx.moveTo(bd.x - 8, bd.y + wingY);
         ctx.quadraticCurveTo(bd.x - 4, bd.y - 4, bd.x, bd.y);
@@ -1517,9 +1914,7 @@ window.onload = function() {
       }
     }
 
-    if (superman.active) {
-      drawSuperman(superman.x, superman.y);
-    }
+    if (heroCat.active) drawHeroCat(heroCat.x, heroCat.y);
 
     ctx.fillStyle = pal.sand;
     ctx.fillRect(0, 380, 800, 70);
@@ -1542,18 +1937,41 @@ window.onload = function() {
 
     drawChar(p1); drawChar(p2);
 
+    // 스파이크 파티클 렌더링 (불꽃 / 번개 / 얼음)
     for (var i = 0; i < particles.length; i++) {
-      var pt = particles[i]; ctx.fillStyle = pt.color;
-      ctx.beginPath(); ctx.arc(pt.x, pt.y, pt.size, 0, TAU); ctx.fill();
+      var pt = particles[i];
+      ctx.save();
+      if (pt.kind === 'bolt') {
+        ctx.strokeStyle = pt.color;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(pt.x - 6, pt.y - 4);
+        ctx.lineTo(pt.x, pt.y);
+        ctx.lineTo(pt.x - 3, pt.y + 4);
+        ctx.lineTo(pt.x + 6, pt.y + 7);
+        ctx.stroke();
+      } else if (pt.kind === 'crystal') {
+        ctx.strokeStyle = pt.color;
+        ctx.lineWidth = 2;
+        var sz = pt.size * 0.8;
+        ctx.beginPath();
+        ctx.moveTo(pt.x - sz, pt.y); ctx.lineTo(pt.x + sz, pt.y);
+        ctx.moveTo(pt.x, pt.y - sz); ctx.lineTo(pt.x, pt.y + sz);
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = pt.color;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, pt.size, 0, TAU);
+        ctx.fill();
+      }
+      ctx.restore();
     }
 
-    ctx.fillStyle = ball.isFire ? '#ff5722' : '#facc15';
-    ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.r, 0, TAU); ctx.fill();
-    ctx.strokeStyle = ball.isFire ? '#b71c1c' : '#ca8a04'; ctx.lineWidth = 3; ctx.stroke();
+    drawBall();
 
     if (gameOver) {
       ctx.fillStyle = 'rgba(0,0,0,0.85)'; ctx.fillRect(0, 0, 800, 450);
-      ctx.fillStyle = '#fff'; ctx.font = 'bold 26px sans-serif';
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 25px sans-serif';
       ctx.fillText(winnerText, 400, 225);
     }
   }
