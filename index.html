@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Cat Volleyball Online - Skins & Rank</title>
+<title>냐옹이 배구 온라인</title>
 <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 <style>
 * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
@@ -25,7 +25,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 .lobby-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(15, 23, 42, 0.9);
+  background: rgba(15, 23, 42, 0.91);
   backdrop-filter: blur(4px);
   border-radius: 10px;
   border: 3px solid #38bdf8;
@@ -36,7 +36,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   padding: 8px 12px;
   z-index: 10;
 }
-.lobby-header { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 380px; margin-bottom: 6px; gap: 6px; }
+.lobby-header { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 390px; margin-bottom: 6px; gap: 6px; }
 .lobby-title { font-size: 1.05rem; font-weight: bold; color: #fde047; white-space: nowrap; }
 .rank-pill {
   background: rgba(30, 41, 59, 0.95);
@@ -47,20 +47,22 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   font-weight: bold;
   color: #fef08a;
   white-space: nowrap;
+  cursor: pointer;
 }
+.rank-pill:active { transform: scale(0.96); }
 
-.menu-box { width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: 6px; }
+.menu-box { width: 100%; max-width: 390px; display: flex; flex-direction: column; gap: 6px; }
 
-/* 닉네임 + 스킨 상점 버튼 행 */
-.profile-row { display: flex; gap: 6px; width: 100%; }
-.nick-row { flex: 1.35; display: flex; align-items: center; gap: 5px; background: #1e293b; border: 1.5px solid #38bdf8; border-radius: 10px; padding: 3px 8px; }
-.nick-label { font-size: 0.76rem; color: #7dd3fc; font-weight: bold; white-space: nowrap; }
+/* 닉네임 + 스킨 + TOP10 랭킹 버튼 행 */
+.profile-row { display: flex; gap: 5px; width: 100%; }
+.nick-row { flex: 1.3; display: flex; align-items: center; gap: 4px; background: #1e293b; border: 1.5px solid #38bdf8; border-radius: 10px; padding: 3px 7px; }
+.nick-label { font-size: 0.74rem; color: #7dd3fc; font-weight: bold; white-space: nowrap; }
 .nick-input {
   width: 100%;
   background: transparent;
   border: none;
   color: #fff;
-  font-size: 0.86rem;
+  font-size: 0.85rem;
   font-weight: bold;
   padding: 3px;
   outline: none;
@@ -68,15 +70,27 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   -webkit-user-select: text;
 }
 .btn-skin-open {
-  flex: 1;
+  flex: 0.85;
   background: linear-gradient(135deg, #9333ea, #7e22ce);
   border: 1.5px solid #d8b4fe;
   border-radius: 10px;
   color: #fff;
-  font-size: 0.8rem;
+  font-size: 0.76rem;
   font-weight: bold;
   cursor: pointer;
-  padding: 5px 8px;
+  padding: 5px 6px;
+  white-space: nowrap;
+}
+.btn-rank-open {
+  flex: 0.72;
+  background: linear-gradient(135deg, #d97706, #b45309);
+  border: 1.5px solid #fde047;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 0.76rem;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 5px 6px;
   white-space: nowrap;
 }
 
@@ -101,42 +115,80 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   display: none;
   flex-direction: column;
   width: 100%;
-  max-width: 420px;
+  max-width: 440px;
   gap: 6px;
 }
 .skin-scroll {
   width: 100%;
-  max-height: 155px;
+  max-height: 158px;
   overflow-y: auto;
-  background: rgba(30, 41, 59, 0.95);
+  background: rgba(30, 41, 59, 0.96);
   border: 1.5px solid #a855f7;
   border-radius: 10px;
   padding: 7px;
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 8px;
   text-align: left;
 }
 .skin-cat-title { font-size: 0.74rem; font-weight: bold; color: #d8b4fe; margin-bottom: 3px; }
 .skin-grid { display: flex; flex-wrap: wrap; gap: 5px; }
 .skin-chip {
   flex: 1 1 30%;
-  min-width: 95px;
+  min-width: 96px;
   background: #0f172a;
   border: 1.5px solid #475569;
   border-radius: 8px;
-  padding: 5px 6px;
+  padding: 5px 5px;
   color: #e2e8f0;
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   text-align: center;
   cursor: pointer;
 }
 .skin-chip.equipped { border-color: #facc15; background: rgba(250, 204, 21, 0.16); color: #fef08a; font-weight: bold; }
 .skin-chip.locked { border-color: #9333ea; color: #c084fc; }
-.skin-sub { display: block; font-size: 0.65rem; opacity: 0.85; margin-top: 2px; }
+.skin-sub { display: block; font-size: 0.64rem; opacity: 0.85; margin-top: 2px; }
+
+/* TOP 10 랭킹 패널 */
+.rank-panel {
+  display: none;
+  flex-direction: column;
+  width: 100%;
+  max-width: 420px;
+  gap: 6px;
+}
+.rank-scroll {
+  width: 100%;
+  max-height: 155px;
+  overflow-y: auto;
+  background: rgba(30, 41, 59, 0.96);
+  border: 1.5px solid #facc15;
+  border-radius: 10px;
+  padding: 5px 7px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.rank-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 7px;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+}
+.rank-row.me {
+  border-color: #facc15;
+  background: rgba(250, 204, 21, 0.14);
+}
+.rank-left { display: flex; align-items: center; gap: 6px; font-weight: bold; }
+.rank-num { width: 22px; text-align: center; color: #fde047; }
+.rank-right { font-size: 0.7rem; color: #bae6fd; }
 
 /* 방 리스트 패널 */
-.list-panel { display: none; flex-direction: column; align-items: center; gap: 6px; width: 100%; max-width: 380px; }
+.list-panel { display: none; flex-direction: column; align-items: center; gap: 6px; width: 100%; max-width: 390px; }
 .room-list-box {
   width: 100%;
   max-height: 112px;
@@ -210,7 +262,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 .btn-cancel { flex: 1; background: #475569; border: 1.5px solid #94a3b8; }
 .lobby-status { font-size: 0.75rem; color: #bae6fd; margin-top: 4px; min-height: 15px; }
 
-/* 광고/보상 해금 확인 모달 */
+/* 보상 해금 확인 모달 */
 .reward-modal {
   display: none;
   position: absolute;
@@ -262,7 +314,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 <body>
 
 <div class="top-bar">
-  <h1>🐾 냐옹이 비치 배구</h1>
+  <h1>🐾 냐옹이 배구</h1>
   <div class="top-right">
     <div class="spec-badge" id="specBadge">👀 관전 0명</div>
     <button class="home-btn" id="btnHome" style="display:none;">🏠 대기화면</button>
@@ -286,7 +338,8 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
           <span class="nick-label">닉네임</span>
           <input type="text" class="nick-input" id="nickInput" maxlength="8" placeholder="닉네임 입력">
         </div>
-        <button class="btn-skin-open" id="btnOpenSkins">🎨 스킨·이펙트</button>
+        <button class="btn-skin-open" id="btnOpenSkins">🎨 스킨</button>
+        <button class="btn-rank-open" id="btnOpenRank">🏆 랭킹</button>
       </div>
 
       <button class="menu-btn btn-ai" id="btnStartAI">🐱 1인 플레이 (AI 대전)</button>
@@ -300,7 +353,16 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
       <button class="menu-btn btn-ai btn-small" id="btnCloseSkins">선택 완료 (돌아가기)</button>
     </div>
 
-    <!-- 3. 공개 방 리스트 및 코드 직접 입력 패널 -->
+    <!-- 3. TOP 10 랭킹 보드 패널 -->
+    <div class="rank-panel" id="rankPanel">
+      <div class="rank-scroll" id="rankListContainer"></div>
+      <div class="join-row">
+        <button class="menu-btn btn-list btn-small" id="btnRefreshRank">🔄 실시간 갱신</button>
+        <button class="menu-btn btn-cancel btn-small" id="btnCloseRank">뒤로</button>
+      </div>
+    </div>
+
+    <!-- 4. 공개 방 리스트 및 코드 직접 입력 패널 -->
     <div class="list-panel" id="listPanel">
       <div class="room-list-box" id="roomListBox">
         <div style="padding:16px; color:#94a3b8; font-size:0.8rem;">열려 있는 방을 찾는 중...</div>
@@ -313,7 +375,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
       </div>
     </div>
 
-    <!-- 4. 방 생성 후 대기 화면 -->
+    <!-- 5. 방 생성 후 대기 화면 -->
     <div class="wait-panel" id="waitPanel">
       <div style="font-size:0.8rem; color:#e2e8f0;">공개 로비에 등록되었습니다! 친구가 방 리스트에서 바로 찾을 수 있어요.</div>
       <div class="room-badge" id="roomCodeDisplay">CAT-ROOM-1</div>
@@ -323,7 +385,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
       </div>
     </div>
 
-    <!-- 보상형 24시간 해금 팝업 (추후 광고 SDK 연결 포인트) -->
+    <!-- 보상형 24시간 해금 팝업 -->
     <div class="reward-modal" id="rewardModal">
       <h3 id="rewardModalTitle">🎁 스킨 24시간 무료 체험</h3>
       <p id="rewardModalDesc">짧은 광고(또는 이벤트 응원) 후 선택한 아이템을 24시간 동안 자유롭게 사용할 수 있습니다!</p>
@@ -344,7 +406,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
     <div class="touch-btn" id="btnRight">▶<span class="sub-label">오른쪽</span></div>
   </div>
   <div class="action-group">
-    <div class="touch-btn spike-btn" id="btnSpike">🔥스파이크<span class="sub-label">강타</span></div>
+    <div class="touch-btn spike-btn" id="btnSpike">💥스파이크<span class="sub-label">강타</span></div>
     <div class="touch-btn jump-btn" id="btnJump">점프<span class="sub-label">▲</span></div>
   </div>
 </div>
@@ -364,40 +426,50 @@ window.onload = function() {
 
   var HOURS_24_MS = 24 * 60 * 60 * 1000;
 
-  // --- 1. 스킨 & 이펙트 카탈로그 정의 ---
+  // --- 1. 확장된 스킨 & 스파이크 카탈로그 ---
   var CAT_SKINS = {
-    cream:   { id: 'cream',   name: '크림냥(기본)', free: true,  simple: true,  color: '#fef3c7', shadow: '#78350f', light: '#ffffff', stripe: '#d97706', earInner: '#fda4af' },
-    gray:    { id: 'gray',    name: '그레이냥(기본)', free: true, simple: true,  color: '#cbd5e1', shadow: '#1e293b', light: '#f1f5f9', stripe: '#64748b', earInner: '#fda4af' },
-    cheese:  { id: 'cheese',  name: '치즈냥',       free: false, simple: false, color: '#f59e0b', shadow: '#78350f', light: '#fde68a', stripe: '#92400e', earInner: '#fda4af' },
-    persian: { id: 'persian', name: '페르시안냥',   free: false, simple: false, color: '#ffffff', shadow: '#0f172a', light: '#bae6fd', stripe: '#1e293b', earInner: '#fda4af' },
-    black:   { id: 'black',   name: '검둥이냥',     free: false, simple: false, color: '#1e293b', shadow: '#020617', light: '#475569', stripe: '#0f172a', earInner: '#fb7185' }
+    cream:   { id: 'cream',   name: '크림냥(기본)',   free: true,  simple: true,  color: '#fef3c7', shadow: '#78350f', light: '#ffffff', stripe: '#d97706', earInner: '#fda4af' },
+    gray:    { id: 'gray',    name: '그레이냥(기본)', free: true,  simple: true,  color: '#cbd5e1', shadow: '#1e293b', light: '#f1f5f9', stripe: '#64748b', earInner: '#fda4af' },
+    cheese:  { id: 'cheese',  name: '치즈냥',         free: false, simple: false, color: '#f59e0b', shadow: '#78350f', light: '#fde68a', stripe: '#92400e', earInner: '#fda4af' },
+    persian: { id: 'persian', name: '페르시안냥',     free: false, simple: false, color: '#ffffff', shadow: '#0f172a', light: '#bae6fd', stripe: '#1e293b', earInner: '#fda4af' },
+    black:   { id: 'black',   name: '검둥이냥',       free: false, simple: false, color: '#1e293b', shadow: '#020617', light: '#475569', stripe: '#0f172a', earInner: '#fb7185' },
+    calico:  { id: 'calico',  name: '삼색냥',         free: false, simple: false, color: '#ffffff', shadow: '#1e293b', light: '#fef3c7', stripe: '#ea580c', earInner: '#fda4af' },
+    siamese: { id: 'siamese', name: '샴냥',           free: false, simple: false, color: '#f5ebe0', shadow: '#3e2723', light: '#ffffff', stripe: '#4e342e', earInner: '#d7ccc8' },
+    gold:    { id: 'gold',    name: '황금냥',         free: false, simple: false, color: '#facc15', shadow: '#854d0e', light: '#fef9c3', stripe: '#ca8a04', earInner: '#fde047' }
   };
 
   var BALL_SKINS = {
     classic:    { id: 'classic',    name: '비치볼(기본)', free: true },
     watermelon: { id: 'watermelon', name: '수박공',       free: false },
-    rainbow:    { id: 'rainbow',    name: '무지개공',     free: false }
+    rainbow:    { id: 'rainbow',    name: '무지개공',     free: false },
+    soccer:     { id: 'soccer',     name: '축구공',       free: false },
+    paw:        { id: 'paw',        name: '냥발바닥공',   free: false },
+    golden:     { id: 'golden',     name: '황금공',       free: false }
   };
 
   var SPIKE_SKINS = {
-    fire:      { id: 'fire',      name: '🔥 불꽃슛(기본)', free: true },
+    wind:      { id: 'wind',      name: '💨 바람슛(기본)', free: true },
+    meteor:    { id: 'meteor',    name: '☄️ 메테오',       free: false },
     lightning: { id: 'lightning', name: '⚡ 번개슛',       free: false },
-    ice:       { id: 'ice',       name: '❄️ 얼음슛',       free: false }
+    ice:       { id: 'ice',       name: '❄️ 얼음슛',       free: false },
+    sakura:    { id: 'sakura',    name: '🌸 벚꽃슛',       free: false },
+    blackhole: { id: 'blackhole', name: '🌌 블랙홀슛',     free: false }
   };
 
-  // --- 2. 로컬 저장소 기반 24시간 스킨 해금 & 전적/랭크 관리 ---
+  // --- 2. 로컬 저장소 기반 24시간 해금 & 랭크/전적 관리 ---
   var userState = {
     equippedCat: 'cream',
     equippedBall: 'classic',
-    equippedSpike: 'fire',
-    unlocks: {}, // { 'cat_cheese': expireTimestampMs, ... }
+    equippedSpike: 'wind',
+    unlocks: {},
     wins: 0,
-    losses: 0
+    losses: 0,
+    knownPlayers: [] // 온라인에서 만난 다른 플레이어들의 랭킹 데이터 캐시
   };
 
   function loadUserState() {
     try {
-      var raw = localStorage.getItem('cat_volley_save_v1');
+      var raw = localStorage.getItem('cat_volley_save_v2');
       if (raw) {
         var parsed = JSON.parse(raw);
         if (parsed.equippedCat && CAT_SKINS[parsed.equippedCat]) userState.equippedCat = parsed.equippedCat;
@@ -406,6 +478,7 @@ window.onload = function() {
         if (parsed.unlocks) userState.unlocks = parsed.unlocks;
         if (typeof parsed.wins === 'number') userState.wins = parsed.wins;
         if (typeof parsed.losses === 'number') userState.losses = parsed.losses;
+        if (Array.isArray(parsed.knownPlayers)) userState.knownPlayers = parsed.knownPlayers;
       }
     } catch (e) {}
     validateExpiredUnlocks();
@@ -413,7 +486,7 @@ window.onload = function() {
 
   function saveUserState() {
     try {
-      localStorage.setItem('cat_volley_save_v1', JSON.stringify(userState));
+      localStorage.setItem('cat_volley_save_v2', JSON.stringify(userState));
     } catch (e) {}
   }
 
@@ -442,13 +515,12 @@ window.onload = function() {
       changed = true;
     }
     if (!isItemUnlocked('spike_' + userState.equippedSpike, SPIKE_SKINS[userState.equippedSpike].free)) {
-      userState.equippedSpike = 'fire';
+      userState.equippedSpike = 'wind';
       changed = true;
     }
     if (changed) saveUserState();
   }
 
-  // 승률 기반 랭크 티어 계산 함수
   function getRankInfo(wins, losses) {
     var total = wins + losses;
     var rate = total > 0 ? Math.round((wins / total) * 100) : 0;
@@ -457,10 +529,13 @@ window.onload = function() {
     else if (total >= 10 && rate >= 65) tier = "💎 다이아";
     else if (total >= 5 && rate >= 55) tier = "🥇 골드";
     else if (total >= 2 && rate >= 40) tier = "🥈 실버";
+    // 랭킹 산정 점수: 승리당 30점 + 승률 보너스
+    var score = mul(wins, 30) + rate;
     return {
       tier: tier,
       rate: rate,
       total: total,
+      score: score,
       summary: tier + " · " + wins + "승 " + losses + "패 (" + rate + "%)"
     };
   }
@@ -478,10 +553,135 @@ window.onload = function() {
     refreshRankUI();
   }
 
+  function upsertKnownPlayer(nick, wins, losses) {
+    if (!nick || nick.indexOf('(AI)') !== -1) return;
+    var found = false;
+    for (var i = 0; i < userState.knownPlayers.length; i++) {
+      if (userState.knownPlayers[i].nick === nick) {
+        userState.knownPlayers[i].wins = wins;
+        userState.knownPlayers[i].losses = losses;
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      userState.knownPlayers.push({ nick: nick, wins: wins, losses: losses });
+    }
+    if (userState.knownPlayers.length > 30) {
+      userState.knownPlayers = userState.knownPlayers.slice(-30);
+    }
+    saveUserState();
+  }
+
   loadUserState();
   refreshRankUI();
 
-  // --- 3. 스킨 선택 UI & 24시간 해금 모달 ---
+  // --- 3. TOP 10 랭킹 보드 렌더링 & 실시간 로비 조회 ---
+  var DEFAULT_RIVALS = [
+    { nick: '냐옹킹', wins: 18, losses: 4 },
+    { nick: '스파이크장인', wins: 14, losses: 5 },
+    { nick: '치즈볼러', wins: 11, losses: 5 },
+    { nick: '페르시안프로', wins: 9, losses: 5 },
+    { nick: '해변의고양이', wins: 7, losses: 4 },
+    { nick: '점프왕냥이', wins: 5, losses: 4 },
+    { nick: '메테오슈터', wins: 4, losses: 3 },
+    { nick: '초보집사', wins: 2, losses: 2 },
+    { nick: '아기고양이', wins: 1, losses: 2 }
+  ];
+
+  function renderTop10Leaderboard(onlineExtras) {
+    var myNick = getMyNick(CAT_SKINS[userState.equippedCat].name.replace('(기본)', ''));
+    var pool = [];
+
+    // 1) 내 전적 추가
+    pool.push({ nick: myNick, wins: userState.wins, losses: userState.losses, isMe: true });
+
+    // 2) 실시간 온라인 로비에서 감지된 플레이어 추가
+    if (Array.isArray(onlineExtras)) {
+      for (var i = 0; i < onlineExtras.length; i++) {
+        var op = onlineExtras[i];
+        if (op.nick && op.nick !== myNick) {
+          upsertKnownPlayer(op.nick, op.wins || 0, op.losses || 0);
+        }
+      }
+    }
+
+    // 3) 저장된 온라인 상대방 전적 병합
+    for (var j = 0; j < userState.knownPlayers.length; j++) {
+      var kp = userState.knownPlayers[j];
+      if (kp.nick !== myNick && !pool.some(function(x) { return x.nick === kp.nick; })) {
+        pool.push({ nick: kp.nick, wins: kp.wins, losses: kp.losses, isMe: false });
+      }
+    }
+
+    // 4) 10명이 안 차면 기본 라이벌 랭커로 채움
+    for (var k = 0; k < DEFAULT_RIVALS.length; k++) {
+      var dr = DEFAULT_RIVALS[k];
+      if (dr.nick !== myNick && !pool.some(function(x) { return x.nick === dr.nick; })) {
+        pool.push({ nick: dr.nick, wins: dr.wins, losses: dr.losses, isMe: false });
+      }
+    }
+
+    // 랭킹 점수 및 승률 기준 내림차순 정렬
+    pool.sort(function(a, b) {
+      var ra = getRankInfo(a.wins, a.losses);
+      var rb = getRankInfo(b.wins, b.losses);
+      if (rb.score !== ra.score) return rb.score - ra.score;
+      return rb.wins - a.wins;
+    });
+
+    var top10 = pool.slice(0, 10);
+    var box = document.getElementById("rankListContainer");
+    box.innerHTML = "";
+
+    for (var idx = 0; idx < top10.length; idx++) {
+      var item = top10[idx];
+      var info = getRankInfo(item.wins, item.losses);
+      var medal = idx === 0 ? "🥇" : (idx === 1 ? "🥈" : (idx === 2 ? "🥉" : (idx + 1) + "위"));
+      var row = document.createElement("div");
+      row.className = "rank-row" + (item.isMe ? " me" : "");
+      row.innerHTML =
+        '<div class="rank-left">' +
+          '<span class="rank-num">' + medal + '</span>' +
+          '<span>' + info.tier + ' ' + item.nick + (item.isMe ? ' <span style="color:#fde047;">(나)</span>' : '') + '</span>' +
+        '</div>' +
+        '<div class="rank-right">' + item.wins + '승 ' + item.losses + '패 (' + info.rate + '%)</div>';
+      box.appendChild(row);
+    }
+  }
+
+  function scanOnlineRanks() {
+    renderTop10Leaderboard([]);
+    if (typeof Peer === 'undefined') return;
+    if (scanPeer) { try { scanPeer.destroy(); } catch (e) {} }
+
+    lobbyStatus.innerText = "실시간 온라인 플레이어 랭킹을 불러오는 중...";
+    var onlinePlayers = [];
+    var sp = new Peer();
+    scanPeer = sp;
+
+    sp.on('open', function() {
+      for (var i = 0; i < LOBBY_SLOTS.length; i++) {
+        (function(slotId) {
+          var c = sp.connect(slotId, { reliable: true });
+          c.on('open', function() { c.send({ type: 'probe' }); });
+          c.on('data', function(data) {
+            if (data && data.type === 'roomInfo') {
+              if (data.hostName) onlinePlayers.push({ nick: data.hostName, wins: data.hostWins || 0, losses: data.hostLosses || 0 });
+              if (data.p2Name) onlinePlayers.push({ nick: data.p2Name, wins: data.p2Wins || 0, losses: data.p2Losses || 0 });
+              renderTop10Leaderboard(onlinePlayers);
+            }
+          });
+          setTimeout(function() { try { c.close(); } catch (e) {} }, 1500);
+        })(LOBBY_SLOTS[i]);
+      }
+      setTimeout(function() {
+        lobbyStatus.innerText = "TOP 10 실시간 랭킹이 최신 상태로 갱신되었습니다!";
+      }, 1600);
+    });
+  }
+
+  // --- 4. 스킨 선택 UI & 24시간 해금 모달 ---
   var pendingUnlock = null;
   var rewardModal = document.getElementById("rewardModal");
 
@@ -495,7 +695,6 @@ window.onload = function() {
 
   document.getElementById("btnConfirmUnlock").onclick = function() {
     if (!pendingUnlock) return;
-    // 추후 구글/게임포털 보상형 광고 승인 시 이 위치에 광고 SDK 호출 코드를 연결합니다.
     userState.unlocks[pendingUnlock.key] = Date.now() + HOURS_24_MS;
     if (pendingUnlock.cb) pendingUnlock.cb();
     saveUserState();
@@ -517,7 +716,7 @@ window.onload = function() {
 
     // 1) 고양이 스킨 섹션
     var catSec = document.createElement("div");
-    catSec.innerHTML = '<div class="skin-cat-title">🐱 고양이 캐릭터 스킨</div>';
+    catSec.innerHTML = '<div class="skin-cat-title">🐱 고양이 캐릭터 스킨 (8종)</div>';
     var catGrid = document.createElement("div");
     catGrid.className = "skin-grid";
     Object.keys(CAT_SKINS).forEach(function(k) {
@@ -545,7 +744,7 @@ window.onload = function() {
 
     // 2) 배구공 스킨 섹션
     var ballSec = document.createElement("div");
-    ballSec.innerHTML = '<div class="skin-cat-title">🏐 배구공 스킨</div>';
+    ballSec.innerHTML = '<div class="skin-cat-title">🏐 배구공 스킨 (6종)</div>';
     var ballGrid = document.createElement("div");
     ballGrid.className = "skin-grid";
     Object.keys(BALL_SKINS).forEach(function(k) {
@@ -573,7 +772,7 @@ window.onload = function() {
 
     // 3) 스파이크 이펙트 섹션
     var spkSec = document.createElement("div");
-    spkSec.innerHTML = '<div class="skin-cat-title">💥 스파이크(강타) 이펙트</div>';
+    spkSec.innerHTML = '<div class="skin-cat-title">💥 스파이크(강타) 이펙트 (6종)</div>';
     var spkGrid = document.createElement("div");
     spkGrid.className = "skin-grid";
     Object.keys(SPIKE_SKINS).forEach(function(k) {
@@ -600,7 +799,7 @@ window.onload = function() {
     box.appendChild(spkSec);
   }
 
-  // --- 4. 공개 로비 슬롯 및 배경 애니메이션 ---
+  // --- 5. 공개 로비 슬롯 및 배경 애니메이션 ---
   var LOBBY_SLOTS = [];
   for (var s = 1; s <= 10; s++) LOBBY_SLOTS.push("CAT-ROOM-" + s);
 
@@ -708,11 +907,11 @@ window.onload = function() {
     return { top: '#0284c7', bot: '#7dd3fc', sand: '#fde047', line: '#eab308' };
   }
 
-  // --- 5. 플레이어 및 공 객체 ---
-  var p1 = { x: 150, y: 340, vx: 0, vy: 0, r: 26, maxSpeed: 7.5, side: 1, name: '크림냥', tier: '🥉 브론즈', skin: 'cream', spikeSkin: 'fire', hitTimer: 0, squash: 1 };
-  var p2 = { x: 650, y: 340, vx: 0, vy: 0, r: 26, maxSpeed: 7.5, side: 2, name: '그레이냥', tier: '🥉 브론즈', skin: 'gray', spikeSkin: 'fire', hitTimer: 0, squash: 1 };
+  // --- 6. 플레이어 및 공 객체 ---
+  var p1 = { x: 150, y: 340, vx: 0, vy: 0, r: 26, maxSpeed: 7.5, side: 1, name: '크림냥', tier: '🥉 브론즈', wins: 0, losses: 0, skin: 'cream', spikeSkin: 'wind', hitTimer: 0, squash: 1 };
+  var p2 = { x: 650, y: 340, vx: 0, vy: 0, r: 26, maxSpeed: 7.5, side: 2, name: '그레이냥', tier: '🥉 브론즈', wins: 0, losses: 0, skin: 'gray', spikeSkin: 'wind', hitTimer: 0, squash: 1 };
 
-  // spikeType: 'none' | 'fire' | 'lightning' | 'ice'
+  // spikeType: 'none' | 'wind' | 'meteor' | 'lightning' | 'ice' | 'sakura' | 'blackhole'
   var ball = { x: 400, y: 150, vx: 1.6, vy: -2.2, r: 20, spikeType: 'none', skin: 'classic' };
   var particles = [];
   var score1 = 0, score2 = 0, gameOver = false, matchRecorded = false, winnerText = "", keys = {};
@@ -732,6 +931,7 @@ window.onload = function() {
   var lobbyOverlay = document.getElementById("lobbyOverlay");
   var mainMenuBox = document.getElementById("mainMenuBox");
   var skinPanel = document.getElementById("skinPanel");
+  var rankPanel = document.getElementById("rankPanel");
   var listPanel = document.getElementById("listPanel");
   var roomListBox = document.getElementById("roomListBox");
   var waitPanel = document.getElementById("waitPanel");
@@ -845,6 +1045,7 @@ window.onload = function() {
     lobbyOverlay.style.display = 'flex';
     mainMenuBox.style.display = 'flex';
     skinPanel.style.display = 'none';
+    rankPanel.style.display = 'none';
     listPanel.style.display = 'none';
     waitPanel.style.display = 'none';
     rewardModal.style.display = 'none';
@@ -855,7 +1056,7 @@ window.onload = function() {
     lobbyStatus.innerText = msg || "닉네임과 스킨을 고르고 게임을 시작하세요!";
   }
 
-  // --- 6. 방 생성 & 공개 방 리스트 스캔 ---
+  // --- 7. 방 생성 & 공개 방 리스트 스캔 ---
   function tryCreateHostSlot(slotIndex, fixedCode) {
     if (typeof Peer === 'undefined') {
       lobbyStatus.innerText = "인터넷 연결이 필요합니다.";
@@ -876,6 +1077,8 @@ window.onload = function() {
     var rInfo = getRankInfo(userState.wins, userState.losses);
     p1.name = getMyNick(CAT_SKINS[userState.equippedCat].name.replace('(기본)', ''));
     p1.tier = rInfo.tier;
+    p1.wins = userState.wins;
+    p1.losses = userState.losses;
     p1.skin = userState.equippedCat;
     p1.spikeSkin = userState.equippedSpike;
     ball.skin = userState.equippedBall;
@@ -883,6 +1086,7 @@ window.onload = function() {
 
     mainMenuBox.style.display = 'none';
     skinPanel.style.display = 'none';
+    rankPanel.style.display = 'none';
     listPanel.style.display = 'none';
     waitPanel.style.display = 'flex';
     document.getElementById("roomCodeDisplay").innerText = targetId;
@@ -907,7 +1111,11 @@ window.onload = function() {
             roomId: myRoomId,
             hostName: p1.name,
             hostTier: p1.tier,
+            hostWins: p1.wins,
+            hostLosses: p1.losses,
             p2Name: isPlaying ? p2.name : "",
+            p2Wins: isPlaying ? p2.wins : 0,
+            p2Losses: isPlaying ? p2.losses : 0,
             status: isPlaying ? 'playing' : 'waiting',
             specCount: spectatorConns.length
           });
@@ -920,9 +1128,12 @@ window.onload = function() {
             player2Conn = c;
             p2.name = data.nick || '그레이냥';
             p2.tier = data.tier || '🥉 브론즈';
+            p2.wins = data.wins || 0;
+            p2.losses = data.losses || 0;
             p2.skin = (data.catSkin && CAT_SKINS[data.catSkin]) ? data.catSkin : 'gray';
-            p2.spikeSkin = (data.spikeSkin && SPIKE_SKINS[data.spikeSkin]) ? data.spikeSkin : 'fire';
-            c.send({ type: 'role', role: 'guest', p1Name: p1.name, p1Tier: p1.tier, p1Skin: p1.skin, ballSkin: ball.skin });
+            p2.spikeSkin = (data.spikeSkin && SPIKE_SKINS[data.spikeSkin]) ? data.spikeSkin : 'wind';
+            upsertKnownPlayer(p2.name, p2.wins, p2.losses);
+            c.send({ type: 'role', role: 'guest', p1Name: p1.name, p1Tier: p1.tier, p1Wins: p1.wins, p1Losses: p1.losses, p1Skin: p1.skin, ballSkin: ball.skin });
             if (gameState !== 'playing') startMatch('host');
           } else {
             spectatorConns.push(c);
@@ -1001,6 +1212,7 @@ window.onload = function() {
           c.on('data', function(data) {
             if (data && data.type === 'roomInfo') {
               foundRooms.push(data);
+              if (data.hostName) upsertKnownPlayer(data.hostName, data.hostWins || 0, data.hostLosses || 0);
               finishOne();
             }
           });
@@ -1074,6 +1286,8 @@ window.onload = function() {
           type: 'hello',
           nick: myNick,
           tier: rInfo.tier,
+          wins: userState.wins,
+          losses: userState.losses,
           catSkin: userState.equippedCat,
           spikeSkin: userState.equippedSpike
         });
@@ -1084,6 +1298,7 @@ window.onload = function() {
             p1.tier = data.p1Tier || '🥉 브론즈';
             p1.skin = data.p1Skin || 'cream';
             ball.skin = data.ballSkin || 'classic';
+            upsertKnownPlayer(p1.name, data.p1Wins || 0, data.p1Losses || 0);
             if (data.role === 'guest') {
               p2.name = myNick;
               p2.tier = rInfo.tier;
@@ -1136,7 +1351,7 @@ window.onload = function() {
     if (pendingRoom) tryCreateHostSlot(0, pendingRoom);
   } catch (e) {}
 
-  // --- 7. 로비 버튼 이벤트 ---
+  // --- 8. 로비 버튼 이벤트 ---
   document.getElementById("btnOpenSkins").onclick = function() {
     renderSkinPanel();
     mainMenuBox.style.display = 'none';
@@ -1153,6 +1368,23 @@ window.onload = function() {
     lobbyStatus.innerText = "스킨 장착 완료! 게임을 시작하세요.";
   };
 
+  function openRankBoard() {
+    mainMenuBox.style.display = 'none';
+    skinPanel.style.display = 'none';
+    listPanel.style.display = 'none';
+    rankPanel.style.display = 'flex';
+    scanOnlineRanks();
+  }
+  document.getElementById("btnOpenRank").onclick = openRankBoard;
+  document.getElementById("rankSummaryBadge").onclick = openRankBoard;
+  document.getElementById("btnRefreshRank").onclick = scanOnlineRanks;
+  document.getElementById("btnCloseRank").onclick = function() {
+    if (scanPeer) { try { scanPeer.destroy(); } catch (e) {} scanPeer = null; }
+    rankPanel.style.display = 'none';
+    mainMenuBox.style.display = 'flex';
+    lobbyStatus.innerText = "닉네임과 스킨을 고르고 게임을 시작하세요!";
+  };
+
   document.getElementById("btnStartAI").onclick = function() {
     validateExpiredUnlocks();
     isHostingRoom = false;
@@ -1166,7 +1398,7 @@ window.onload = function() {
     p2.name = '그레이냥(AI)';
     p2.tier = '🤖 AI';
     p2.skin = (userState.equippedCat === 'gray') ? 'cream' : 'gray';
-    p2.spikeSkin = 'fire';
+    p2.spikeSkin = 'wind';
 
     ball.skin = userState.equippedBall;
     startMatch('ai');
@@ -1200,7 +1432,7 @@ window.onload = function() {
   document.getElementById("btnCancelRoom").onclick = function() { returnToLobby("방 만들기를 취소했습니다."); };
   btnHome.onclick = function() { returnToLobby(); };
 
-  // --- 8. 터치 및 키보드 조작 ---
+  // --- 9. 터치 및 키보드 조작 ---
   window.onkeydown = function(e) {
     keys[e.code] = true;
     if (gameState === 'playing' && gameOver && e.code === 'Space' && (netMode === 'ai' || netMode === 'host')) resetGame();
@@ -1268,12 +1500,11 @@ window.onload = function() {
   bindBtn('btnJump', 'ArrowUp');
   bindBtn('btnSpike', 'Space');
 
-  // --- 9. 게임 물리 및 스파이크 이펙트 업데이트 ---
+  // --- 10. 게임 물리 및 스파이크 이펙트 업데이트 ---
   function update(dt) {
     updateEnvironment(dt);
 
     if (gameState !== 'playing') {
-      // 대기화면에서는 내가 고른 고양이/공 스킨을 실시간 미리보기로 표시
       p1.skin = userState.equippedCat;
       ball.skin = userState.equippedBall;
       return;
@@ -1421,27 +1652,41 @@ window.onload = function() {
     }
   }
 
-  // 스파이크 종류(불꽃 / 번개 / 얼음)별 전용 파티클 생성
+  // 스파이크 종류(바람 / 메테오 / 번개 / 얼음 / 벚꽃 / 블랙홀)별 전용 파티클 생성
   function updateParticles(dt) {
-    if (ball.spikeType !== 'none' && particles.length < 38) {
-      var pColor = '#f97316';
+    if (ball.spikeType !== 'none' && particles.length < 40) {
+      var pColor = '#ffffff';
       var pKind = 'circle';
-      if (ball.spikeType === 'fire') {
-        pColor = Math.random() > 0.5 ? '#f97316' : '#facc15';
+      var pSize = mul(Math.random(), 6) + 4;
+
+      if (ball.spikeType === 'wind') {
+        pColor = Math.random() > 0.4 ? 'rgba(255,255,255,0.85)' : 'rgba(186,230,253,0.85)';
+        pKind = 'wind';
+        pSize = mul(Math.random(), 5) + 5;
+      } else if (ball.spikeType === 'meteor') {
+        pColor = Math.random() > 0.45 ? '#f97316' : '#facc15';
+        pKind = 'circle';
+        pSize = mul(Math.random(), 8) + 4;
       } else if (ball.spikeType === 'lightning') {
         pColor = Math.random() > 0.4 ? '#38bdf8' : '#fef08a';
         pKind = 'bolt';
       } else if (ball.spikeType === 'ice') {
         pColor = Math.random() > 0.4 ? '#bae6fd' : '#ffffff';
         pKind = 'crystal';
+      } else if (ball.spikeType === 'sakura') {
+        pColor = Math.random() > 0.4 ? '#f9a8d4' : '#fbcfe8';
+        pKind = 'petal';
+      } else if (ball.spikeType === 'blackhole') {
+        pColor = Math.random() > 0.4 ? '#a855f7' : '#312e81';
+        pKind = 'void';
       }
 
       particles.push({
         x: ball.x + mul(Math.random() - 0.5, 20),
         y: ball.y + mul(Math.random() - 0.5, 20),
-        vx: mul(Math.random() - 0.5, 3.2) - mul(ball.vx, 0.25),
-        vy: mul(Math.random() - 0.5, 3.2) - mul(ball.vy, 0.25),
-        size: mul(Math.random(), 6) + 4,
+        vx: mul(Math.random() - 0.5, 3.0) - mul(ball.vx, 0.25),
+        vy: mul(Math.random() - 0.5, 3.0) - mul(ball.vy, 0.25),
+        size: pSize,
         color: pColor,
         kind: pKind,
         life: 20
@@ -1467,7 +1712,7 @@ window.onload = function() {
       p.squash = 1.15;
       var angle = Math.atan2(dy, dx);
       if (isSpike) {
-        ball.spikeType = p.spikeSkin || 'fire';
+        ball.spikeType = p.spikeSkin || 'wind';
         ball.vx = mul(Math.cos(angle), 12.2) + mul(p.vx, 0.3);
         ball.vy = mul(Math.sin(angle), 12.2) - 3.5;
       } else {
@@ -1478,14 +1723,12 @@ window.onload = function() {
     }
   }
 
-  // --- 10. 캐릭터 / 공 / 이펙트 그리기 ---
+  // --- 11. 캐릭터 / 공 / 이펙트 그리기 ---
   function traceCatHeadPath(isSimple) {
     ctx.beginPath();
     if (isSimple) {
-      // 기본 고양이(크림냥/그레이냥): 깔끔하고 담백한 둥근 얼굴형
       ctx.arc(0, -2, 26, 0, TAU);
     } else {
-      // 해금 스킨(치즈/페르시안/검둥이): 모찌 볼살 디테일 얼굴형
       ctx.moveTo(0, -25);
       ctx.bezierCurveTo(18, -25, 29, -15, 29, 2);
       ctx.bezierCurveTo(29, 16, 17, 22, 0, 22);
@@ -1532,12 +1775,12 @@ window.onload = function() {
     ctx.quadraticCurveTo(mul(-dir, 36), 2 + tailWag, mul(-dir, 28), -18 + tailWag);
     ctx.stroke();
 
-    ctx.strokeStyle = (sk.id === 'persian') ? '#bae6fd' : sk.color;
+    ctx.strokeStyle = (sk.id === 'persian') ? '#bae6fd' : (sk.id === 'siamese' ? '#4e342e' : sk.color);
     ctx.lineWidth = isSimple ? 4.5 : 6;
     ctx.stroke();
 
-    if (sk.id === 'persian') {
-      ctx.fillStyle = '#0f172a';
+    if (sk.id === 'persian' || sk.id === 'calico') {
+      ctx.fillStyle = sk.id === 'persian' ? '#0f172a' : '#ea580c';
       ctx.beginPath();
       ctx.arc(mul(-dir, 28), -18 + tailWag, 4.5, 0, TAU);
       ctx.fill();
@@ -1555,9 +1798,10 @@ window.onload = function() {
     if (!isSimple) {
       if (sk.id === 'persian') {
         ctx.fillStyle = '#bae6fd';
-        ctx.beginPath();
-        ctx.ellipse(mul(-dir, 4), 19, 10, 8, 0, 0, TAU);
-        ctx.fill();
+        ctx.beginPath(); ctx.ellipse(mul(-dir, 4), 19, 10, 8, 0, 0, TAU); ctx.fill();
+      } else if (sk.id === 'calico') {
+        ctx.fillStyle = '#1e293b';
+        ctx.beginPath(); ctx.arc(mul(-dir, 6), 16, 6, 0, TAU); ctx.fill();
       }
       ctx.fillStyle = sk.stripe;
       ctx.beginPath();
@@ -1568,33 +1812,33 @@ window.onload = function() {
 
     // 3. 앞발
     var paw = mul(Math.sin(mul(time, 0.022)), mul(4.2, speedRatio));
-    ctx.fillStyle = (sk.id === 'persian') ? '#1e293b' : '#ffffff';
+    ctx.fillStyle = (sk.id === 'persian' || sk.id === 'siamese') ? '#3e2723' : '#ffffff';
     ctx.strokeStyle = '#0f172a';
     ctx.lineWidth = 2;
     ctx.beginPath(); ctx.arc(-8, 28 + paw, 5, 0, TAU); ctx.fill(); ctx.stroke();
     ctx.beginPath(); ctx.arc(8, 28 - paw, 5, 0, TAU); ctx.fill(); ctx.stroke();
 
     // 4. 귀
-    var earBaseColor = (sk.id === 'persian') ? '#334155' : sk.color;
-    ctx.fillStyle = earBaseColor;
-    ctx.strokeStyle = '#0f172a';
-    ctx.lineWidth = 2.4;
+    var leftEarColor = (sk.id === 'persian') ? '#334155' : (sk.id === 'siamese' ? '#4e342e' : (sk.id === 'calico' ? '#ea580c' : sk.color));
+    var rightEarColor = (sk.id === 'persian') ? '#334155' : (sk.id === 'siamese' ? '#4e342e' : (sk.id === 'calico' ? '#1e293b' : sk.color));
 
     if (isSimple) {
-      // 기본 고양이: 단정하고 심플한 삼각 둥근 귀
-      ctx.beginPath();
-      ctx.moveTo(-21, -12); ctx.lineTo(-18, -34); ctx.lineTo(-6, -22); ctx.closePath(); ctx.fill(); ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(21, -12); ctx.lineTo(18, -34); ctx.lineTo(6, -22); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = sk.color;
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 2.4;
+      ctx.beginPath(); ctx.moveTo(-21, -12); ctx.lineTo(-18, -34); ctx.lineTo(-6, -22); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(21, -12); ctx.lineTo(18, -34); ctx.lineTo(6, -22); ctx.closePath(); ctx.fill(); ctx.stroke();
     } else {
-      // 해금 스킨: 자연스럽게 둥근 귀 + 안쪽 귓바퀴 디테일
+      ctx.fillStyle = leftEarColor;
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 2.4;
       ctx.beginPath();
       ctx.moveTo(-23, -10); ctx.quadraticCurveTo(-26, -34, -20, -36); ctx.quadraticCurveTo(-13, -37, -7, -21); ctx.closePath(); ctx.fill(); ctx.stroke();
       ctx.fillStyle = sk.earInner;
       ctx.beginPath();
       ctx.moveTo(-20, -14); ctx.quadraticCurveTo(-22, -29, -18.5, -31); ctx.quadraticCurveTo(-15, -31, -11, -20); ctx.closePath(); ctx.fill();
 
-      ctx.fillStyle = earBaseColor;
+      ctx.fillStyle = rightEarColor;
       ctx.beginPath();
       ctx.moveTo(23, -10); ctx.quadraticCurveTo(26, -34, 20, -36); ctx.quadraticCurveTo(13, -37, 7, -21); ctx.closePath(); ctx.fill(); ctx.stroke();
       ctx.fillStyle = sk.earInner;
@@ -1617,22 +1861,34 @@ window.onload = function() {
         ctx.beginPath(); ctx.ellipse(0, -17, 27, 13, 0, 0, TAU); ctx.fill();
         ctx.fillStyle = '#e0f2fe';
         ctx.beginPath(); ctx.arc(-22, 6, 10, 0, TAU); ctx.arc(22, 6, 10, 0, TAU); ctx.fill();
+      } else if (sk.id === 'calico') {
+        // 삼색냥 얼룩 패치
+        ctx.fillStyle = '#ea580c';
+        ctx.beginPath(); ctx.arc(-18, -14, 15, 0, TAU); ctx.fill();
+        ctx.fillStyle = '#1e293b';
+        ctx.beginPath(); ctx.arc(20, -12, 14, 0, TAU); ctx.fill();
+      } else if (sk.id === 'siamese') {
+        // 샴냥 특유의 코·입 주변 짙은 초코 포인트 마스크
+        ctx.fillStyle = '#5d4037';
+        ctx.beginPath(); ctx.ellipse(dir * 2, 3, 15, 11, 0, 0, TAU); ctx.fill();
       } else {
         ctx.fillStyle = sk.light;
         ctx.beginPath(); ctx.ellipse(-6, -15, 13, 6, -0.25, 0, TAU); ctx.fill();
       }
 
       // 이마 & 볼 줄무늬
-      ctx.fillStyle = sk.stripe;
-      ctx.beginPath();
-      ctx.roundRect(-7, -26, 2.8, 9, 1.5);
-      ctx.roundRect(-1.4, -26, 2.8, 11, 1.5);
-      ctx.roundRect(4.2, -26, 2.8, 9, 1.5);
-      ctx.roundRect(-30, -1, 8.5, 2.5, 1.2);
-      ctx.roundRect(-30, 3.5, 7.5, 2.5, 1.2);
-      ctx.roundRect(21.5, -1, 8.5, 2.5, 1.2);
-      ctx.roundRect(22.5, 3.5, 7.5, 2.5, 1.2);
-      ctx.fill();
+      if (sk.id !== 'siamese') {
+        ctx.fillStyle = sk.stripe;
+        ctx.beginPath();
+        ctx.roundRect(-7, -26, 2.8, 9, 1.5);
+        ctx.roundRect(-1.4, -26, 2.8, 11, 1.5);
+        ctx.roundRect(4.2, -26, 2.8, 9, 1.5);
+        ctx.roundRect(-30, -1, 8.5, 2.5, 1.2);
+        ctx.roundRect(-30, 3.5, 7.5, 2.5, 1.2);
+        ctx.roundRect(21.5, -1, 8.5, 2.5, 1.2);
+        ctx.roundRect(22.5, 3.5, 7.5, 2.5, 1.2);
+        ctx.fill();
+      }
       ctx.restore();
     }
 
@@ -1641,6 +1897,24 @@ window.onload = function() {
     traceCatHeadPath(isSimple);
     ctx.stroke();
 
+    // 황금냥 전용 미니 왕관 장식
+    if (sk.id === 'gold') {
+      ctx.fillStyle = '#fef08a';
+      ctx.strokeStyle = '#854d0e';
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(-9, -24);
+      ctx.lineTo(-11, -35);
+      ctx.lineTo(-4, -29);
+      ctx.lineTo(0, -37);
+      ctx.lineTo(4, -29);
+      ctx.lineTo(11, -35);
+      ctx.lineTo(9, -24);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    }
+
     // 6. 볼터치
     ctx.fillStyle = 'rgba(244, 63, 94, 0.35)';
     ctx.beginPath();
@@ -1648,10 +1922,11 @@ window.onload = function() {
     ctx.ellipse(15, 4, 4.5, 3, 0, 0, TAU);
     ctx.fill();
 
-    // 7. 눈 (검둥이냥은 매혹적인 황금빛 눈동자)
+    // 7. 눈
     var isBlackCat = (sk.id === 'black');
+    var isSiamese = (sk.id === 'siamese');
     if (p.hitTimer > 0) {
-      ctx.strokeStyle = isBlackCat ? '#facc15' : '#0f172a';
+      ctx.strokeStyle = (isBlackCat || isSiamese) ? '#fde047' : '#0f172a';
       ctx.lineWidth = 2.6;
       ctx.lineCap = 'round';
       ctx.beginPath();
@@ -1661,13 +1936,13 @@ window.onload = function() {
     } else {
       var eyeX1 = -8.5 + dir;
       var eyeX2 = 8.5 + dir;
-      ctx.fillStyle = isBlackCat ? '#facc15' : '#0f172a';
+      ctx.fillStyle = isBlackCat ? '#facc15' : (isSiamese ? '#38bdf8' : '#0f172a');
       ctx.beginPath();
       ctx.ellipse(eyeX1, -2.5, 3.8, 4.4, 0, 0, TAU);
       ctx.ellipse(eyeX2, -2.5, 3.8, 4.4, 0, 0, TAU);
       ctx.fill();
 
-      if (isBlackCat) {
+      if (isBlackCat || isSiamese) {
         ctx.fillStyle = '#0f172a';
         ctx.beginPath();
         ctx.ellipse(eyeX1, -2.5, 1.4, 3.5, 0, 0, TAU);
@@ -1689,7 +1964,7 @@ window.onload = function() {
     ctx.ellipse(noseX, 2.5, 2.5, 1.8, 0, 0, TAU);
     ctx.fill();
 
-    ctx.strokeStyle = isBlackCat ? '#e2e8f0' : '#0f172a';
+    ctx.strokeStyle = (isBlackCat || isSiamese) ? '#f8fafc' : '#0f172a';
     ctx.lineWidth = 1.6;
     ctx.lineCap = 'round';
     ctx.beginPath();
@@ -1707,15 +1982,25 @@ window.onload = function() {
     ctx.translate(ball.x, ball.y);
 
     // 스파이크 상태일 때 공 주변 오라 광채
-    if (ball.spikeType === 'fire') {
-      ctx.fillStyle = 'rgba(249, 115, 22, 0.35)';
-      ctx.beginPath(); ctx.arc(0, 0, ball.r + 7, 0, TAU); ctx.fill();
+    if (ball.spikeType === 'wind') {
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(0, 0, ball.r + 5, 0, TAU); ctx.stroke();
+    } else if (ball.spikeType === 'meteor') {
+      ctx.fillStyle = 'rgba(249, 115, 22, 0.42)';
+      ctx.beginPath(); ctx.arc(0, 0, ball.r + 8, 0, TAU); ctx.fill();
     } else if (ball.spikeType === 'lightning') {
-      ctx.fillStyle = 'rgba(56, 189, 248, 0.4)';
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.42)';
       ctx.beginPath(); ctx.arc(0, 0, ball.r + 8, 0, TAU); ctx.fill();
     } else if (ball.spikeType === 'ice') {
       ctx.fillStyle = 'rgba(186, 230, 253, 0.45)';
       ctx.beginPath(); ctx.arc(0, 0, ball.r + 8, 0, TAU); ctx.fill();
+    } else if (ball.spikeType === 'sakura') {
+      ctx.fillStyle = 'rgba(244, 114, 182, 0.38)';
+      ctx.beginPath(); ctx.arc(0, 0, ball.r + 8, 0, TAU); ctx.fill();
+    } else if (ball.spikeType === 'blackhole') {
+      ctx.fillStyle = 'rgba(88, 28, 135, 0.55)';
+      ctx.beginPath(); ctx.arc(0, 0, ball.r + 10, 0, TAU); ctx.fill();
     }
 
     // 공 스킨 클리핑 내부 그리기
@@ -1724,7 +2009,6 @@ window.onload = function() {
     ctx.clip();
 
     if (ball.skin === 'watermelon') {
-      // 수박공
       ctx.fillStyle = '#22c55e';
       ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
       ctx.strokeStyle = '#14532d';
@@ -1735,7 +2019,6 @@ window.onload = function() {
       ctx.moveTo(10, -20);  ctx.quadraticCurveTo(4, 0, 10, 20);
       ctx.stroke();
     } else if (ball.skin === 'rainbow') {
-      // 무지개공
       var rGrad = ctx.createLinearGradient(-ball.r, -ball.r, ball.r, ball.r);
       rGrad.addColorStop(0, '#f43f5e');
       rGrad.addColorStop(0.25, '#f59e0b');
@@ -1744,11 +2027,32 @@ window.onload = function() {
       rGrad.addColorStop(1, '#3b82f6');
       ctx.fillStyle = rGrad;
       ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
-      ctx.strokeStyle = 'rgba(255,255,255,0.65)';
-      ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.arc(-6, -6, 14, 0, TAU); ctx.stroke();
+    } else if (ball.skin === 'soccer') {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath(); ctx.arc(0, 0, 6.5, 0, TAU); ctx.fill();
+      ctx.beginPath(); ctx.arc(-15, -10, 5, 0, TAU); ctx.fill();
+      ctx.beginPath(); ctx.arc(15, -10, 5, 0, TAU); ctx.fill();
+      ctx.beginPath(); ctx.arc(-12, 14, 5, 0, TAU); ctx.fill();
+      ctx.beginPath(); ctx.arc(12, 14, 5, 0, TAU); ctx.fill();
+    } else if (ball.skin === 'paw') {
+      ctx.fillStyle = '#fce7f3';
+      ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
+      ctx.fillStyle = '#f43f5e';
+      ctx.beginPath(); ctx.ellipse(0, 4, 6.5, 5, 0, 0, TAU); ctx.fill();
+      ctx.beginPath(); ctx.arc(-7, -4, 2.7, 0, TAU); ctx.fill();
+      ctx.beginPath(); ctx.arc(-2.5, -7, 2.7, 0, TAU); ctx.fill();
+      ctx.beginPath(); ctx.arc(2.5, -7, 2.7, 0, TAU); ctx.fill();
+      ctx.beginPath(); ctx.arc(7, -4, 2.7, 0, TAU); ctx.fill();
+    } else if (ball.skin === 'golden') {
+      var gGrad = ctx.createRadialGradient(-5, -5, 2, 0, 0, ball.r);
+      gGrad.addColorStop(0, '#fef9c3');
+      gGrad.addColorStop(0.5, '#facc15');
+      gGrad.addColorStop(1, '#ca8a04');
+      ctx.fillStyle = gGrad;
+      ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
     } else {
-      // 기본 노란 비치볼
       ctx.fillStyle = '#facc15';
       ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
       ctx.strokeStyle = '#ca8a04';
@@ -1758,14 +2062,20 @@ window.onload = function() {
     }
 
     // 스파이크 오버레이 색조
-    if (ball.spikeType === 'fire') {
-      ctx.fillStyle = 'rgba(239, 68, 68, 0.55)';
+    if (ball.spikeType === 'meteor') {
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.58)';
       ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
     } else if (ball.spikeType === 'lightning') {
-      ctx.fillStyle = 'rgba(56, 189, 248, 0.5)';
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.52)';
       ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
     } else if (ball.spikeType === 'ice') {
       ctx.fillStyle = 'rgba(224, 242, 254, 0.65)';
+      ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
+    } else if (ball.spikeType === 'sakura') {
+      ctx.fillStyle = 'rgba(244, 114, 182, 0.45)';
+      ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
+    } else if (ball.spikeType === 'blackhole') {
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.78)';
       ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
     }
 
@@ -1777,20 +2087,22 @@ window.onload = function() {
     ctx.beginPath();
     ctx.arc(0, 0, ball.r, 0, TAU);
     ctx.lineWidth = 3;
-    ctx.strokeStyle = ball.spikeType === 'fire' ? '#b91c1c'
-      : (ball.spikeType === 'lightning' ? '#0284c7'
-      : (ball.spikeType === 'ice' ? '#7dd3fc' : '#0f172a'));
+    var strokeCol = '#0f172a';
+    if (ball.spikeType === 'meteor') strokeCol = '#b91c1c';
+    else if (ball.spikeType === 'lightning') strokeCol = '#0284c7';
+    else if (ball.spikeType === 'ice') strokeCol = '#7dd3fc';
+    else if (ball.spikeType === 'sakura') strokeCol = '#db2777';
+    else if (ball.spikeType === 'blackhole') strokeCol = '#a855f7';
+    ctx.strokeStyle = strokeCol;
     ctx.stroke();
     ctx.restore();
   }
 
-  // 오리지널 초록 망토 냥이 히어로 (저작권 안전 창작 캐릭터)
   function drawHeroCat(x, y) {
     ctx.save();
     ctx.translate(x, y);
     var wave = Math.sin(mul(performance.now(), 0.015));
 
-    // 민트/에메랄드 망토
     ctx.fillStyle = '#10b981';
     ctx.strokeStyle = '#064e3b';
     ctx.lineWidth = 1.5;
@@ -1803,7 +2115,6 @@ window.onload = function() {
     ctx.fill();
     ctx.stroke();
 
-    // 하얀 히어로 슈트
     ctx.fillStyle = '#f8fafc';
     ctx.strokeStyle = '#0f172a';
     ctx.beginPath();
@@ -1811,13 +2122,11 @@ window.onload = function() {
     ctx.fill();
     ctx.stroke();
 
-    // 노란 별 장식
     ctx.fillStyle = '#facc15';
     ctx.beginPath();
     ctx.arc(-10, 0.5, 2.5, 0, TAU);
     ctx.fill();
 
-    // 고양이 얼굴
     ctx.fillStyle = '#fde68a';
     ctx.beginPath();
     ctx.moveTo(0, -7); ctx.lineTo(3, -15); ctx.lineTo(7, -8);
@@ -1925,8 +2234,8 @@ window.onload = function() {
   function draw() {
     drawBackground();
 
-    ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.font = '11px sans-serif'; ctx.textAlign = 'right';
-    ctx.fillText("제작: 김기", 775, 30);
+    ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'right';
+    ctx.fillText("제작: GCK", 775, 30);
 
     ctx.fillStyle = '#fff'; ctx.fillRect(396, 260, 8, 120);
     ctx.fillStyle = 'rgba(15,23,42,0.85)'; ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2;
@@ -1937,11 +2246,19 @@ window.onload = function() {
 
     drawChar(p1); drawChar(p2);
 
-    // 스파이크 파티클 렌더링 (불꽃 / 번개 / 얼음)
+    // 스파이크 파티클 렌더링 (바람 / 메테오 / 번개 / 얼음 / 벚꽃 / 블랙홀)
     for (var i = 0; i < particles.length; i++) {
       var pt = particles[i];
       ctx.save();
-      if (pt.kind === 'bolt') {
+      if (pt.kind === 'wind') {
+        ctx.strokeStyle = pt.color;
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(pt.x - pt.size, pt.y);
+        ctx.lineTo(pt.x + pt.size, pt.y);
+        ctx.stroke();
+      } else if (pt.kind === 'bolt') {
         ctx.strokeStyle = pt.color;
         ctx.lineWidth = 2.2;
         ctx.beginPath();
@@ -1958,7 +2275,19 @@ window.onload = function() {
         ctx.moveTo(pt.x - sz, pt.y); ctx.lineTo(pt.x + sz, pt.y);
         ctx.moveTo(pt.x, pt.y - sz); ctx.lineTo(pt.x, pt.y + sz);
         ctx.stroke();
+      } else if (pt.kind === 'petal') {
+        ctx.fillStyle = pt.color;
+        ctx.beginPath();
+        ctx.ellipse(pt.x, pt.y, pt.size * 0.7, pt.size * 0.4, pt.life * 0.2, 0, TAU);
+        ctx.fill();
+      } else if (pt.kind === 'void') {
+        ctx.strokeStyle = pt.color;
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, pt.size * 0.85, 0, TAU);
+        ctx.stroke();
       } else {
+        // 메테오(운석 불꽃)
         ctx.fillStyle = pt.color;
         ctx.beginPath();
         ctx.arc(pt.x, pt.y, pt.size, 0, TAU);
