@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Cat Volleyball Online & Spectator</title>
+<title>Cat Volleyball Online & Lobby List</title>
 <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 <style>
 * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
@@ -25,7 +25,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 .lobby-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(15, 23, 42, 0.84);
+  background: rgba(15, 23, 42, 0.88);
   backdrop-filter: blur(4px);
   border-radius: 10px;
   border: 3px solid #38bdf8;
@@ -33,23 +33,23 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 12px;
+  padding: 10px 12px;
   z-index: 10;
 }
-.lobby-title { font-size: 1.25rem; font-weight: bold; color: #fde047; margin-bottom: 10px; text-shadow: 0 2px 6px rgba(0,0,0,0.6); }
-.menu-box { width: 100%; max-width: 340px; display: flex; flex-direction: column; gap: 8px; }
+.lobby-title { font-size: 1.18rem; font-weight: bold; color: #fde047; margin-bottom: 8px; text-shadow: 0 2px 6px rgba(0,0,0,0.6); }
+.menu-box { width: 100%; max-width: 350px; display: flex; flex-direction: column; gap: 7px; }
 
 /* 닉네임 입력 칸 */
-.nick-row { display: flex; align-items: center; gap: 6px; background: #1e293b; border: 1.5px solid #38bdf8; border-radius: 10px; padding: 4px 10px; }
-.nick-label { font-size: 0.82rem; color: #7dd3fc; font-weight: bold; white-space: nowrap; }
+.nick-row { display: flex; align-items: center; gap: 6px; background: #1e293b; border: 1.5px solid #38bdf8; border-radius: 10px; padding: 3px 10px; }
+.nick-label { font-size: 0.8rem; color: #7dd3fc; font-weight: bold; white-space: nowrap; }
 .nick-input {
   flex: 1;
   background: transparent;
   border: none;
   color: #fff;
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   font-weight: bold;
-  padding: 5px;
+  padding: 4px;
   outline: none;
   user-select: text;
   -webkit-user-select: text;
@@ -57,10 +57,10 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 
 .menu-btn {
   width: 100%;
-  padding: 10px 14px;
-  border-radius: 12px;
+  padding: 9px 12px;
+  border-radius: 11px;
   border: none;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   font-weight: bold;
   color: #fff;
   cursor: pointer;
@@ -69,32 +69,72 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 .menu-btn:active { transform: scale(0.97); }
 .btn-ai { background: linear-gradient(135deg, #0284c7, #0369a1); border: 1.5px solid #7dd3fc; }
 .btn-create { background: linear-gradient(135deg, #ea580c, #c2410c); border: 1.5px solid #fdba74; }
+.btn-list { background: linear-gradient(135deg, #16a34a, #15803d); border: 1.5px solid #86efac; }
+
+/* 방 리스트 패널 */
+.list-panel { display: none; flex-direction: column; align-items: center; gap: 6px; width: 100%; max-width: 360px; }
+.room-list-box {
+  width: 100%;
+  max-height: 115px;
+  overflow-y: auto;
+  background: rgba(30, 41, 59, 0.92);
+  border: 1.5px solid #475569;
+  border-radius: 10px;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.room-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #0f172a;
+  border: 1px solid #38bdf8;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 0.82rem;
+}
+.room-item-info { text-align: left; }
+.room-item-title { font-weight: bold; color: #fde047; }
+.room-item-sub { font-size: 0.72rem; color: #94a3b8; }
+.room-item-btn {
+  background: #16a34a;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 0.78rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+.room-item-btn.spec { background: #7e22ce; }
 
 .join-row { display: flex; gap: 6px; width: 100%; }
 .code-input {
   flex: 1.2;
-  padding: 9px;
-  border-radius: 12px;
-  border: 2px solid #64748b;
+  padding: 7px;
+  border-radius: 9px;
+  border: 1.5px solid #64748b;
   background: #1e293b;
   color: #fff;
-  font-size: 0.92rem;
+  font-size: 0.85rem;
   font-weight: bold;
   text-align: center;
   text-transform: uppercase;
   user-select: text;
   -webkit-user-select: text;
 }
-.btn-join { flex: 1; background: linear-gradient(135deg, #16a34a, #15803d); border: 1.5px solid #86efac; }
+.btn-small { flex: 0.8; padding: 7px; border-radius: 9px; font-size: 0.82rem; }
 
 /* 방 생성 후 대기 패널 */
-.wait-panel { display: none; flex-direction: column; align-items: center; gap: 8px; width: 100%; max-width: 340px; }
+.wait-panel { display: none; flex-direction: column; align-items: center; gap: 7px; width: 100%; max-width: 340px; }
 .room-badge {
   background: #1e293b;
   border: 2px dashed #fde047;
   border-radius: 10px;
-  padding: 8px 18px;
-  font-size: 1.25rem;
+  padding: 7px 16px;
+  font-size: 1.15rem;
   font-weight: bold;
   color: #fde047;
   letter-spacing: 1px;
@@ -104,7 +144,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 .wait-actions { display: flex; gap: 8px; width: 100%; }
 .btn-copy { flex: 1.5; background: #16a34a; border: 1.5px solid #86efac; }
 .btn-cancel { flex: 1; background: #475569; border: 1.5px solid #94a3b8; }
-.lobby-status { font-size: 0.8rem; color: #bae6fd; margin-top: 6px; min-height: 18px; }
+.lobby-status { font-size: 0.78rem; color: #bae6fd; margin-top: 5px; min-height: 16px; }
 
 /* 모바일 터치 패드 */
 .controls { width: 100%; max-width: 800px; flex: 1; max-height: 160px; display: flex; justify-content: space-between; align-items: stretch; gap: 12px; padding: 8px 4px 10px; }
@@ -153,6 +193,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   <div class="lobby-overlay" id="lobbyOverlay">
     <div class="lobby-title">🏐 냐옹이 배구 챔피언십</div>
 
+    <!-- 1. 기본 메인 메뉴 -->
     <div class="menu-box" id="mainMenuBox">
       <div class="nick-row">
         <span class="nick-label">닉네임</span>
@@ -160,19 +201,29 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
       </div>
 
       <button class="menu-btn btn-ai" id="btnStartAI">🐱 1인 플레이 (AI 대전)</button>
-      <button class="menu-btn btn-create" id="btnCreateRoom">🏠 방 만들기 (친구 초대)</button>
+      <button class="menu-btn btn-create" id="btnCreateRoom">🏠 방 만들기 (공개방 생성)</button>
+      <button class="menu-btn btn-list" id="btnOpenRoomList">🔍 참여하기 (방 리스트 보기)</button>
+    </div>
+
+    <!-- 2. 공개 방 리스트 및 코드 직접 입력 패널 -->
+    <div class="list-panel" id="listPanel">
+      <div class="room-list-box" id="roomListBox">
+        <div style="padding:18px; color:#94a3b8; font-size:0.82rem;">열려 있는 방을 찾는 중...</div>
+      </div>
       <div class="join-row">
-        <input type="text" class="code-input" id="roomCodeInput" placeholder="코드 입력">
-        <button class="menu-btn btn-join" id="btnJoinRoom">🚪 참여하기</button>
+        <input type="text" class="code-input" id="roomCodeInput" placeholder="코드 직접입력">
+        <button class="menu-btn btn-list btn-small" id="btnJoinDirect">입장</button>
+        <button class="menu-btn btn-cancel btn-small" id="btnRefreshList">새로고침</button>
+        <button class="menu-btn btn-cancel btn-small" id="btnBackMain">뒤로</button>
       </div>
     </div>
 
-    <!-- 방 만들기 후 대기 화면 -->
+    <!-- 3. 방 생성 후 대기 화면 -->
     <div class="wait-panel" id="waitPanel">
-      <div style="font-size:0.85rem; color:#e2e8f0;">친구에게 아래 방 코드를 알려주세요! (3번째부터 자동 관람)</div>
-      <div class="room-badge" id="roomCodeDisplay">CAT0000</div>
+      <div style="font-size:0.82rem; color:#e2e8f0;">공개 로비에 등록되었습니다! 친구가 방 리스트에서 바로 찾을 수 있어요.</div>
+      <div class="room-badge" id="roomCodeDisplay">CAT-LOBBY-1</div>
       <div class="wait-actions">
-        <button class="menu-btn btn-copy" id="btnCopyCode">📋 초대코드 복사</button>
+        <button class="menu-btn btn-copy" id="btnCopyCode">📋 방코드 복사</button>
         <button class="menu-btn btn-cancel" id="btnCancelRoom">취소</button>
       </div>
     </div>
@@ -206,8 +257,14 @@ window.onload = function() {
   var TAU = 6.283185;
   function mul(a, b) { return a / (1 / b); }
 
+  // 공개 로비 슬롯 1~10번 (별도 서버 없이 방 리스트 탐색용)
+  var LOBBY_SLOTS = [];
+  for (var s = 1; s <= 10; s++) {
+    LOBBY_SLOTS.push("CAT-ROOM-" + s);
+  }
+
   // --- 동적 배경 (시간 흐름: 낮 -> 노을 -> 밤 -> 아침) ---
-  var worldTime = 0.08; // 0.0~0.35: 낮, 0.35~0.50: 노을, 0.50~0.82: 밤, 0.82~1.0: 아침
+  var worldTime = 0.08;
   var clouds = [
     { x: 120, y: 82, s: 1.0, spd: 0.32 },
     { x: 430, y: 65, s: 0.78, spd: 0.22 },
@@ -228,7 +285,7 @@ window.onload = function() {
     { x: -95, y: 80, spd: 1.7, phase: 1.2 },
     { x: -125, y: 112, spd: 1.7, phase: 2.4 }
   ];
-  var superman = { active: false, x: -120, y: 88, spd: 4.8 };
+  var superman = { active: false, x: -120, y: 88, spd: 4.6, cooldown: 900 };
 
   function lerp(a, b, t) { return a + mul(b - a, t); }
   function lerpColor(c1, c2, t) {
@@ -239,17 +296,14 @@ window.onload = function() {
   }
 
   function updateEnvironment(dt) {
-    // 1바퀴 순환 약 80초 (0.00021 * 60fps * 80s ≈ 1.0)
     worldTime += mul(0.00022, dt);
     if (worldTime >= 1) worldTime -= 1;
 
-    // 구름 이동
     for (var i = 0; i < clouds.length; i++) {
       clouds[i].x += mul(clouds[i].spd, dt);
       if (clouds[i].x > 890) clouds[i].x = -90;
     }
 
-    // 밤(0.50 ~ 0.82)일 때 별똥별 랜덤 출현
     if (worldTime >= 0.50 && worldTime <= 0.82) {
       if (!shootingStar.active && Math.random() < mul(0.014, dt)) {
         shootingStar.active = true;
@@ -267,7 +321,6 @@ window.onload = function() {
       if (shootingStar.life <= 0) shootingStar.active = false;
     }
 
-    // 아침(0.82 ~ 1.0) 또는 이른 낮(0.0 ~ 0.08)일 때 새 떼 비행
     var isMorning = (worldTime >= 0.82 || worldTime <= 0.08);
     for (var b = 0; b < birds.length; b++) {
       if (isMorning || birds[b].x > -40) {
@@ -280,12 +333,14 @@ window.onload = function() {
       }
     }
 
-    // 낮(0.10 ~ 0.34)일 때 슈퍼맨(슈퍼냥) 출현
-    if (worldTime >= 0.10 && worldTime <= 0.34) {
-      if (!superman.active && Math.random() < mul(0.008, dt)) {
+    // 슈퍼맨 출현 빈도를 대폭 낮춰 가끔씩 깜짝 이벤트로만 등장 (쿨다운 + 낮은 확률)
+    if (superman.cooldown > 0) superman.cooldown -= dt;
+    if (worldTime >= 0.12 && worldTime <= 0.32 && superman.cooldown <= 0) {
+      if (!superman.active && Math.random() < mul(0.0014, dt)) {
         superman.active = true;
         superman.x = -110;
-        superman.y = 65 + Math.random() * 60;
+        superman.y = 65 + Math.random() * 55;
+        superman.cooldown = 2400; // 최소 약 40초 쿨다운
       }
     }
     if (superman.active) {
@@ -295,15 +350,14 @@ window.onload = function() {
   }
 
   function getSkyPalette() {
-    // 키프레임: [시간, 상단RGB, 하단RGB, 모래RGB, 모래테두리RGB]
     var keys = [
-      { t: 0.00, top: [14, 165, 233], bot: [186, 230, 253], sand: [253, 224, 71], line: [234, 179, 8] },   // 맑은 아침낮
-      { t: 0.32, top: [2, 132, 199],  bot: [125, 211, 252], sand: [253, 224, 71], line: [234, 179, 8] },   // 한낮
-      { t: 0.43, top: [124, 45, 18],  bot: [251, 146, 60],  sand: [245, 158, 11], line: [180, 83, 9] },    // 붉은 노을
-      { t: 0.53, top: [15, 23, 42],   bot: [30, 41, 59],    sand: [161, 136, 62], line: [113, 95, 42] },   // 깊은 밤
-      { t: 0.80, top: [15, 23, 42],   bot: [49, 46, 129],   sand: [175, 150, 72], line: [120, 102, 48] },  // 새벽 직전
-      { t: 0.90, top: [131, 24, 67],  bot: [253, 186, 116], sand: [252, 211, 77], line: [217, 119, 6] },   // 여명 아침
-      { t: 1.00, top: [14, 165, 233], bot: [186, 230, 253], sand: [253, 224, 71], line: [234, 179, 8] }    // 다시 낮
+      { t: 0.00, top: [14, 165, 233], bot: [186, 230, 253], sand: [253, 224, 71], line: [234, 179, 8] },
+      { t: 0.32, top: [2, 132, 199],  bot: [125, 211, 252], sand: [253, 224, 71], line: [234, 179, 8] },
+      { t: 0.43, top: [124, 45, 18],  bot: [251, 146, 60],  sand: [245, 158, 11], line: [180, 83, 9] },
+      { t: 0.53, top: [15, 23, 42],   bot: [30, 41, 59],    sand: [161, 136, 62], line: [113, 95, 42] },
+      { t: 0.80, top: [15, 23, 42],   bot: [49, 46, 129],   sand: [175, 150, 72], line: [120, 102, 48] },
+      { t: 0.90, top: [131, 24, 67],  bot: [253, 186, 116], sand: [252, 211, 77], line: [217, 119, 6] },
+      { t: 1.00, top: [14, 165, 233], bot: [186, 230, 253], sand: [253, 224, 71], line: [234, 179, 8] }
     ];
     for (var i = 0; i < keys.length - 1; i++) {
       if (worldTime >= keys[i].t && worldTime <= keys[i + 1].t) {
@@ -320,7 +374,6 @@ window.onload = function() {
     return { top: '#0284c7', bot: '#7dd3fc', sand: '#fde047', line: '#eab308' };
   }
 
-  // P1: 따뜻한 치즈 줄무늬냥 / P2: 하얀색 + 연한 하늘색 + 선명한 검정 포인트 페르시안냥
   var p1 = {
     x: 150, y: 340, vx: 0, vy: 0, r: 26, maxSpeed: 7.5,
     type: 'tabby', name: '치즈냥',
@@ -342,6 +395,7 @@ window.onload = function() {
   var gameState = 'lobby';
   var netMode = 'ai';
   var peer = null;
+  var scanPeer = null;
   var player2Conn = null;
   var spectatorConns = [];
   var spectatorNames = [];
@@ -351,6 +405,8 @@ window.onload = function() {
 
   var lobbyOverlay = document.getElementById("lobbyOverlay");
   var mainMenuBox = document.getElementById("mainMenuBox");
+  var listPanel = document.getElementById("listPanel");
+  var roomListBox = document.getElementById("roomListBox");
   var waitPanel = document.getElementById("waitPanel");
   var lobbyStatus = document.getElementById("lobbyStatus");
   var btnHome = document.getElementById("btnHome");
@@ -391,15 +447,9 @@ window.onload = function() {
     document.body.removeChild(textArea);
 
     if (success) {
-      lobbyStatus.innerText = "✅ 복사 완료! [" + text + "] 카톡에 붙여넣으세요.";
-    } else if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(function() {
-        lobbyStatus.innerText = "✅ 복사 완료! [" + text + "] 카톡에 붙여넣으세요.";
-      }).catch(function() {
-        lobbyStatus.innerText = "코드 [" + text + "] 를 길게 눌러 복사해 주세요.";
-      });
+      lobbyStatus.innerText = "✅ 복사 완료! [" + text + "] 친구에게 보내거나 리스트에서 입장하세요.";
     } else {
-      lobbyStatus.innerText = "코드 [" + text + "] 를 길게 눌러 복사해 주세요.";
+      lobbyStatus.innerText = "방 코드 [" + text + "] 를 길게 눌러 복사해 주세요.";
     }
   }
 
@@ -462,7 +512,9 @@ window.onload = function() {
     spectatorNames = [];
     updateSpecBadge(0);
 
-    if (peer) { peer.destroy(); peer = null; }
+    if (peer) { try { peer.destroy(); } catch (e) {} peer = null; }
+    if (scanPeer) { try { scanPeer.destroy(); } catch (e) {} scanPeer = null; }
+
     netMode = 'ai';
     gameState = 'lobby';
     gameOver = false;
@@ -472,6 +524,7 @@ window.onload = function() {
 
     lobbyOverlay.style.display = 'flex';
     mainMenuBox.style.display = 'flex';
+    listPanel.style.display = 'none';
     waitPanel.style.display = 'none';
     btnHome.style.display = 'none';
     controlsArea.style.display = 'flex';
@@ -479,63 +532,80 @@ window.onload = function() {
     lobbyStatus.innerText = msg || "닉네임을 정하고 게임 모드를 선택하세요!";
   }
 
-  function initHostRoom(fixedCode) {
+  // 비어있는 공개 로비 슬롯(CAT-ROOM-1 ~ 10)을 순서대로 찾아 방 개설
+  function tryCreateHostSlot(slotIndex, fixedCode) {
     if (typeof Peer === 'undefined') {
       lobbyStatus.innerText = "인터넷 연결이 필요합니다.";
       return;
     }
-    if (peer) {
-      try { peer.destroy(); } catch (e) {}
+    if (!fixedCode && slotIndex >= LOBBY_SLOTS.length) {
+      lobbyStatus.innerText = "현재 공개방 10개가 모두 가득 찼습니다. 잠시 후 다시 시도하세요.";
+      mainMenuBox.style.display = 'flex';
+      waitPanel.style.display = 'none';
+      return;
     }
+
+    var targetId = fixedCode || LOBBY_SLOTS[slotIndex];
+    if (peer) { try { peer.destroy(); } catch (e) {} }
+
     isHostingRoom = true;
     p1.name = getMyNick('치즈냥');
-    var roomCode = fixedCode || ("CAT" + Math.floor(1000 + Math.random() * 9000));
-    myRoomId = roomCode;
-
-    try { sessionStorage.setItem('cat_host_room', roomCode); } catch (e) {}
+    myRoomId = targetId;
 
     mainMenuBox.style.display = 'none';
+    listPanel.style.display = 'none';
     waitPanel.style.display = 'flex';
-    document.getElementById("roomCodeDisplay").innerText = roomCode;
-    lobbyStatus.innerText = "방 연결 중...";
+    document.getElementById("roomCodeDisplay").innerText = targetId;
+    lobbyStatus.innerText = "공개 방 슬롯(" + (slotIndex + 1) + "번) 연결 중...";
 
-    peer = new Peer(roomCode);
+    var tempPeer = new Peer(targetId);
+    peer = tempPeer;
 
-    peer.on('open', function(id) {
+    tempPeer.on('open', function(id) {
       myRoomId = id;
+      try { sessionStorage.setItem('cat_host_room', id); } catch (e) {}
       document.getElementById("roomCodeDisplay").innerText = id;
-      lobbyStatus.innerText = "상대방 입장을 기다리는 중... (카톡 다녀와도 유지됨)";
+      lobbyStatus.innerText = "방 개설 완료! 상대방이 방 리스트에서 입장할 수 있습니다.";
     });
 
-    peer.on('connection', function(c) {
-      c.on('open', function() {
-        if (!player2Conn || !player2Conn.open) {
-          player2Conn = c;
-          c.send({ type: 'role', role: 'guest', p1Name: p1.name });
-          if (gameState !== 'playing') {
-            startMatch('host');
-          }
-        } else {
-          spectatorConns.push(c);
-          updateSpecBadge(spectatorConns.length);
+    tempPeer.on('connection', function(c) {
+      c.on('data', function(data) {
+        // 참여자가 방 목록 조회를 위해 핑(probe)을 보낸 경우 방 정보만 응답하고 종료
+        if (data && data.type === 'probe') {
+          var isPlaying = (player2Conn && player2Conn.open);
           c.send({
-            type: 'role',
-            role: 'spectator',
-            p1Name: p1.name,
-            p2Name: p2.name,
+            type: 'roomInfo',
+            roomId: myRoomId,
+            hostName: p1.name,
+            p2Name: isPlaying ? p2.name : "",
+            status: isPlaying ? 'playing' : 'waiting',
             specCount: spectatorConns.length
           });
+          setTimeout(function() { try { c.close(); } catch (e) {} }, 300);
+          return;
         }
-      });
 
-      c.on('data', function(data) {
-        if (data.type === 'hello') {
-          if (c === player2Conn) {
+        if (data && data.type === 'hello') {
+          if (!player2Conn || !player2Conn.open) {
+            player2Conn = c;
             p2.name = data.nick || '페르시안냥';
+            c.send({ type: 'role', role: 'guest', p1Name: p1.name });
+            if (gameState !== 'playing') {
+              startMatch('host');
+            }
           } else {
+            spectatorConns.push(c);
             spectatorNames.push(data.nick || '관전자');
+            updateSpecBadge(spectatorConns.length);
+            c.send({
+              type: 'role',
+              role: 'spectator',
+              p1Name: p1.name,
+              p2Name: p2.name,
+              specCount: spectatorConns.length
+            });
           }
-        } else if (data.type === 'keys' && c === player2Conn) {
+        } else if (data && data.type === 'keys' && c === player2Conn) {
           remoteKeys = data.keys;
         }
       });
@@ -555,74 +625,133 @@ window.onload = function() {
       });
     });
 
-    peer.on('disconnected', function() {
+    tempPeer.on('disconnected', function() {
       if (isHostingRoom && peer && !peer.destroyed) {
         peer.reconnect();
       }
     });
 
-    peer.on('error', function(err) {
+    tempPeer.on('error', function(err) {
       if (err && err.type === 'unavailable-id') {
-        setTimeout(function() {
-          if (isHostingRoom) initHostRoom(roomCode);
-        }, 1200);
+        if (fixedCode) {
+          setTimeout(function() {
+            if (isHostingRoom) tryCreateHostSlot(0, fixedCode);
+          }, 1200);
+        } else {
+          // 이미 사용 중인 슬롯이면 다음 번호 슬롯 자동 시도
+          tryCreateHostSlot(slotIndex + 1, null);
+        }
       } else {
-        lobbyStatus.innerText = "연결 대기 중... (코드를 확인해 주세요)";
+        lobbyStatus.innerText = "연결 대기 중...";
       }
     });
   }
 
-  document.addEventListener("visibilitychange", function() {
-    if (document.visibilityState === "visible") {
-      if (isHostingRoom) {
-        if (!peer || peer.destroyed) {
-          initHostRoom(myRoomId);
-        } else if (peer.disconnected) {
-          peer.reconnect();
-        }
+  // 공개 방 리스트(1~10번 슬롯) 실시간 탐색
+  function scanOpenRooms() {
+    if (typeof Peer === 'undefined') {
+      lobbyStatus.innerText = "인터넷 연결이 필요합니다.";
+      return;
+    }
+    if (scanPeer) { try { scanPeer.destroy(); } catch (e) {} }
+
+    roomListBox.innerHTML = '<div style="padding:18px; color:#bae6fd; font-size:0.82rem;">🔍 열려 있는 방을 찾는 중...</div>';
+    lobbyStatus.innerText = "공개 방 목록을 조회하고 있습니다...";
+
+    var foundRooms = [];
+    var checkedCount = 0;
+    var sp = new Peer();
+    scanPeer = sp;
+
+    sp.on('open', function() {
+      for (var i = 0; i < LOBBY_SLOTS.length; i++) {
+        (function(slotId) {
+          var c = sp.connect(slotId, { reliable: true });
+          var done = false;
+
+          var finishOne = function() {
+            if (done) return;
+            done = true;
+            checkedCount++;
+            renderRoomList(foundRooms, checkedCount >= LOBBY_SLOTS.length);
+          };
+
+          c.on('open', function() {
+            c.send({ type: 'probe' });
+          });
+
+          c.on('data', function(data) {
+            if (data && data.type === 'roomInfo') {
+              foundRooms.push(data);
+              finishOne();
+            }
+          });
+
+          c.on('error', finishOne);
+          setTimeout(function() {
+            try { c.close(); } catch (e) {}
+            finishOne();
+          }, 1600);
+        })(LOBBY_SLOTS[i]);
       }
+    });
+
+    sp.on('error', function() {
+      renderRoomList(foundRooms, true);
+    });
+  }
+
+  function renderRoomList(rooms, isDone) {
+    if (rooms.length === 0) {
+      if (isDone) {
+        roomListBox.innerHTML = '<div style="padding:16px; color:#94a3b8; font-size:0.82rem;">현재 열린 방이 없습니다.<br>직접 방을 만들거나 코드를 입력해 보세요!</div>';
+        lobbyStatus.innerText = "열린 방이 없으면 [방 만들기]로 호스트가 되어보세요.";
+      }
+      return;
     }
-  });
 
-  try {
-    var pendingRoom = sessionStorage.getItem('cat_host_room');
-    if (pendingRoom) {
-      initHostRoom(pendingRoom);
+    roomListBox.innerHTML = "";
+    for (var i = 0; i < rooms.length; i++) {
+      var r = rooms[i];
+      var item = document.createElement("div");
+      item.className = "room-item";
+
+      var isWaiting = (r.status === 'waiting');
+      var statusBadge = isWaiting
+        ? "대기중 (1/2명) · 바로 대전 가능"
+        : "대전중 (" + r.hostName + " vs " + r.p2Name + ") · 관전 " + r.specCount + "명";
+
+      item.innerHTML =
+        '<div class="room-item-info">' +
+          '<div class="room-item-title">🐾 ' + r.hostName + '의 방 (' + r.roomId.replace('CAT-ROOM-', '') + '번)</div>' +
+          '<div class="room-item-sub">' + statusBadge + '</div>' +
+        '</div>';
+
+      var btn = document.createElement("button");
+      btn.className = isWaiting ? "room-item-btn" : "room-item-btn spec";
+      btn.innerText = isWaiting ? "대전 입장" : "👀 관람";
+      (function(targetRoomId) {
+        btn.onclick = function() {
+          joinRoomById(targetRoomId);
+        };
+      })(r.roomId);
+
+      item.appendChild(btn);
+      roomListBox.appendChild(item);
     }
-  } catch (e) {}
+    lobbyStatus.innerText = "총 " + rooms.length + "개의 방이 열려 있습니다! 터치해서 입장하세요.";
+  }
 
-  document.getElementById("btnStartAI").onclick = function() {
-    isHostingRoom = false;
-    try { sessionStorage.removeItem('cat_host_room'); } catch (e) {}
-    p1.name = getMyNick('치즈냥');
-    p2.name = '페르시안냥(AI)';
-    startMatch('ai');
-  };
-
-  document.getElementById("btnCreateRoom").onclick = function() {
-    initHostRoom(null);
-  };
-
-  document.getElementById("btnCopyCode").onclick = function() {
-    copyTextSafe(myRoomId);
-  };
-  document.getElementById("roomCodeDisplay").onclick = function() {
-    copyTextSafe(myRoomId);
-  };
-
-  document.getElementById("btnCancelRoom").onclick = function() {
-    returnToLobby("방 만들기를 취소했습니다.");
-  };
-
-  document.getElementById("btnJoinRoom").onclick = function() {
-    var code = document.getElementById("roomCodeInput").value.trim().toUpperCase();
+  function joinRoomById(code) {
     if (!code) {
-      lobbyStatus.innerText = "친구의 방 코드(예: CAT1234)를 입력하세요!";
+      lobbyStatus.innerText = "입장할 방을 선택하거나 코드를 입력하세요!";
       return;
     }
     isHostingRoom = false;
     try { sessionStorage.removeItem('cat_host_room'); } catch (e) {}
-    if (peer) peer.destroy();
+    if (scanPeer) { try { scanPeer.destroy(); } catch (e) {} scanPeer = null; }
+    if (peer) { try { peer.destroy(); } catch (e) {} }
+
     var myNick = getMyNick('페르시안냥');
     lobbyStatus.innerText = "[" + code + "] 방에 접속 중...";
     peer = new Peer();
@@ -665,8 +794,75 @@ window.onload = function() {
     });
 
     peer.on('error', function() {
-      lobbyStatus.innerText = "방을 찾을 수 없습니다. 코드를 확인해 주세요.";
+      lobbyStatus.innerText = "방을 찾을 수 없습니다. 새로고침 후 다시 시도해 주세요.";
     });
+  }
+
+  document.addEventListener("visibilitychange", function() {
+    if (document.visibilityState === "visible") {
+      if (isHostingRoom) {
+        if (!peer || peer.destroyed) {
+          tryCreateHostSlot(0, myRoomId);
+        } else if (peer.disconnected) {
+          peer.reconnect();
+        }
+      }
+    }
+  });
+
+  try {
+    var pendingRoom = sessionStorage.getItem('cat_host_room');
+    if (pendingRoom) {
+      tryCreateHostSlot(0, pendingRoom);
+    }
+  } catch (e) {}
+
+  // 버튼 이벤트 바인딩
+  document.getElementById("btnStartAI").onclick = function() {
+    isHostingRoom = false;
+    try { sessionStorage.removeItem('cat_host_room'); } catch (e) {}
+    p1.name = getMyNick('치즈냥');
+    p2.name = '페르시안냥(AI)';
+    startMatch('ai');
+  };
+
+  document.getElementById("btnCreateRoom").onclick = function() {
+    tryCreateHostSlot(0, null);
+  };
+
+  document.getElementById("btnOpenRoomList").onclick = function() {
+    mainMenuBox.style.display = 'none';
+    listPanel.style.display = 'flex';
+    scanOpenRooms();
+  };
+
+  document.getElementById("btnRefreshList").onclick = function() {
+    scanOpenRooms();
+  };
+
+  document.getElementById("btnBackMain").onclick = function() {
+    if (scanPeer) { try { scanPeer.destroy(); } catch (e) {} scanPeer = null; }
+    listPanel.style.display = 'none';
+    mainMenuBox.style.display = 'flex';
+    lobbyStatus.innerText = "닉네임을 정하고 게임 모드를 선택하세요!";
+  };
+
+  document.getElementById("btnJoinDirect").onclick = function() {
+    var code = document.getElementById("roomCodeInput").value.trim().toUpperCase();
+    // 숫자만(예: 1) 입력해도 CAT-ROOM-1 로 자동 변환
+    if (/^[1-9]$|^10$/.test(code)) code = "CAT-ROOM-" + code;
+    joinRoomById(code);
+  };
+
+  document.getElementById("btnCopyCode").onclick = function() {
+    copyTextSafe(myRoomId);
+  };
+  document.getElementById("roomCodeDisplay").onclick = function() {
+    copyTextSafe(myRoomId);
+  };
+
+  document.getElementById("btnCancelRoom").onclick = function() {
+    returnToLobby("방 만들기를 취소했습니다.");
   };
 
   btnHome.onclick = function() {
@@ -741,7 +937,6 @@ window.onload = function() {
   bindBtn('btnSpike', 'Space');
 
   function update(dt) {
-    // 대기화면에서도 구름과 하늘 시간이 은은하게 흘러가도록 업데이트
     updateEnvironment(dt);
 
     if (gameState !== 'playing') return;
@@ -965,7 +1160,6 @@ window.onload = function() {
     var speedRatio = Math.abs(p.vx) / p.maxSpeed;
     var time = performance.now();
 
-    // 1. 꼬리
     var tailWag = mul(Math.sin(mul(time, 0.008)), 6);
     ctx.lineCap = 'round';
     ctx.strokeStyle = '#0f172a';
@@ -986,7 +1180,6 @@ window.onload = function() {
       ctx.fill();
     }
 
-    // 2. 몸통
     ctx.fillStyle = p.color;
     ctx.beginPath();
     ctx.ellipse(0, 17, 16, 13, 0, 0, TAU);
@@ -1015,7 +1208,6 @@ window.onload = function() {
     ctx.roundRect(mul(dir, 8.5), 14, 3.8, 6.5, 2);
     ctx.fill();
 
-    // 3. 앞발
     var paw = mul(Math.sin(mul(time, 0.022)), mul(4.2, speedRatio));
     ctx.fillStyle = isTabby ? '#fef3c7' : '#1e293b';
     ctx.strokeStyle = '#0f172a';
@@ -1023,7 +1215,6 @@ window.onload = function() {
     ctx.beginPath(); ctx.arc(-8, 28 + paw, 5.2, 0, TAU); ctx.fill(); ctx.stroke();
     ctx.beginPath(); ctx.arc(8, 28 - paw, 5.2, 0, TAU); ctx.fill(); ctx.stroke();
 
-    // 4. 귀
     var earBaseColor = isTabby ? p.color : '#334155';
     ctx.fillStyle = earBaseColor;
     ctx.strokeStyle = '#0f172a';
@@ -1061,7 +1252,6 @@ window.onload = function() {
     ctx.closePath();
     ctx.fill();
 
-    // 5. 머리
     ctx.fillStyle = p.color;
     traceCatHeadPath();
     ctx.fill();
@@ -1109,14 +1299,12 @@ window.onload = function() {
     traceCatHeadPath();
     ctx.stroke();
 
-    // 6. 볼터치
     ctx.fillStyle = 'rgba(244, 63, 94, 0.36)';
     ctx.beginPath();
     ctx.ellipse(-15, 4, 4.8, 3.2, 0, 0, TAU);
     ctx.ellipse(15, 4, 4.8, 3.2, 0, 0, TAU);
     ctx.fill();
 
-    // 7. 눈
     if (p.hitTimer > 0) {
       ctx.strokeStyle = '#0f172a';
       ctx.lineWidth = 2.6;
@@ -1145,7 +1333,6 @@ window.onload = function() {
       ctx.fill();
     }
 
-    // 8. 코 & 입
     var noseX = dir;
     ctx.fillStyle = '#fb7185';
     ctx.beginPath();
@@ -1165,13 +1352,11 @@ window.onload = function() {
     ctx.restore();
   }
 
-  // 하늘을 날아가는 귀여운 슈퍼맨(슈퍼냥) 그리기
   function drawSuperman(x, y) {
     ctx.save();
     ctx.translate(x, y);
     var wave = Math.sin(mul(performance.now(), 0.015));
 
-    // 휘날리는 빨간 망토
     ctx.fillStyle = '#ef4444';
     ctx.strokeStyle = '#7f1d1d';
     ctx.lineWidth = 1.5;
@@ -1184,7 +1369,6 @@ window.onload = function() {
     ctx.fill();
     ctx.stroke();
 
-    // 파란 슈트 몸통 & 뻗은 두 다리
     ctx.fillStyle = '#2563eb';
     ctx.strokeStyle = '#0f172a';
     ctx.beginPath();
@@ -1192,13 +1376,11 @@ window.onload = function() {
     ctx.fill();
     ctx.stroke();
 
-    // 빨간 부츠
     ctx.fillStyle = '#dc2626';
     ctx.beginPath();
     ctx.roundRect(-27, -3.5, 6, 8, 2);
     ctx.fill();
 
-    // 앞으로 쭉 뻗은 오른팔 & 주먹
     ctx.fillStyle = '#2563eb';
     ctx.beginPath();
     ctx.roundRect(4, -5, 16, 5.5, 2.5);
@@ -1209,7 +1391,6 @@ window.onload = function() {
     ctx.arc(21, -2.2, 3.2, 0, TAU);
     ctx.fill();
 
-    // 고양이 귀 & 얼굴
     ctx.fillStyle = '#f59e0b';
     ctx.beginPath();
     ctx.moveTo(0, -7); ctx.lineTo(3, -15); ctx.lineTo(7, -8);
@@ -1221,7 +1402,6 @@ window.onload = function() {
     ctx.fill();
     ctx.stroke();
 
-    // 비장한 눈
     ctx.fillStyle = '#0f172a';
     ctx.beginPath();
     ctx.arc(11, -3, 1.8, 0, TAU);
@@ -1238,7 +1418,6 @@ window.onload = function() {
     ctx.fillStyle = sky;
     ctx.fillRect(0, 0, 800, 450);
 
-    // 1. 밤하늘 별 & 초승달 (worldTime 0.46 ~ 0.86 사이 서서히 나타났다 사라짐)
     var nightAlpha = 0;
     if (worldTime >= 0.46 && worldTime < 0.54) nightAlpha = (worldTime - 0.46) / 0.08;
     else if (worldTime >= 0.54 && worldTime <= 0.78) nightAlpha = 1;
@@ -1256,7 +1435,6 @@ window.onload = function() {
         ctx.fill();
       }
 
-      // 초승달
       ctx.globalAlpha = nightAlpha;
       ctx.fillStyle = '#fef08a';
       ctx.beginPath();
@@ -1269,7 +1447,6 @@ window.onload = function() {
       ctx.restore();
     }
 
-    // 2. 별똥별
     if (shootingStar.active) {
       ctx.save();
       var grad = ctx.createLinearGradient(shootingStar.x, shootingStar.y, shootingStar.x + 55, shootingStar.y - 25);
@@ -1290,7 +1467,6 @@ window.onload = function() {
       ctx.restore();
     }
 
-    // 3. 낮 ~ 노을 태양 이동 (0.0 ~ 0.50 동안 하늘을 가로질러 수평선 아래로 찜)
     if (worldTime <= 0.50) {
       var sunProg = worldTime / 0.50;
       var sunX = lerp(95, 705, sunProg);
@@ -1309,7 +1485,6 @@ window.onload = function() {
       ctx.restore();
     }
 
-    // 4. 흘러가는 구름 (시간대에 따라 색감 자동 변화)
     var cloudAlpha = nightAlpha > 0 ? lerp(0.7, 0.16, nightAlpha) : 0.72;
     ctx.fillStyle = worldTime > 0.35 && worldTime < 0.50
       ? "rgba(254, 215, 170, 0.68)"
@@ -1327,7 +1502,6 @@ window.onload = function() {
       ctx.restore();
     }
 
-    // 5. 아침 날아가는 새 떼
     for (var b = 0; b < birds.length; b++) {
       var bd = birds[b];
       if (bd.x > -40 && bd.x < 840) {
@@ -1343,12 +1517,10 @@ window.onload = function() {
       }
     }
 
-    // 6. 낮 시간대 슈퍼맨(슈퍼냥) 비행
     if (superman.active) {
       drawSuperman(superman.x, superman.y);
     }
 
-    // 7. 모래사장 바닥 (시간대 빛에 따라 밝기 변화)
     ctx.fillStyle = pal.sand;
     ctx.fillRect(0, 380, 800, 70);
     ctx.fillStyle = pal.line;
@@ -1399,4 +1571,4 @@ window.onload = function() {
 };
 </script>
 </body>
-</html> 
+</html>
