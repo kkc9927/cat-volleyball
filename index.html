@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Cat Volleyball Online & Spectator</title>
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+<style>
+• { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
+body { background: #0f172a; color: #fff; text-align: center; font-family: sans-serif; margin: 0; padding: 8px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; height: 100dvh; overflow: hidden; touch-action: none; }
+
+/* 상단 헤더 바 */
+.top-bar { width: 100%; max-width: 800px; display: flex; justify-content: space-between; align-items: center; padding: 2px 4px; gap: 6px; }
+h1 { font-size: 1rem; margin: 0; white-space: nowrap; }
+.top-right { display: flex; align-items: center; gap: 6px; }
+.spec-badge { background: rgba(168, 85, 247, 0.25); border: 1.5px solid #c084fc; color: #e9d5ff; border-radius: 8px; padding: 4px 8px; font-size: 0.78rem; font-weight: bold; display: none; }
+.home-btn { background: #334155; color: #fff; border: 1.5px solid #64748b; border-radius: 8px; padding: 5px 10px; font-size: 0.8rem; font-weight: bold; cursor: pointer; }
+.home-btn:active { background: #475569; }
+
+/* 게임 캔버스 래퍼 */
+.game-wrapper { position: relative; width: 100%; max-width: 800px; max-height: 58dvh; aspect-ratio: 800 / 450; }
+canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%; display: block; background: #0284c7; transform: translateZ(0); }
+
+/* 메인 대기화면(로비) 오버레이 */
+.lobby-overlay {
+position: absolute;
+inset: 0;
+background: rgba(15, 23, 42, 0.88);
+backdrop-filter: blur(4px);
+border-radius: 10px;
+border: 3px solid #38bdf8;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+padding: 12px;
+z-index: 10;
+}
+.lobby-title { font-size: 1.25rem; font-weight: bold; color: #fde047; margin-bottom: 10px; text-shadow: 0 2px 6px rgba(0,0,0,0.6); }
+.menu-box { width: 100%; max-width: 340px; display: flex; flex-direction: column; gap: 8px; }
+
+/* 닉네임 입력 칸 */
+.nick-row { display: flex; align-items: center; gap: 6px; background: #1e293b; border: 1.5px solid #38bdf8; border-radius: 10px; padding: 4px 10px; }
+.nick-label { font-size: 0.82rem; color: #7dd3fc; font-weight: bold; white-space: nowrap; }
+.nick-input {
+flex: 1;
+background: transparent;
+border: none;
+color: #fff;
+font-size: 0.92rem;
+font-weight: bold;
+padding: 5px;
+outline: none;
+user-select: text;
+-webkit-user-select: text;
+}
+
+.menu-btn {
+width: 100%;
+padding: 10px 14px;
+border-radius: 12px;
+border: none;
+font-size: 0.95rem;
+font-weight: bold;
+color: #fff;
+cursor: pointer;
+box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+.menu-btn:active { transform: scale(0.97); }
+.btn-ai { background: linear-gradient(135deg, #0284c7, #0369a1); border: 1.5px solid #7dd3fc; }
+.btn-create { background: linear-gradient(135deg, #ea580c, #c2410c); border: 1.5px solid #fdba74; }
+
+.join-row { display: flex; gap: 6px; width: 100%; }
+.code-input {
+flex: 1.2;
+padding: 9px;
+border-radius: 12px;
+border: 2px solid #64748b;
+background: #1e293b;
+color: #fff;
+font-size: 0.92rem;
+font-weight: bold;
+text-align: center;
+text-transform: uppercase;
+user-select: text;
+-webkit-user-select: text;
+}
+.btn-join { flex: 1; background: linear-gradient(135deg, #16a34a, #15803d); border: 1.5px solid #86efac; }
+
+/* 방 생성 후 대기 패널 */
+.wait-panel { display: none; flex-direction: column; align-items: center; gap: 8px; width: 100%; max-width: 340px; }
+.room-badge {
+background: #1e293b;
+border: 2px dashed #fde047;
+border-radius: 10px;
+padding: 8px 18px;
+font-size: 1.25rem;
+font-weight: bold;
+color: #fde047;
+letter-spacing: 1px;
+user-select: all;
+-webkit-user-select: all;
+}
+.wait-actions { display: flex; gap: 8px; width: 100%; }
+.btn-copy { flex: 1.5; background: #16a34a; border: 1.5px solid #86efac; }
+.btn-cancel { flex: 1; background: #475569; border: 1.5px solid #94a3b8; }
+.lobby-status { font-size: 0.8rem; color: #bae6fd; margin-top: 6px; min-height: 18px; }
+
+/* 모바일 터치 패드 */
+.controls { width: 100%; max-width: 800px; flex: 1; max-height: 160px; display: flex; justify-content: space-between; align-items: stretch; gap: 12px; padding: 8px 4px 10px; }
+.dpad-group { flex: 1.1; display: flex; gap: 8px; }
+.action-group { flex: 1.1; display: flex; gap: 8px; }
+.touch-btn { flex: 1; height: 100%; min-height: 82px; border-radius: 18px; border: 2.5px solid rgba(255,255,255,0.45); background: rgba(255,255,255,0.14); color: #fff; font-size: 1.5rem; font-weight: bold; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.touch-btn:active, .touch-btn.active { background: rgba(56,189,248,0.65); border-color: #7dd3fc; transform: scale(0.96); }
+.jump-btn { background: rgba(56,189,248,0.25); border-color: rgba(125,211,252,0.6); font-size: 1.2rem; }
+.spike-btn { background: rgba(249,115,22,0.45); border-color: #fb923c; font-size: 1.1rem; }
+.sub-label { font-size: 0.72rem; font-weight: normal; opacity: 0.85; margin-top: 2px; }
+
+/* 관전자 전용 안내 바 */
+.spectator-banner {
+display: none;
+width: 100%;
+max-width: 800px;
+flex: 1;
+max-height: 130px;
+background: rgba(88, 28, 135, 0.35);
+border: 2px solid #a855f7;
+border-radius: 16px;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+padding: 12px;
+margin: 8px 0;
+}
+.spectator-banner strong { font-size: 1.05rem; color: #f3e8ff; margin-bottom: 4px; }
+.spectator-banner span { font-size: 0.82rem; color: #d8b4fe; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+<h1>🐾 냐옹이 비치 배구</h1>
+<div class="top-right">
+<div class="spec-badge" id="specBadge">👀 관전 0명</div>
+<button class="home-btn" id="btnHome" style="display:none;">🏠 대기화면</button>
+</div>
+</div>
+
+<div class="game-wrapper">
+<canvas id="cvs" width="800" height="450"></canvas>
+
+<!-- 대기화면(로비) -->
+<div class="lobby-overlay" id="lobbyOverlay">
+<div class="lobby-title">🏐 냐옹이 배구 챔피언십</div>
+
+<div class="menu-box" id="mainMenuBox">
+<div class="nick-row">
+<span class="nick-label">닉네임</span>
+<input type="text" class="nick-input" id="nickInput" maxlength="8" placeholder="닉네임 입력 (최대 8자)">
+</div>
+
+<button class="menu-btn btn-ai" id="btnStartAI">🐱 1인 플레이 (AI 대전)</button>
+<button class="menu-btn btn-create" id="btnCreateRoom">🏠 방 만들기 (친구 초대)</button>
+<div class="join-row">
+<input type="text" class="code-input" id="roomCodeInput" placeholder="코드 입력">
+<button class="menu-btn btn-join" id="btnJoinRoom">🚪 참여하기</button>
+</div>
+</div>
+
+<!-- 방 만들기 후 대기 화면 -->
+<div class="wait-panel" id="waitPanel">
+<div style="font-size:0.85rem; color:#e2e8f0;">친구에게 아래 방 코드를 알려주세요! (3번째부터 자동 관람)</div>
+<div class="room-badge" id="roomCodeDisplay">CAT0000</div>
+<div class="wait-actions">
+<button class="menu-btn btn-copy" id="btnCopyCode">📋 초대코드 복사</button>
+<button class="menu-btn btn-cancel" id="btnCancelRoom">취소</button>
+</div>
+</div>
+
+<div class="lobby-status" id="lobbyStatus">닉네임을 정하고 게임 모드를 선택하세요!</div>
+</div>
+</div>
+
+<!-- 플레이어용 터치 패드 -->
+<div class="controls" id="controlsArea">
+<div class="dpad-group" id="dpadArea">
+<div class="touch-btn" id="btnLeft">◀<span class="sub-label">왼쪽</span></div>
+<div class="touch-btn" id="btnRight">▶<span class="sub-label">오른쪽</span></div>
+</div>
+<div class="action-group">
+<div class="touch-btn spike-btn" id="btnSpike">🔥스파이크<span class="sub-label">강타</span></div>
+<div class="touch-btn jump-btn" id="btnJump">점프<span class="sub-label">▲</span></div>
+</div>
+</div>
+
+<!-- 3번째 입장자부터 표시되는 관전 안내 -->
+<div class="spectator-banner" id="spectatorBanner">
+<strong>👀 관전 모드로 입장했습니다</strong>
+<span id="spectatorInfo">현재 1P와 2P가 대전 중입니다. 실시간 경기를 관람하세요!</span>
+</div>
+
+<script>
+window.onload = function() {
+var cvs = document.getElementById("cvs");
+var ctx = cvs.getContext("2d", { alpha: false });
+var TAU = 6.283185;
+function mul(a, b) { return a / (1 / b); }
+
+var skyGrad = ctx.createLinearGradient(0, 0, 0, 380);
+skyGrad.addColorStop(0, '#0284c7');
+skyGrad.addColorStop(1, '#7dd3fc');
+
+// P1: 따뜻한 치즈 줄무늬냥 / P2: 하얀색 + 연한 하늘색 + 선명한 검정 포인트 페르시안냥
+var p1 = {
+x: 150, y: 340, vx: 0, vy: 0, r: 26, maxSpeed: 7.5,
+type: 'tabby', name: '치즈냥',
+color: '#f59e0b', shadow: '#78350f', light: '#fde68a', stripe: '#92400e', earInner: '#fda4af',
+hitTimer: 0, squash: 1
+};
+var p2 = {
+x: 650, y: 340, vx: 0, vy: 0, r: 26, maxSpeed: 7.5,
+type: 'persian', name: '페르시안냥',
+color: '#ffffff', shadow: '#0f172a', light: '#bae6fd', stripe: '#1e293b', earInner: '#fda4af',
+hitTimer: 0, squash: 1
+};
+
+var ball = { x: 400, y: 150, vx: 1.6, vy: -2.2, r: 20, isFire: false };
+var particles = [];
+var score1 = 0, score2 = 0, gameOver = false, winnerText = "", keys = {};
+var lastTime = performance.now();
+
+var gameState = 'lobby';
+var netMode = 'ai';
+var peer = null;
+var player2Conn = null;
+var spectatorConns = [];
+var spectatorNames = [];
+var remoteKeys = {};
+var myRoomId = "";
+var isHostingRoom = false;
+
+var lobbyOverlay = document.getElementById("lobbyOverlay");
+var mainMenuBox = document.getElementById("mainMenuBox");
+var waitPanel = document.getElementById("waitPanel");
+var lobbyStatus = document.getElementById("lobbyStatus");
+var btnHome = document.getElementById("btnHome");
+var controlsArea = document.getElementById("controlsArea");
+var spectatorBanner = document.getElementById("spectatorBanner");
+var specBadge = document.getElementById("specBadge");
+var nickInput = document.getElementById("nickInput");
+
+try {
+var savedNick = sessionStorage.getItem('cat_nick');
+if (savedNick) nickInput.value = savedNick;
+} catch (e) {}
+
+function getMyNick(fallback) {
+var val = nickInput.value.trim();
+var finalNick = val ? val.slice(0, 8) : fallback;
+try { sessionStorage.setItem('cat_nick', finalNick); } catch (e) {}
+return finalNick;
+}
+
+function copyTextSafe(text) {
+var textArea = document.createElement("textarea");
+textArea.value = text;
+textArea.style.position = "fixed";
+textArea.style.left = "-9999px";
+textArea.style.top = "0";
+textArea.setAttribute("readonly", "");
+document.body.appendChild(textArea);
+textArea.focus();
+textArea.select();
+textArea.setSelectionRange(0, 99999);
+var success = false;
+try {
+success = document.execCommand("copy");
+} catch (err) {
+success = false;
+}
+document.body.removeChild(textArea);
+
+if (success) {
+lobbyStatus.innerText = "✅ 복사 완료! [" + text + "] 카톡에 붙여넣으세요.";
+} else if (navigator.clipboard && navigator.clipboard.writeText) {
+navigator.clipboard.writeText(text).then(function() {
+lobbyStatus.innerText = "✅ 복사 완료! [" + text + "] 카톡에 붙여넣으세요.";
+}).catch(function() {
+lobbyStatus.innerText = "코드 [" + text + "] 를 길게 눌러 복사해 주세요.";
+});
+} else {
+lobbyStatus.innerText = "코드 [" + text + "] 를 길게 눌러 복사해 주세요.";
+}
+}
+
+function updateSpecBadge(count) {
+if (count > 0) {
+specBadge.style.display = 'inline-block';
+specBadge.innerText = "👀 관전 " + count + "명";
+} else {
+specBadge.style.display = 'none';
+}
+}
+
+function resetPositions() {
+p1.x = 150; p1.y = 340; p1.vx = 0; p1.vy = 0; p1.squash = 1;
+p2.x = 650; p2.y = 340; p2.vx = 0; p2.vy = 0; p2.squash = 1;
+ball.x = 400; ball.y = 150; ball.vx = 1.6; ball.vy = -2.2; ball.isFire = false;
+particles = [];
+}
+
+function broadcastToAll(payload) {
+if (player2Conn && player2Conn.open) player2Conn.send(payload);
+for (var i = 0; i < spectatorConns.length; i++) {
+if (spectatorConns[i].open) spectatorConns[i].send(payload);
+}
+}
+
+function resetGame() {
+score1 = 0; score2 = 0; gameOver = false;
+resetPositions();
+if (netMode === 'host') {
+broadcastToAll({ type: 'reset' });
+}
+}
+
+function startMatch(mode) {
+netMode = mode;
+gameState = 'playing';
+lobbyOverlay.style.display = 'none';
+btnHome.style.display = 'inline-block';
+
+if (mode === 'spectator') {
+controlsArea.style.display = 'none';
+spectatorBanner.style.display = 'flex';
+} else {
+controlsArea.style.display = 'flex';
+spectatorBanner.style.display = 'none';
+}
+resetGame();
+}
+
+function returnToLobby(msg) {
+isHostingRoom = false;
+try { sessionStorage.removeItem('cat_host_room'); } catch (e) {}
+
+if (player2Conn) { player2Conn.close(); player2Conn = null; }
+for (var i = 0; i < spectatorConns.length; i++) {
+spectatorConns[i].close();
+}
+spectatorConns = [];
+spectatorNames = [];
+updateSpecBadge(0);
+
+if (peer) { peer.destroy(); peer = null; }
+netMode = 'ai';
+gameState = 'lobby';
+gameOver = false;
+p1.name = '치즈냥';
+p2.name = '페르시안냥';
+resetPositions();
+
+lobbyOverlay.style.display = 'flex';
+mainMenuBox.style.display = 'flex';
+waitPanel.style.display = 'none';
+btnHome.style.display = 'none';
+controlsArea.style.display = 'flex';
+spectatorBanner.style.display = 'none';
+lobbyStatus.innerText = msg || "닉네임을 정하고 게임 모드를 선택하세요!";
+}
+
+function initHostRoom(fixedCode) {
+if (typeof Peer === 'undefined') {
+lobbyStatus.innerText = "인터넷 연결이 필요합니다.";
+return;
+}
+if (peer) {
+try { peer.destroy(); } catch (e) {}
+}
+isHostingRoom = true;
+p1.name = getMyNick('치즈냥');
+var roomCode = fixedCode || ("CAT" + Math.floor(1000 + Math.random() * 9000));
+myRoomId = roomCode;
+
+try { sessionStorage.setItem('cat_host_room', roomCode); } catch (e) {}
+
+mainMenuBox.style.display = 'none';
+waitPanel.style.display = 'flex';
+document.getElementById("roomCodeDisplay").innerText = roomCode;
+lobbyStatus.innerText = "방 연결 중...";
+
+peer = new Peer(roomCode);
+
+peer.on('open', function(id) {
+myRoomId = id;
+document.getElementById("roomCodeDisplay").innerText = id;
+lobbyStatus.innerText = "상대방 입장을 기다리는 중... (카톡 다녀와도 유지됨)";
+});
+
+peer.on('connection', function(c) {
+c.on('open', function() {
+if (!player2Conn || !player2Conn.open) {
+player2Conn = c;
+c.send({ type: 'role', role: 'guest', p1Name: p1.name });
+if (gameState !== 'playing') {
+startMatch('host');
+}
+} else {
+spectatorConns.push(c);
+updateSpecBadge(spectatorConns.length);
+c.send({
+type: 'role',
+role: 'spectator',
+p1Name: p1.name,
+p2Name: p2.name,
+specCount: spectatorConns.length
+});
+}
+});
+
+c.on('data', function(data) {
+if (data.type === 'hello') {
+if (c === player2Conn) {
+p2.name = data.nick || '페르시안냥';
+} else {
+spectatorNames.push(data.nick || '관전자');
+}
+} else if (data.type === 'keys' && c === player2Conn) {
+remoteKeys = data.keys;
+}
+});
+
+c.on('close', function() {
+if (c === player2Conn) {
+player2Conn = null;
+returnToLobby("상대 플레이어(2P)가 퇴장하여 대기화면으로 돌아왔습니다.");
+} else {
+var idx = spectatorConns.indexOf(c);
+if (idx !== -1) {
+spectatorConns.splice(idx, 1);
+spectatorNames.splice(idx, 1);
+updateSpecBadge(spectatorConns.length);
+}
+}
+});
+});
+
+peer.on('disconnected', function() {
+if (isHostingRoom && peer && !peer.destroyed) {
+peer.reconnect();
+}
+});
+
+peer.on('error', function(err) {
+if (err && err.type === 'unavailable-id') {
+setTimeout(function() {
+if (isHostingRoom) initHostRoom(roomCode);
+}, 1200);
+} else {
+lobbyStatus.innerText = "연결 대기 중... (코드를 확인해 주세요)";
+}
+});
+}
+
+document.addEventListener("visibilitychange", function() {
+if (document.visibilityState === "visible") {
+if (isHostingRoom) {
+if (!peer || peer.destroyed) {
+initHostRoom(myRoomId);
+} else if (peer.disconnected) {
+peer.reconnect();
+}
+}
+}
+});
+
+try {
+var pendingRoom = sessionStorage.getItem('cat_host_room');
+if (pendingRoom) {
+initHostRoom(pendingRoom);
+}
+} catch (e) {}
+
+document.getElementById("btnStartAI").onclick = function() {
+isHostingRoom = false;
+try { sessionStorage.removeItem('cat_host_room'); } catch (e) {}
+p1.name = getMyNick('치즈냥');
+p2.name = '페르시안냥(AI)';
+startMatch('ai');
+};
+
+document.getElementById("btnCreateRoom").onclick = function() {
+initHostRoom(null);
+};
+
+document.getElementById("btnCopyCode").onclick = function() {
+copyTextSafe(myRoomId);
+};
+document.getElementById("roomCodeDisplay").onclick = function() {
+copyTextSafe(myRoomId);
+};
+
+document.getElementById("btnCancelRoom").onclick = function() {
+returnToLobby("방 만들기를 취소했습니다.");
+};
+
+document.getElementById("btnJoinRoom").onclick = function() {
+var code = document.getElementById("roomCodeInput").value.trim().toUpperCase();
+if (!code) {
+lobbyStatus.innerText = "친구의 방 코드(예: CAT1234)를 입력하세요!";
+return;
+}
+isHostingRoom = false;
+try { sessionStorage.removeItem('cat_host_room'); } catch (e) {}
+if (peer) peer.destroy();
+var myNick = getMyNick('페르시안냥');
+lobbyStatus.innerText = "[" + code + "] 방에 접속 중...";
+peer = new Peer();
+
+peer.on('open', function() {
+conn = peer.connect(code);
+conn.on('open', function() {
+conn.send({ type: 'hello', nick: myNick });
+
+conn.on('data', function(data) {
+if (data.type === 'role') {
+p1.name = data.p1Name || '치즈냥';
+if (data.role === 'guest') {
+p2.name = myNick;
+startMatch('guest');
+} else {
+p2.name = data.p2Name || '페르시안냥';
+updateSpecBadge(data.specCount || 1);
+document.getElementById("spectatorInfo").innerText =
+"[" + p1.name + "] vs [" + p2.name + "] 실시간 대전을 관람 중입니다!";
+startMatch('spectator');
+}
+} else if (data.type === 'state') {
+p1.x = data.p1.x; p1.y = data.p1.y; p1.vx = data.p1.vx; p1.hitTimer = data.p1.ht; p1.squash = data.p1.sq; p1.name = data.p1.nm;
+p2.x = data.p2.x; p2.y = data.p2.y; p2.vx = data.p2.vx; p2.hitTimer = data.p2.ht; p2.squash = data.p2.sq; p2.name = data.p2.nm;
+ball.x = data.b.x; ball.y = data.b.y; ball.isFire = data.b.f;
+score1 = data.s1; score2 = data.s2;
+gameOver = data.go; winnerText = data.wt;
+updateSpecBadge(data.sc || 0);
+} else if (data.type === 'reset') {
+gameOver = false; particles = [];
+}
+});
+});
+
+conn.on('close', function() {
+returnToLobby("방장과의 연결이 종료되었습니다.");
+});
+});
+
+peer.on('error', function() {
+lobbyStatus.innerText = "방을 찾을 수 없습니다. 코드를 확인해 주세요.";
+});
+};
+
+btnHome.onclick = function() {
+returnToLobby();
+};
+
+window.onkeydown = function(e) {
+keys[e.code] = true;
+if (gameState === 'playing' && gameOver && e.code === 'Space' && (netMode === 'ai' || netMode === 'host')) resetGame();
+};
+window.onkeyup = function(e) { keys[e.code] = false; };
+
+cvs.addEventListener('touchstart', function(e) {
+if (gameState === 'playing' && gameOver && (netMode === 'ai' || netMode === 'host')) { e.preventDefault(); resetGame(); }
+});
+cvs.addEventListener('click', function() {
+if (gameState === 'playing' && gameOver && (netMode === 'ai' || netMode === 'host')) resetGame();
+});
+
+var dpadArea = document.getElementById("dpadArea");
+var btnLeft = document.getElementById("btnLeft");
+var btnRight = document.getElementById("btnRight");
+
+function handleDpad(e) {
+e.preventDefault();
+if (gameState !== 'playing' || netMode === 'spectator') return;
+if (gameOver && (netMode === 'ai' || netMode === 'host')) { resetGame(); return; }
+var rect = dpadArea.getBoundingClientRect();
+var midX = rect.left + rect.width / 2;
+var leftActive = false;
+var rightActive = false;
+
+for (var i = 0; i < e.touches.length; i++) {
+var tx = e.touches[i].clientX;
+var ty = e.touches[i].clientY;
+if (tx >= rect.left - 20 && tx <= rect.right + 20 && ty >= rect.top - 20 && ty <= rect.bottom + 20) {
+if (tx < midX) leftActive = true;
+else rightActive = true;
+}
+}
+keys['ArrowLeft'] = leftActive;
+keys['ArrowRight'] = rightActive;
+btnLeft.classList.toggle('active', leftActive);
+btnRight.classList.toggle('active', rightActive);
+}
+
+dpadArea.addEventListener('touchstart', handleDpad, { passive: false });
+dpadArea.addEventListener('touchmove', handleDpad, { passive: false });
+dpadArea.addEventListener('touchend', handleDpad, { passive: false });
+dpadArea.addEventListener('touchcancel', handleDpad, { passive: false });
+
+function bindBtn(id, code) {
+var btn = document.getElementById(id);
+var down = function(e) {
+e.preventDefault();
+if (gameState !== 'playing' || netMode === 'spectator') return;
+if (gameOver && (netMode === 'ai' || netMode === 'host')) { resetGame(); return; }
+keys[code] = true;
+btn.classList.add('active');
+};
+var up = function(e) { e.preventDefault(); keys[code] = false; btn.classList.remove('active'); };
+btn.addEventListener('touchstart', down, {passive: false});
+btn.addEventListener('touchend', up, {passive: false});
+btn.addEventListener('touchcancel', up, {passive: false});
+btn.addEventListener('mousedown', down);
+btn.addEventListener('mouseup', up);
+btn.addEventListener('mouseleave', up);
+}
+bindBtn('btnLeft', 'ArrowLeft');
+bindBtn('btnRight', 'ArrowRight');
+bindBtn('btnJump', 'ArrowUp');
+bindBtn('btnSpike', 'Space');
+
+function update(dt) {
+if (gameState !== 'playing') return;
+
+if (netMode === 'guest' || netMode === 'spectator') {
+if (netMode === 'guest' && conn && conn.open) {
+conn.send({
+type: 'keys',
+keys: {
+L: !!(keys["ArrowLeft"] || keys["KeyA"]),
+R: !!(keys["ArrowRight"] || keys["KeyD"]),
+U: !!(keys["ArrowUp"] || keys["KeyW"]),
+S: !!keys["Space"]
+}
+});
+}
+updateParticles(dt);
+return;
+}
+
+if (gameOver) return;
+if (p1.hitTimer > 0) p1.hitTimer -= dt;
+if (p2.hitTimer > 0) p2.hitTimer -= dt;
+
+var moveDir = 0;
+if (keys["ArrowLeft"] || keys["KeyA"]) moveDir -= 1;
+if (keys["ArrowRight"] || keys["KeyD"]) moveDir += 1;
+
+if (moveDir !== 0) {
+p1.vx += mul(moveDir, 1.4) * dt;
+if (p1.vx > p1.maxSpeed) p1.vx = p1.maxSpeed;
+if (p1.vx < -p1.maxSpeed) p1.vx = -p1.maxSpeed;
+} else {
+p1.vx = mul(p1.vx, Math.pow(0.76, dt));
+if (Math.abs(p1.vx) < 0.15) p1.vx = 0;
+}
+
+if ((keys["ArrowUp"] || keys["KeyW"]) && p1.y >= 340) {
+p1.vy = -10.8;
+p1.squash = 1.22;
+}
+
+var wasAir1 = p1.y < 340;
+p1.vy += mul(0.36, dt);
+p1.x += mul(p1.vx, dt);
+p1.y += mul(p1.vy, dt);
+
+if (p1.y >= 340) {
+p1.y = 340;
+if (wasAir1) p1.squash = 0.82;
+p1.vy = 0;
+}
+p1.squash += mul(1 - p1.squash, 0.2) * dt;
+if (p1.x < p1.r + 6) { p1.x = p1.r + 6; p1.vx = 0; }
+if (p1.x > 390 - p1.r) { p1.x = 390 - p1.r; p1.vx = 0; }
+
+if (netMode === 'host') {
+var p2Dir = 0;
+if (remoteKeys.L) p2Dir -= 1;
+if (remoteKeys.R) p2Dir += 1;
+if (p2Dir !== 0) {
+p2.vx += mul(p2Dir, 1.4) * dt;
+if (p2.vx > p2.maxSpeed) p2.vx = p2.maxSpeed;
+if (p2.vx < -p2.maxSpeed) p2.vx = -p2.maxSpeed;
+} else {
+p2.vx = mul(p2.vx, Math.pow(0.76, dt));
+if (Math.abs(p2.vx) < 0.15) p2.vx = 0;
+}
+if (remoteKeys.U && p2.y >= 340) {
+p2.vy = -10.8;
+p2.squash = 1.22;
+}
+} else {
+var aiMax = 4.5;
+var targetX = ball.x > 400 ? ball.x + 10 : 650;
+var diffX = targetX - p2.x;
+if (Math.abs(diffX) > 6) {
+var aiDir = diffX > 0 ? 1 : -1;
+p2.vx += mul(aiDir, 1.0) * dt;
+if (p2.vx > aiMax) p2.vx = aiMax;
+if (p2.vx < -aiMax) p2.vx = -aiMax;
+} else {
+p2.vx = mul(p2.vx, Math.pow(0.78, dt));
+}
+if (ball.x > 400 && ball.y < 250 && ball.vy > 0 && p2.y >= 340 && Math.abs(p2.x - ball.x) < 70) {
+p2.vy = -10.5;
+p2.squash = 1.22;
+}
+}
+
+var wasAir2 = p2.y < 340;
+p2.vy += mul(0.36, dt);
+p2.x += mul(p2.vx, dt);
+p2.y += mul(p2.vy, dt);
+
+if (p2.y >= 340) {
+p2.y = 340;
+if (wasAir2) p2.squash = 0.82;
+p2.vy = 0;
+}
+p2.squash += mul(1 - p2.squash, 0.2) * dt;
+if (p2.x < 410 + p2.r) { p2.x = 410 + p2.r; p2.vx = 0; }
+if (p2.x > 800 - p2.r - 6) { p2.x = 800 - p2.r - 6; p2.vx = 0; }
+
+ball.vy += mul(0.15, dt);
+ball.x += mul(ball.vx, dt);
+ball.y += mul(ball.vy, dt);
+
+updateParticles(dt);
+
+if (ball.x < ball.r) { ball.x = ball.r; ball.vx = -ball.vx; }
+if (ball.x > 800 - ball.r) { ball.x = 800 - ball.r; ball.vx = -ball.vx; }
+if (ball.y < ball.r) { ball.y = ball.r; ball.vy = -ball.vy; }
+
+if (ball.x + ball.r > 395 && ball.x - ball.r < 405 && ball.y + ball.r > 260) {
+if (ball.y < 275) { ball.y = 260 - ball.r; ball.vy = mul(ball.vy, -0.92); }
+else { ball.vx = mul(ball.vx, -0.85); ball.x = ball.x < 400 ? 395 - ball.r : 405 + ball.r; }
+}
+
+hitBall(p1, !!keys["Space"]);
+hitBall(p2, netMode === 'host' ? !!remoteKeys.S : false);
+
+if (ball.y > 430) {
+if (ball.x < 400) {
+score2++;
+if (score2 >= 15) { gameOver = true; winnerText = "🎉 " + p2.name + " 승리! (터치해 재시작)"; }
+else { ball.x = 580; ball.y = 140; ball.vx = -1.6; ball.vy = -2.2; ball.isFire = false; particles = []; }
+} else {
+score1++;
+if (score1 >= 15) { gameOver = true; winnerText = "🎉 " + p1.name + " 승리! (터치해 재시작)"; }
+else { ball.x = 220; ball.y = 140; ball.vx = 1.6; ball.vy = -2.2; ball.isFire = false; particles = []; }
+}
+}
+
+if (netMode === 'host') {
+broadcastToAll({
+type: 'state',
+p1: { x: p1.x, y: p1.y, vx: p1.vx, ht: p1.hitTimer, sq: p1.squash, nm: p1.name },
+p2: { x: p2.x, y: p2.y, vx: p2.vx, ht: p2.hitTimer, sq: p2.squash, nm: p2.name },
+b: { x: ball.x, y: ball.y, f: ball.isFire },
+s1: score1, s2: score2, go: gameOver, wt: winnerText,
+sc: spectatorConns.length
+});
+}
+}
+
+function updateParticles(dt) {
+if (ball.isFire && particles.length < 35) {
+particles.push({
+x: ball.x + mul(Math.random() - 0.5, 18),
+y: ball.y + mul(Math.random() - 0.5, 18),
+vx: mul(Math.random() - 0.5, 3.0) - mul(ball.vx, 0.25),
+vy: mul(Math.random() - 0.5, 3.0) - mul(ball.vy, 0.25),
+size: mul(Math.random(), 7) + 4,
+color: Math.random() > 0.5 ? '#f97316' : '#facc15',
+life: 20
+});
+}
+for (var i = particles.length - 1; i >= 0; i--) {
+var pt = particles[i];
+pt.x += mul(pt.vx, dt);
+pt.y += mul(pt.vy, dt);
+pt.life -= dt;
+if (pt.life <= 0) particles.splice(i, 1);
+}
+}
+
+function hitBall(p, isSpike) {
+var dx = ball.x - p.x, dy = ball.y - p.y;
+var dist = Math.hypot(dx, dy);
+if (dist < ball.r + p.r + 6 && dist > 0) {
+var overlap = (ball.r + p.r + 6) - dist;
+ball.x += mul(dx / dist, overlap);
+ball.y += mul(dy / dist, overlap);
+p.hitTimer = 18;
+p.squash = 1.15;
+var angle = Math.atan2(dy, dx);
+if (isSpike) {
+ball.isFire = true;
+ball.vx = mul(Math.cos(angle), 12.2) + mul(p.vx, 0.3);
+ball.vy = mul(Math.sin(angle), 12.2) - 3.5;
+} else {
+ball.isFire = false;
+ball.vx = mul(Math.cos(angle), 6.5) + mul(p.vx, 0.25);
+ball.vy = mul(Math.sin(angle), 6.5) - 2.4;
+}
+}
+}
+
+function traceCatHeadPath() {
+ctx.beginPath();
+ctx.moveTo(0, -25);
+ctx.bezierCurveTo(18, -25, 29, -15, 29, 2);
+ctx.bezierCurveTo(29, 16, 17, 22, 0, 22);
+ctx.bezierCurveTo(-17, 22, -29, 16, -29, 2);
+ctx.bezierCurveTo(-29, -15, -18, -25, 0, -25);
+ctx.closePath();
+}
+
+function drawChar(p) {
+// 닉네임 이름표
+ctx.save();
+ctx.font = 'bold 14px sans-serif';
+var nameWidth = ctx.measureText(p.name).width + 16;
+ctx.fillStyle = 'rgba(15, 23, 42, 0.78)';
+ctx.beginPath();
+ctx.roundRect(p.x - nameWidth / 2, p.y - 72, nameWidth, 22, 8);
+ctx.fill();
+ctx.fillStyle = p.type === 'tabby' ? '#fde047' : '#e0f2fe';
+ctx.textAlign = 'center';
+ctx.fillText(p.name, p.x, p.y - 56);
+ctx.restore();
+
+ctx.save();
+ctx.translate(p.x, p.y + 32);
+ctx.scale(2 - p.squash, p.squash);
+ctx.translate(0, -32);
+
+var isTabby = (p.type === 'tabby');
+var dir = isTabby ? 1 : -1;
+var speedRatio = Math.abs(p.vx) / p.maxSpeed;
+var time = performance.now();
+
+// 1. 꼬리 (페르시안냥은 선명한 검정 테두리 + 하늘빛 꼬리 & 검정 끝포인트)
+var tailWag = mul(Math.sin(mul(time, 0.008)), 6);
+ctx.lineCap = 'round';
+// 굵은 검정 외곽선 먼저 그려 하늘색 배경과 완벽 분리
+ctx.strokeStyle = '#0f172a';
+ctx.lineWidth = isTabby ? 9 : 11;
+ctx.beginPath();
+ctx.moveTo(mul(-dir, 12), 17);
+ctx.quadraticCurveTo(mul(-dir, 36), 2 + tailWag, mul(-dir, 28), -18 + tailWag);
+ctx.stroke();
+
+// 꼬리 내부 색 채우기
+ctx.strokeStyle = isTabby ? p.color : '#bae6fd';
+ctx.lineWidth = isTabby ? 5 : 6.5;
+ctx.stroke();
+
+// 페르시안냥 꼬리 끝 검정색 포인트
+if (!isTabby) {
+ctx.fillStyle = '#0f172a';
+ctx.beginPath();
+ctx.arc(mul(-dir, 28), -18 + tailWag, 4.5, 0, TAU);
+ctx.fill();
+}
+
+// 2. 아담하고 통통한 몸통 + 선명한 검정 테두리
+ctx.fillStyle = p.color;
+ctx.beginPath();
+ctx.ellipse(0, 17, 16, 13, 0, 0, TAU);
+ctx.fill();
+ctx.lineWidth = 2.6;
+ctx.strokeStyle = '#0f172a';
+ctx.stroke();
+
+// 페르시안냥 하얀색 + 하늘색 투톤 음영 및 복슬복슬 넥 카라
+if (!isTabby) {
+ctx.fillStyle = '#bae6fd';
+ctx.beginPath();
+ctx.ellipse(mul(-dir, 4), 19, 10, 8, 0, 0, TAU);
+ctx.fill();
+
+ctx.fillStyle = '#ffffff';
+ctx.beginPath();
+ctx.arc(mul(dir, 3), 9, 6.2, 0, TAU);
+ctx.arc(mul(dir, 8), 11, 5.2, 0, TAU);
+ctx.arc(mul(-dir, 3), 10, 5.2, 0, TAU);
+ctx.fill();
+}
+
+// 몸통 옆구리 줄무늬 2줄 (페르시안냥은 진한 검정차콜 줄무늬로 대비 강조)
+ctx.fillStyle = p.stripe;
+ctx.beginPath();
+ctx.roundRect(mul(dir, 3), 12, 3.8, 8.5, 2);
+ctx.roundRect(mul(dir, 8.5), 14, 3.8, 6.5, 2);
+ctx.fill();
+
+// 3. 앞발 (페르시안냥은 검정 양말 포인트 발)
+var paw = mul(Math.sin(mul(time, 0.022)), mul(4.2, speedRatio));
+ctx.fillStyle = isTabby ? '#fef3c7' : '#1e293b';
+ctx.strokeStyle = '#0f172a';
+ctx.lineWidth = 2;
+ctx.beginPath(); ctx.arc(-8, 28 + paw, 5.2, 0, TAU); ctx.fill(); ctx.stroke();
+ctx.beginPath(); ctx.arc(8, 28 - paw, 5.2, 0, TAU); ctx.fill(); ctx.stroke();
+
+// 4. 자연스럽게 둥근 고양이 귀 (페르시안냥은 검정 포인트 + 연한 하늘색 투톤 귀)
+var earBaseColor = isTabby ? p.color : '#334155';
+// 왼쪽 귀
+ctx.fillStyle = earBaseColor;
+ctx.strokeStyle = '#0f172a';
+ctx.lineWidth = 2.5;
+ctx.beginPath();
+ctx.moveTo(-23, -10);
+ctx.quadraticCurveTo(-26, -34, -20, -36);
+ctx.quadraticCurveTo(-13, -37, -7, -21);
+ctx.closePath();
+ctx.fill();
+ctx.stroke();
+
+ctx.fillStyle = p.earInner;
+ctx.beginPath();
+ctx.moveTo(-20, -14);
+ctx.quadraticCurveTo(-22, -29, -18.5, -31);
+ctx.quadraticCurveTo(-15, -31, -11, -20);
+ctx.closePath();
+ctx.fill();
+
+// 오른쪽 귀
+ctx.fillStyle = earBaseColor;
+ctx.beginPath();
+ctx.moveTo(23, -10);
+ctx.quadraticCurveTo(26, -34, 20, -36);
+ctx.quadraticCurveTo(13, -37, 7, -21);
+ctx.closePath();
+ctx.fill();
+ctx.stroke();
+
+ctx.fillStyle = p.earInner;
+ctx.beginPath();
+ctx.moveTo(20, -14);
+ctx.quadraticCurveTo(22, -29, 18.5, -31);
+ctx.quadraticCurveTo(15, -31, 11, -20);
+ctx.closePath();
+ctx.fill();
+
+// 5. 통통한 볼살이 살아있는 고양이 캐릭터 머리
+ctx.fillStyle = p.color;
+traceCatHeadPath();
+ctx.fill();
+
+// 머리 내부 클리핑
+ctx.save();
+traceCatHeadPath();
+ctx.clip();
+
+if (isTabby) {
+ctx.fillStyle = p.light;
+ctx.beginPath();
+ctx.ellipse(-6, -15, 13, 6, -0.25, 0, TAU);
+ctx.fill();
+} else {
+// 페르시안냥: 상단 은은한 연하늘색 투톤 후드 음영 + 하단 순백색 조화
+ctx.fillStyle = '#bae6fd';
+ctx.beginPath();
+ctx.ellipse(0, -17, 27, 13, 0, 0, TAU);
+ctx.fill();
+
+// 양쪽 볼 옆 하늘색 포인트 패치
+ctx.fillStyle = '#e0f2fe';
+ctx.beginPath();
+ctx.arc(-22, 6, 10, 0, TAU);
+ctx.arc(22, 6, 10, 0, TAU);
+ctx.fill();
+}
+
+// 이마 줄무늬 3줄 (페르시안냥은 진한 검정차콜 줄무늬로 또렷하게 강조)
+ctx.fillStyle = p.stripe;
+ctx.beginPath();
+ctx.roundRect(-7, -26, 2.8, 9, 1.5);
+ctx.roundRect(-1.4, -26, 2.8, 11, 1.5);
+ctx.roundRect(4.2, -26, 2.8, 9, 1.5);
+ctx.fill();
+
+// 양쪽 볼 옆 줄무늬
+ctx.beginPath();
+ctx.roundRect(-30, -1, 8.5, 2.5, 1.2);
+ctx.roundRect(-30, 3.5, 7.5, 2.5, 1.2);
+ctx.roundRect(21.5, -1, 8.5, 2.5, 1.2);
+ctx.roundRect(22.5, 3.5, 7.5, 2.5, 1.2);
+ctx.fill();
+
+ctx.restore();
+
+// 선명한 검정색 머리 외곽선 마무리 (하늘색 배경과 완벽 분리)
+ctx.lineWidth = 2.7;
+ctx.strokeStyle = '#0f172a';
+traceCatHeadPath();
+ctx.stroke();
+
+// 6. 발그레한 볼터치
+ctx.fillStyle = 'rgba(244, 63, 94, 0.36)';
+ctx.beginPath();
+ctx.ellipse(-15, 4, 4.8, 3.2, 0, 0, TAU);
+ctx.ellipse(15, 4, 4.8, 3.2, 0, 0, TAU);
+ctx.fill();
+
+// 7. 초롱초롱한 고양이 눈망울
+if (p.hitTimer > 0) {
+ctx.strokeStyle = '#0f172a';
+ctx.lineWidth = 2.6;
+ctx.lineCap = 'round';
+ctx.beginPath();
+ctx.moveTo(-12, -4); ctx.lineTo(-8, -7.5); ctx.lineTo(-4, -4);
+ctx.moveTo(4, -4); ctx.lineTo(8, -7.5); ctx.lineTo(12, -4);
+ctx.stroke();
+} else {
+var eyeX1 = -8.5 + dir;
+var eyeX2 = 8.5 + dir;
+ctx.fillStyle = '#0f172a';
+ctx.beginPath();
+ctx.ellipse(eyeX1, -2.5, 3.8, 4.4, 0, 0, TAU);
+ctx.ellipse(eyeX2, -2.5, 3.8, 4.4, 0, 0, TAU);
+ctx.fill();
+
+ctx.fillStyle = '#ffffff';
+ctx.beginPath();
+ctx.arc(eyeX1 - 1.2, -4, 1.6, 0, TAU);
+ctx.arc(eyeX2 - 1.2, -4, 1.6, 0, TAU);
+ctx.fill();
+ctx.beginPath();
+ctx.arc(eyeX1 + 1.2, -1.2, 0.8, 0, TAU);
+ctx.arc(eyeX2 + 1.2, -1.2, 0.8, 0, TAU);
+ctx.fill();
+}
+
+// 8. 핑크빛 작은 코 & 귀여운 'ω' 고양이 입매
+var noseX = dir;
+ctx.fillStyle = '#fb7185';
+ctx.beginPath();
+ctx.ellipse(noseX, 2.5, 2.6, 1.9, 0, 0, TAU);
+ctx.fill();
+
+ctx.strokeStyle = '#0f172a';
+ctx.lineWidth = 1.7;
+ctx.lineCap = 'round';
+ctx.beginPath();
+ctx.arc(noseX - 2.6, 5.2, 2.6, 0.15, 2.9);
+ctx.stroke();
+ctx.beginPath();
+ctx.arc(noseX + 2.6, 5.2, 2.6, 0.25, 3.0);
+ctx.stroke();
+
+ctx.restore();
+}
+
+function draw() {
+ctx.fillStyle = skyGrad;
+ctx.fillRect(0, 0, 800, 450);
+
+ctx.fillStyle = 'rgba(255,255,255,0.65)';
+ctx.beginPath(); ctx.arc(120, 90, 30, 0, TAU); ctx.arc(150, 80, 40, 0, TAU); ctx.arc(180, 95, 25, 0, TAU); ctx.fill();
+ctx.beginPath(); ctx.arc(620, 110, 35, 0, TAU); ctx.arc(655, 100, 45, 0, TAU); ctx.arc(690, 115, 30, 0, TAU); ctx.fill();
+
+ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.font = '11px sans-serif'; ctx.textAlign = 'right';
+ctx.fillText("제작: 김기", 775, 30);
+
+ctx.fillStyle = '#fde047'; ctx.fillRect(0, 380, 800, 70);
+ctx.fillStyle = '#eab308'; ctx.fillRect(0, 380, 800, 6);
+
+ctx.fillStyle = '#fff'; ctx.fillRect(396, 260, 8, 120);
+ctx.fillStyle = 'rgba(15,23,42,0.85)'; ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2;
+ctx.fillRect(320, 15, 160, 45); ctx.strokeRect(320, 15, 160, 45);
+
+ctx.fillStyle = '#fff'; ctx.font = 'bold 22px sans-serif'; ctx.textAlign = 'center';
+ctx.fillText(score1 + " VS " + score2, 400, 44);
+
+drawChar(p1); drawChar(p2);
+
+for (var i = 0; i < particles.length; i++) {
+var pt = particles[i]; ctx.fillStyle = pt.color;
+ctx.beginPath(); ctx.arc(pt.x, pt.y, pt.size, 0, TAU); ctx.fill();
+}
+
+ctx.fillStyle = ball.isFire ? '#ff5722' : '#facc15';
+ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.r, 0, TAU); ctx.fill();
+ctx.strokeStyle = ball.isFire ? '#b71c1c' : '#ca8a04'; ctx.lineWidth = 3; ctx.stroke();
+
+if (gameOver) {
+ctx.fillStyle = 'rgba(0,0,0,0.85)'; ctx.fillRect(0, 0, 800, 450);
+ctx.fillStyle = '#fff'; ctx.font = 'bold 26px sans-serif';
+ctx.fillText(winnerText, 400, 225);
+}
+}
+
+function loop(now) {
+var dt = (now - lastTime) / 16.666;
+if (dt > 2.5) dt = 2.5;
+lastTime = now;
+
+update(dt);
+draw();
+requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+};
+</script>
+</body>
+</html>
