@@ -278,7 +278,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 .wait-actions { display: flex; gap: 8px; width: 100%; }
 .btn-copy { flex: 1.5; background: #16a34a; border: 1.5px solid #86efac; }
 .btn-cancel { flex: 1; background: #475569; border: 1.5px solid #94a3b8; }
-.lobby-status { font-size: 0.74rem; color: #bae6fd; margin-top: 3px; min-height: 14px; }
+.lobby-status { font-size: 0.73rem; color: #bae6fd; margin-top: 3px; min-height: 14px; }
 
 /* 보상 해금 확인 모달 */
 .reward-modal {
@@ -346,7 +346,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   <!-- 대기화면(로비) -->
   <div class="lobby-overlay" id="lobbyOverlay">
     <div class="lobby-header">
-      <div class="lobby-title">🏐 냐옹이 배구</div>
+      <div class="lobby-title" id="seasonTitleLabel">🏐 냐옹이 배구 · 시즌</div>
       <div class="rank-pill" id="rankSummaryBadge">🥉 브론즈 · 0승 0패 (0%)</div>
     </div>
 
@@ -366,7 +366,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
       <button class="menu-btn btn-list" id="btnOpenRoomList">🔍 참여하기 (방 리스트 보기)</button>
     </div>
 
-    <!-- 2. 스킨 & 이펙트 선택 패널 (랭크 조건 + 설명 + 24시간 광고 해금) -->
+    <!-- 2. 스킨 & 이펙트 선택 패널 (매주 시즌별 초기화) -->
     <div class="skin-panel" id="skinPanel">
       <div class="skin-scroll" id="skinScrollContainer"></div>
       <div class="skin-detail-box" id="skinDetailBox">
@@ -374,7 +374,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
           <span id="detailName">스킨을 선택하세요</span>
           <span class="skin-detail-cond" id="detailCond"></span>
         </div>
-        <div class="skin-detail-desc" id="detailDesc">각 아이템을 터치하면 설명과 획득 조건을 볼 수 있고, 조건 달성 시 24시간 해금할 수 있습니다.</div>
+        <div class="skin-detail-desc" id="detailDesc">매주 월요일 새 시즌이 시작되면 랭크와 스킨 해금이 초기화됩니다. 조건 달성 후 광고로 시즌 스킨을 열어보세요!</div>
       </div>
       <button class="menu-btn btn-ai btn-small" id="btnCloseSkins">선택 완료 (돌아가기)</button>
     </div>
@@ -411,12 +411,12 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
       </div>
     </div>
 
-    <!-- 보상형 24시간 해금 팝업 -->
+    <!-- 보상 시즌 해금 확인 모달 -->
     <div class="reward-modal" id="rewardModal">
-      <h3 id="rewardModalTitle">🎁 스킨 24시간 해금</h3>
+      <h3 id="rewardModalTitle">🎁 시즌 스킨 해금</h3>
       <p id="rewardModalDesc"></p>
       <div class="reward-btns">
-        <button class="menu-btn btn-create btn-small" id="btnConfirmUnlock">🎬 광고 보고 24시간 열기</button>
+        <button class="menu-btn btn-create btn-small" id="btnConfirmUnlock">🎬 광고 보고 시즌 해금</button>
         <button class="menu-btn btn-cancel btn-small" id="btnCancelUnlock">닫기</button>
       </div>
     </div>
@@ -451,8 +451,6 @@ window.onload = function() {
   var ctx = cvs.getContext("2d", { alpha: false });
   var TAU = 6.283185;
   function mul(a, b) { return a / (1 / b); }
-
-  var HOURS_24_MS = 24 * 60 * 60 * 1000;
 
   // =========================================================================
   // 0. 고양이 8종별 억양·음절·질감이 확실히 다른 개성 만점 Web Audio 사운드 엔진
@@ -493,27 +491,17 @@ window.onload = function() {
         var bFreq = BASS[bgmStep % BASS.length];
 
         if (mFreq > 0) {
-          var osc = actx.createOscillator();
-          var gain = actx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(mFreq, now);
-          gain.gain.setValueAtTime(0.001, now);
-          gain.gain.linearRampToValueAtTime(0.016, now + 0.03);
-          gain.gain.exponentialRampToValueAtTime(0.0005, now + 0.24);
-          osc.connect(gain); gain.connect(actx.destination);
-          osc.start(now); osc.stop(now + 0.25);
+          var osc = actx.createOscillator(), gain = actx.createGain();
+          osc.type = 'sine'; osc.frequency.setValueAtTime(mFreq, now);
+          gain.gain.setValueAtTime(0.001, now); gain.gain.linearRampToValueAtTime(0.016, now + 0.03); gain.gain.exponentialRampToValueAtTime(0.0005, now + 0.24);
+          osc.connect(gain); gain.connect(actx.destination); osc.start(now); osc.stop(now + 0.25);
         }
 
         if (bFreq > 0) {
-          var bOsc = actx.createOscillator();
-          var bGain = actx.createGain();
-          bOsc.type = 'triangle';
-          bOsc.frequency.setValueAtTime(bFreq, now);
-          bGain.gain.setValueAtTime(0.001, now);
-          bGain.gain.linearRampToValueAtTime(0.014, now + 0.02);
-          bGain.gain.exponentialRampToValueAtTime(0.0005, now + 0.26);
-          bOsc.connect(bGain); bGain.connect(actx.destination);
-          bOsc.start(now); bOsc.stop(now + 0.27);
+          var bOsc = actx.createOscillator(), bGain = actx.createGain();
+          bOsc.type = 'triangle'; bOsc.frequency.setValueAtTime(bFreq, now);
+          bGain.gain.setValueAtTime(0.001, now); bGain.gain.linearRampToValueAtTime(0.014, now + 0.02); bGain.gain.exponentialRampToValueAtTime(0.0005, now + 0.26);
+          bOsc.connect(bGain); bGain.connect(actx.destination); bOsc.start(now); bOsc.stop(now + 0.27);
         }
         bgmStep++;
       }, 240);
@@ -528,51 +516,29 @@ window.onload = function() {
     function toggleMute() {
       isMuted = !isMuted;
       var btn = document.getElementById("btnSoundToggle");
-      if (isMuted) {
-        btn.innerText = "🔇 음소거";
-        btn.classList.add("muted");
-      } else {
-        btn.innerText = "🔊 BGM";
-        btn.classList.remove("muted");
-        unlockAndStart();
-      }
+      if (isMuted) { btn.innerText = "🔇 음소거"; btn.classList.add("muted"); }
+      else { btn.innerText = "🔊 BGM"; btn.classList.remove("muted"); unlockAndStart(); }
       return isMuted;
     }
 
     function playNoise(duration, filterFreq, filterType, vol) {
       var c = unlockAndStart();
       if (!c || isMuted) return;
-      var bufSize = Math.floor(c.sampleRate * duration);
-      var buf = c.createBuffer(1, bufSize, c.sampleRate);
-      var data = buf.getChannelData(0);
+      var bufSize = Math.floor(c.sampleRate * duration), buf = c.createBuffer(1, bufSize, c.sampleRate), data = buf.getChannelData(0);
       for (var i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
 
-      var src = c.createBufferSource();
-      src.buffer = buf;
+      var src = c.createBufferSource(); src.buffer = buf;
+      var filter = c.createBiquadFilter(); filter.type = filterType || 'bandpass'; filter.frequency.setValueAtTime(filterFreq, c.currentTime);
+      var gain = c.createGain(); gain.gain.setValueAtTime(vol, c.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + duration);
 
-      var filter = c.createBiquadFilter();
-      filter.type = filterType || 'bandpass';
-      filter.frequency.setValueAtTime(filterFreq, c.currentTime);
-
-      var gain = c.createGain();
-      gain.gain.setValueAtTime(vol, c.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + duration);
-
-      src.connect(filter); filter.connect(gain); gain.connect(c.destination);
-      src.start();
+      src.connect(filter); filter.connect(gain); gain.connect(c.destination); src.start();
     }
 
     function synthSyllable(c, startTime, opt) {
-      var osc1 = c.createOscillator();
-      var osc2 = c.createOscillator();
-      var filter = c.createBiquadFilter();
-      var gain = c.createGain();
-      var osc2Gain = c.createGain();
-
-      osc1.type = opt.wave1 || 'triangle';
-      osc2.type = opt.wave2 || 'sawtooth';
-
+      var osc1 = c.createOscillator(), osc2 = c.createOscillator(), filter = c.createBiquadFilter(), gain = c.createGain(), osc2Gain = c.createGain();
+      osc1.type = opt.wave1 || 'triangle'; osc2.type = opt.wave2 || 'sawtooth';
       var dur = opt.dur || 0.24;
+
       osc1.frequency.setValueAtTime(opt.fStart, startTime);
       osc1.frequency.exponentialRampToValueAtTime(opt.fPeak, startTime + dur * (opt.peakRatio || 0.35));
       osc1.frequency.exponentialRampToValueAtTime(opt.fEnd, startTime + dur);
@@ -582,32 +548,24 @@ window.onload = function() {
       osc2.frequency.exponentialRampToValueAtTime(opt.fEnd * (opt.harmonic || 1), startTime + dur);
 
       if (opt.vibFreq && opt.vibDepth) {
-        var lfo = c.createOscillator();
-        var lfoGain = c.createGain();
-        lfo.frequency.setValueAtTime(opt.vibFreq, startTime);
-        lfoGain.gain.setValueAtTime(opt.vibDepth, startTime);
+        var lfo = c.createOscillator(), lfoGain = c.createGain();
+        lfo.frequency.setValueAtTime(opt.vibFreq, startTime); lfoGain.gain.setValueAtTime(opt.vibDepth, startTime);
         lfo.connect(lfoGain); lfoGain.connect(osc1.frequency); lfoGain.connect(osc2.frequency);
         lfo.start(startTime); lfo.stop(startTime + dur + 0.02);
       }
 
-      filter.type = 'bandpass';
-      filter.Q.setValueAtTime(opt.q || 2.2, startTime);
+      filter.type = 'bandpass'; filter.Q.setValueAtTime(opt.q || 2.2, startTime);
       filter.frequency.setValueAtTime(opt.filtStart || 900, startTime);
       filter.frequency.exponentialRampToValueAtTime(opt.filtPeak || 1650, startTime + dur * 0.35);
       filter.frequency.exponentialRampToValueAtTime(opt.filtEnd || 850, startTime + dur);
 
       osc2Gain.gain.setValueAtTime(opt.mix2 || 0.38, startTime);
-
       var vol = opt.vol || 0.14;
-      gain.gain.setValueAtTime(0.001, startTime);
-      gain.gain.linearRampToValueAtTime(vol, startTime + 0.025);
-      gain.gain.exponentialRampToValueAtTime(0.001, startTime + dur);
+      gain.gain.setValueAtTime(0.001, startTime); gain.gain.linearRampToValueAtTime(vol, startTime + 0.025); gain.gain.exponentialRampToValueAtTime(0.001, startTime + dur);
 
       osc1.connect(filter); osc2.connect(osc2Gain); osc2Gain.connect(filter);
       filter.connect(gain); gain.connect(c.destination);
-
-      osc1.start(startTime); osc2.start(startTime);
-      osc1.stop(startTime + dur + 0.02); osc2.stop(startTime + dur + 0.02);
+      osc1.start(startTime); osc2.start(startTime); osc1.stop(startTime + dur + 0.02); osc2.stop(startTime + dur + 0.02);
     }
 
     function playCatMeow(skinId, isJump) {
@@ -639,15 +597,10 @@ window.onload = function() {
           synthSyllable(c, now, { fStart: 780, fPeak: 1260, fEnd: 980, dur: isJump ? 0.14 : 0.30, wave1: 'sine', wave2: 'triangle', harmonic: 1.5, mix2: 0.45, vol: isJump ? 0.11 : 0.14 });
           var bellNotes = isJump ? [1567.98] : [1318.5, 1567.98, 2093.0];
           for (var b = 0; b < bellNotes.length; b++) {
-            var bell = c.createOscillator();
-            var bGain = c.createGain();
-            var t0 = now + 0.04 + b * 0.055;
-            bell.type = 'sine';
-            bell.frequency.setValueAtTime(bellNotes[b], t0);
-            bGain.gain.setValueAtTime(0.055, t0);
-            bGain.gain.exponentialRampToValueAtTime(0.0005, t0 + 0.32);
-            bell.connect(bGain); bGain.connect(c.destination);
-            bell.start(t0); bell.stop(t0 + 0.33);
+            var bell = c.createOscillator(), bGain = c.createGain(), t0 = now + 0.04 + b * 0.055;
+            bell.type = 'sine'; bell.frequency.setValueAtTime(bellNotes[b], t0);
+            bGain.gain.setValueAtTime(0.055, t0); bGain.gain.exponentialRampToValueAtTime(0.0005, t0 + 0.32);
+            bell.connect(bGain); bGain.connect(c.destination); bell.start(t0); bell.stop(t0 + 0.33);
           }
         }
       };
@@ -753,15 +706,37 @@ window.onload = function() {
   document.getElementById("btnSoundToggle").onclick = function() { SoundEngine.toggleMute(); };
 
   // =========================================================================
-  // 1. 랭크 등급 시스템 (초보자 친화적 진입 난이도) & 스킨 카탈로그
+  // 1. 매주 시즌 계산 & 랭크 등급 시스템 & 시즌 스킨 카탈로그
   // =========================================================================
-  // rankLv: 0(🥉브론즈), 1(🥈실버: 1승), 2(🥇골드: 3승 또는 승률50%), 3(💎다이아: 6승 또는 승률60%), 4(👑챌린저냥: 10승 또는 승률70%)
+  var WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+
+  function getCurrentSeasonInfo() {
+    var now = new Date();
+    // 월요일 00:00:00 기준으로 주간 시즌 시작 시각 계산
+    var day = now.getDay(); // 0(일) ~ 6(토)
+    var diffToMon = (day === 0) ? -6 : (1 - day);
+    var monday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diffToMon, 0, 0, 0, 0);
+    var mondayMs = monday.getTime();
+    var nextMondayMs = mondayMs + WEEK_MS;
+    var remainDays = Math.max(1, Math.ceil((nextMondayMs - now.getTime()) / (24 * 60 * 60 * 1000)));
+
+    var y = monday.getFullYear();
+    var m = String(monday.getMonth() + 1).padStart(2, '0');
+    var d = String(monday.getDate()).padStart(2, '0');
+    return {
+      key: "W_" + y + m + d,
+      label: m + "/" + d + " 시즌 (D-" + remainDays + ")"
+    };
+  }
+
+  var currentSeason = getCurrentSeasonInfo();
+
   var RANK_TIERS = [
     { lv: 0, badge: "🥉 브론즈",   condText: "기본 시작 등급" },
-    { lv: 1, badge: "🥈 실버",     condText: "1승 달성 시 해금" },
-    { lv: 2, badge: "🥇 골드",     condText: "3승 달성 또는 승률 50%(2전↑)" },
-    { lv: 3, badge: "💎 다이아",   condText: "6승 달성 또는 승률 60%(5전↑)" },
-    { lv: 4, badge: "👑 챌린저냥", condText: "10승 달성 또는 승률 70%(8전↑)" }
+    { lv: 1, badge: "🥈 실버",     condText: "이번 시즌 1승 달성" },
+    { lv: 2, badge: "🥇 골드",     condText: "3승 또는 승률 50%(2전↑)" },
+    { lv: 3, badge: "💎 다이아",   condText: "6승 또는 승률 60%(5전↑)" },
+    { lv: 4, badge: "👑 챌린저냥", condText: "10승 또는 승률 70%(8전↑)" }
   ];
 
   var CAT_SKINS = {
@@ -772,16 +747,16 @@ window.onload = function() {
     black:   { id: 'black',   name: '검둥이냥',   free: false, reqLv: 1, simple: false, color: '#1e293b', shadow: '#020617', light: '#475569', stripe: '#0f172a', earInner: '#fb7185', desc: '황금빛 눈동자와 가르랑 진동이 섞인 시크한 올블랙 고양이입니다.' },
     calico:  { id: 'calico',  name: '삼색냥',     free: false, reqLv: 2, simple: false, color: '#ffffff', shadow: '#1e293b', light: '#fef3c7', stripe: '#ea580c', earInner: '#fda4af', desc: '알록달록 삼색 무늬의 발랄한 고양이! "냐! 냐옹~" 두 번 끊어 웁니다.' },
     siamese: { id: 'siamese', name: '샴냥',       free: false, reqLv: 3, simple: false, color: '#f5ebe0', shadow: '#3e2723', light: '#ffffff', stripe: '#4e342e', earInner: '#d7ccc8', desc: '초코 포인트 마스크와 도도한 억양을 가진 샴 고양이입니다.' },
-    gold:    { id: 'gold',    name: '황금냥',     free: false, reqLv: 4, simple: false, color: '#facc15', shadow: '#854d0e', light: '#fef9c3', stripe: '#ca8a04', earInner: '#fde047', desc: '작은 왕관과 반짝이는 차임벨 소리까지 갖춘 전설의 황금 고양이입니다.' }
+    gold:    { id: 'gold',    name: '황금냥',     free: false, reqLv: 4, simple: false, color: '#facc15', shadow: '#854d0e', light: '#fef9c3', stripe: '#ca8a04', earInner: '#fde047', desc: '왕관과 반짝이는 오로라·별빛 효과, 차임벨 소리까지 갖춘 시즌 최상위 고양이입니다.' }
   };
 
   var BALL_SKINS = {
     classic:    { id: 'classic',    name: '비치볼',     free: true,  reqLv: 0, desc: '여름 해변의 정석 노란 비치볼입니다.' },
-    watermelon: { id: 'watermelon', name: '수박공',     free: false, reqLv: 0, desc: '시원한 초록 줄무늬 수박 모양 배구공! 브론즈부터 광고 해금 가능.' },
+    watermelon: { id: 'watermelon', name: '수박공',     free: false, reqLv: 0, desc: '시원한 초록 줄무늬 수박 모양 배구공! 브론즈부터 시즌 해금 가능.' },
     rainbow:    { id: 'rainbow',    name: '무지개공',   free: false, reqLv: 1, desc: '일곱 빛깔 그라데이션이 감도는 화려한 무지개 공입니다.' },
     soccer:     { id: 'soccer',     name: '축구공',     free: false, reqLv: 2, desc: '흑백 육각형 패턴의 클래식 스포츠 공입니다.' },
     paw:        { id: 'paw',        name: '냥발바닥공', free: false, reqLv: 3, desc: '분홍 젤리 발바닥이 새겨진 사랑스러운 냥이 전용 공입니다.' },
-    golden:     { id: 'golden',     name: '황금공',     free: false, reqLv: 4, desc: '빛나는 황금빛 광택이 감도는 최고 등급 배구공입니다.' }
+    golden:     { id: 'golden',     name: '황금공',     free: false, reqLv: 4, desc: '일렁이는 오로라 링과 스파클 광채가 감도는 시즌 최고 등급 황금공입니다.' }
   };
 
   var SPIKE_SKINS = {
@@ -793,9 +768,10 @@ window.onload = function() {
     blackhole: { id: 'blackhole', name: '🌌 블랙홀슛', free: false, reqLv: 4, desc: '보라색 중력 고리와 공간 왜곡 사운드가 펼쳐지는 최상위 강타입니다.' }
   };
 
-  // --- 2. 로컬 저장소 & Firebase 클라우드 누적 랭킹 관리 ---
+  // --- 2. 로컬 저장소 & Firebase 클라우드 주간 시즌 랭킹 관리 ---
   var userState = {
     playerId: '',
+    seasonKey: currentSeason.key,
     equippedCat: 'cream',
     equippedBall: 'classic',
     equippedSpike: 'wind',
@@ -808,12 +784,29 @@ window.onload = function() {
     return 'P_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
   }
 
+  function applyWeeklySeasonResetIfNeeded() {
+    currentSeason = getCurrentSeasonInfo();
+    document.getElementById("seasonTitleLabel").innerText = "🏐 냐옹이 배구 · " + currentSeason.label;
+
+    if (userState.seasonKey !== currentSeason.key) {
+      userState.seasonKey = currentSeason.key;
+      userState.wins = 0;
+      userState.losses = 0;
+      userState.unlocks = {};
+      userState.equippedCat = 'cream';
+      userState.equippedBall = 'classic';
+      userState.equippedSpike = 'wind';
+      saveUserState();
+    }
+  }
+
   function loadUserState() {
     try {
-      var raw = localStorage.getItem('cat_volley_save_v4');
+      var raw = localStorage.getItem('cat_volley_season_v1');
       if (raw) {
         var parsed = JSON.parse(raw);
         if (parsed.playerId) userState.playerId = parsed.playerId;
+        if (parsed.seasonKey) userState.seasonKey = parsed.seasonKey;
         if (parsed.equippedCat && CAT_SKINS[parsed.equippedCat]) userState.equippedCat = parsed.equippedCat;
         if (parsed.equippedBall && BALL_SKINS[parsed.equippedBall]) userState.equippedBall = parsed.equippedBall;
         if (parsed.equippedSpike && SPIKE_SKINS[parsed.equippedSpike]) userState.equippedSpike = parsed.equippedSpike;
@@ -825,13 +818,14 @@ window.onload = function() {
 
     if (!userState.playerId) {
       userState.playerId = generatePlayerId();
-      saveUserState();
     }
+    applyWeeklySeasonResetIfNeeded();
+    saveUserState();
     validateUnlocks();
   }
 
   function saveUserState() {
-    try { localStorage.setItem('cat_volley_save_v4', JSON.stringify(userState)); } catch (e) {}
+    try { localStorage.setItem('cat_volley_season_v1', JSON.stringify(userState)); } catch (e) {}
   }
 
   function getRankInfo(wins, losses) {
@@ -862,30 +856,23 @@ window.onload = function() {
   }
 
   function isRankMet(reqLv) {
+    applyWeeklySeasonResetIfNeeded();
     var myRank = getRankInfo(userState.wins, userState.losses);
     return myRank.lv >= (reqLv || 0);
   }
 
-  function isTimeUnlocked(key, isFree) {
+  function isSeasonUnlocked(key, isFree) {
     if (isFree) return true;
-    var exp = userState.unlocks[key];
-    return !!(exp && exp > Date.now());
+    return !!userState.unlocks[key];
   }
 
   function canUseItem(item, key) {
     if (item.free) return true;
-    return isRankMet(item.reqLv) && isTimeUnlocked(key, false);
-  }
-
-  function getRemainingHoursText(key) {
-    var exp = userState.unlocks[key];
-    if (!exp || exp <= Date.now()) return "";
-    var diffMs = exp - Date.now();
-    var hrs = Math.ceil(diffMs / (60 * 60 * 1000));
-    return hrs + "시간 남음";
+    return isRankMet(item.reqLv) && isSeasonUnlocked(key, false);
   }
 
   function validateUnlocks() {
+    applyWeeklySeasonResetIfNeeded();
     var changed = false;
     if (!canUseItem(CAT_SKINS[userState.equippedCat], 'cat_' + userState.equippedCat)) {
       userState.equippedCat = 'cream'; changed = true;
@@ -900,19 +887,21 @@ window.onload = function() {
   }
 
   function refreshRankUI() {
+    applyWeeklySeasonResetIfNeeded();
     var info = getRankInfo(userState.wins, userState.losses);
     document.getElementById("rankSummaryBadge").innerText = info.summary;
     return info;
   }
 
   function syncMyRankToCloud() {
+    applyWeeklySeasonResetIfNeeded();
     var cleanUrl = (FIREBASE_DB_URL || "").trim().replace(/\/+$/, "");
     if (!cleanUrl || typeof fetch !== 'function') return;
 
     var myNick = getMyNick(CAT_SKINS[userState.equippedCat].name);
     var info = getRankInfo(userState.wins, userState.losses);
 
-    fetch(cleanUrl + "/leaderboard/" + encodeURIComponent(userState.playerId) + ".json", {
+    fetch(cleanUrl + "/leaderboard/" + encodeURIComponent(currentSeason.key) + "/" + encodeURIComponent(userState.playerId) + ".json", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -922,12 +911,14 @@ window.onload = function() {
         rate: info.rate,
         score: info.score,
         tier: info.tier,
+        season: currentSeason.key,
         updatedAt: Date.now()
       })
     }).catch(function() {});
   }
 
   function recordMatchResult(isWin) {
+    applyWeeklySeasonResetIfNeeded();
     if (isWin) userState.wins++;
     else userState.losses++;
     saveUserState();
@@ -936,15 +927,16 @@ window.onload = function() {
   }
 
   function fetchGlobalTop10() {
+    applyWeeklySeasonResetIfNeeded();
     var box = document.getElementById("rankListContainer");
     var cleanUrl = (FIREBASE_DB_URL || "").trim().replace(/\/+$/, "");
     var myNick = getMyNick(CAT_SKINS[userState.equippedCat].name);
 
-    box.innerHTML = '<div style="padding:18px; color:#bae6fd; font-size:0.8rem;">🌐 실시간 통합 랭킹을 불러오는 중...</div>';
-    lobbyStatus.innerText = "클라우드 서버에서 실시간 TOP 10 랭킹을 조회 중...";
+    box.innerHTML = '<div style="padding:18px; color:#bae6fd; font-size:0.8rem;">🌐 ' + currentSeason.label + ' TOP 10 불러오는 중...</div>';
+    lobbyStatus.innerText = currentSeason.label + " 실시간 랭킹을 조회 중...";
     syncMyRankToCloud();
 
-    fetch(cleanUrl + "/leaderboard.json")
+    fetch(cleanUrl + "/leaderboard/" + encodeURIComponent(currentSeason.key) + ".json")
       .then(function(res) { return res.json(); })
       .then(function(data) {
         var list = [];
@@ -991,7 +983,7 @@ window.onload = function() {
             '<div class="rank-right">' + item.wins + '승 ' + item.losses + '패 (' + info.rate + '%)</div>';
           box.appendChild(rowEl);
         }
-        lobbyStatus.innerText = "총 " + list.length + "명의 실제 플레이어 중 TOP " + top10.length + " 표시 중!";
+        lobbyStatus.innerText = currentSeason.label + " · 총 " + list.length + "명 중 TOP " + top10.length + " 표시 중!";
       })
       .catch(function() {
         box.innerHTML = '<div style="padding:16px; color:#fca5a5; font-size:0.78rem;">랭킹 서버 연결에 실패했습니다.</div>';
@@ -1002,7 +994,7 @@ window.onload = function() {
   refreshRankUI();
 
   // =========================================================================
-  // 3. 랭크 조건 + 설명 + 24시간 광고 해금 UI
+  // 3. 랭크 조건 + 설명 + 주간 시즌 스킨 해금 UI
   // =========================================================================
   var pendingUnlock = null;
   var rewardModal = document.getElementById("rewardModal");
@@ -1012,7 +1004,7 @@ window.onload = function() {
     return t.badge + " (" + t.condText + ")";
   }
 
-  function updateDetailCard(item, uKey, equipKey) {
+  function updateDetailCard(item, uKey) {
     document.getElementById("detailName").innerText = item.name;
     document.getElementById("detailDesc").innerText = item.desc;
 
@@ -1021,31 +1013,30 @@ window.onload = function() {
       condEl.innerText = "✅ 기본 제공 (무료)";
     } else if (!isRankMet(item.reqLv)) {
       condEl.innerText = "🔒 필요: " + getReqRankLabel(item.reqLv);
-    } else if (isTimeUnlocked(uKey, false)) {
-      condEl.innerText = "⏳ 해금됨 (" + getRemainingHoursText(uKey) + ")";
+    } else if (isSeasonUnlocked(uKey, false)) {
+      condEl.innerText = "✨ 이번 시즌 보유중";
     } else {
-      condEl.innerText = "🎬 랭크 달성! 광고 후 24시간 해금 가능";
+      condEl.innerText = "🎬 랭크 달성! 광고 후 시즌 해금 가능";
     }
   }
 
   function openRewardModal(unlockKey, item, onSuccess) {
     pendingUnlock = { key: unlockKey, item: item, cb: onSuccess };
-    document.getElementById("rewardModalTitle").innerText = "🎁 [" + item.name + "] 24시간 해금";
+    document.getElementById("rewardModalTitle").innerText = "🎁 [" + item.name + "] 시즌 해금";
     document.getElementById("rewardModalDesc").innerText =
-      "획득 조건(" + getReqRankLabel(item.reqLv) + ")을 달성했습니다! 광고 시청 후 24시간 동안 사용할 수 있습니다.";
+      "획득 조건(" + getReqRankLabel(item.reqLv) + ")을 달성했습니다! 광고 시청 후 이번 시즌 동안 사용할 수 있습니다. (매주 월요일 초기화)";
     rewardModal.style.display = "flex";
   }
 
   document.getElementById("btnConfirmUnlock").onclick = function() {
     if (!pendingUnlock) return;
-    // 추후 보상형 광고 SDK 연동 시 광고 완료 콜백 안에서 아래 해금 처리를 실행합니다.
-    userState.unlocks[pendingUnlock.key] = Date.now() + HOURS_24_MS;
+    userState.unlocks[pendingUnlock.key] = true;
     if (pendingUnlock.cb) pendingUnlock.cb();
     saveUserState();
     SoundEngine.playUnlock();
     rewardModal.style.display = "none";
     renderSkinPanel(pendingUnlock.item, pendingUnlock.key);
-    lobbyStatus.innerText = "🎉 [" + pendingUnlock.item.name + "] 24시간 해금 완료!";
+    lobbyStatus.innerText = "🎉 [" + pendingUnlock.item.name + "] 이번 시즌 해금 완료!";
     pendingUnlock = null;
   };
 
@@ -1069,8 +1060,8 @@ window.onload = function() {
         var sk = catalog[k];
         var uKey = prefix + k;
         var rankOk = isRankMet(sk.reqLv);
-        var timeOk = isTimeUnlocked(uKey, sk.free);
-        var usable = sk.free || (rankOk && timeOk);
+        var seaOk = isSeasonUnlocked(uKey, sk.free);
+        var usable = sk.free || (rankOk && seaOk);
         var equipped = (equippedVal === k && usable);
 
         var btn = document.createElement("button");
@@ -1083,13 +1074,13 @@ window.onload = function() {
         var subText = "";
         if (sk.free) subText = "기본 무료";
         else if (!rankOk) subText = "🔒 " + RANK_TIERS[sk.reqLv].badge + " 필요";
-        else if (!timeOk) subText = "🎬 광고(24h)";
-        else subText = "⏳ " + getRemainingHoursText(uKey);
+        else if (!seaOk) subText = "🎬 광고 해금";
+        else subText = "✨ 시즌 보유";
 
         btn.innerHTML = (equipped ? "✅ " : "") + sk.name + '<span class="skin-sub">' + subText + '</span>';
 
         btn.onclick = function() {
-          updateDetailCard(sk, uKey, k);
+          updateDetailCard(sk, uKey);
           if (prefix === "cat_") SoundEngine.playCatMeow(k, false);
           else if (prefix === "spike_") SoundEngine.playSpikeSound(k);
           else SoundEngine.playBounce(false);
@@ -1112,7 +1103,7 @@ window.onload = function() {
     }
 
     buildSection("🐱 고양이 스킨 (클릭 시 소리·설명 확인)", CAT_SKINS, "cat_", userState.equippedCat, function(v) { userState.equippedCat = v; });
-    buildSection("🏐 배구공 스킨 (랭크별 해금)", BALL_SKINS, "ball_", userState.equippedBall, function(v) { userState.equippedBall = v; });
+    buildSection("🏐 배구공 스킨 (시즌별 랭크 해금)", BALL_SKINS, "ball_", userState.equippedBall, function(v) { userState.equippedBall = v; });
     buildSection("💥 스파이크 이펙트 (클릭 시 효과음·설명 확인)", SPIKE_SKINS, "spike_", userState.equippedSpike, function(v) { userState.equippedSpike = v; });
 
     if (selectedItem && selectedKey) {
@@ -1598,9 +1589,13 @@ window.onload = function() {
   }
 
   document.addEventListener("visibilitychange", function() {
-    if (document.visibilityState === "visible" && isHostingRoom) {
-      if (!peer || peer.destroyed) tryCreateHostSlot(0, myRoomId);
-      else if (peer.disconnected) peer.reconnect();
+    if (document.visibilityState === "visible") {
+      applyWeeklySeasonResetIfNeeded();
+      refreshRankUI();
+      if (isHostingRoom) {
+        if (!peer || peer.destroyed) tryCreateHostSlot(0, myRoomId);
+        else if (peer.disconnected) peer.reconnect();
+      }
     }
   });
 
@@ -1614,7 +1609,7 @@ window.onload = function() {
     renderSkinPanel(CAT_SKINS[userState.equippedCat], "cat_" + userState.equippedCat);
     mainMenuBox.style.display = 'none';
     skinPanel.style.display = 'flex';
-    lobbyStatus.innerText = "랭크를 올리고 광고로 24시간 스킨을 해금해 보세요!";
+    lobbyStatus.innerText = currentSeason.label + " · 매주 월요일 시즌 스킨이 초기화됩니다!";
   };
 
   document.getElementById("btnCloseSkins").onclick = function() {
@@ -1892,7 +1887,74 @@ window.onload = function() {
     }
   }
 
-  // --- 10. 캐릭터 / 공 / 이펙트 그리기 ---
+  // =========================================================================
+  // 10. 캐릭터 / 공 / 오로라 & 반짝임 이펙트 그리기
+  // =========================================================================
+  function drawStarSparkle(x, y, outerR, color) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.fillStyle = color || '#ffffff';
+    var innerR = outerR * 0.28;
+    ctx.beginPath();
+    for (var i = 0; i < 8; i++) {
+      var r = (i % 2 === 0) ? outerR : innerR;
+      var a = mul(i, Math.PI / 4);
+      var px = Math.cos(a) * r;
+      var py = Math.sin(a) * r;
+      if (i === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawGoldCatAurora(x, y, time) {
+    ctx.save();
+    ctx.translate(x, y - 4);
+    var shift = Math.sin(mul(time, 0.004));
+    var shift2 = Math.cos(mul(time, 0.0032));
+
+    var auraGrad = ctx.createRadialGradient(0, 0, 12, 0, 0, 56 + shift * 5);
+    auraGrad.addColorStop(0.0, 'rgba(254, 240, 138, 0.42)');
+    auraGrad.addColorStop(0.45, 'rgba(52, 211, 153, 0.28)');
+    auraGrad.addColorStop(0.75, 'rgba(192, 132, 252, 0.22)');
+    auraGrad.addColorStop(1.0, 'rgba(250, 204, 21, 0)');
+
+    ctx.fillStyle = auraGrad;
+    ctx.beginPath();
+    ctx.ellipse(shift * 5, shift2 * 4, 52, 46, shift * 0.2, 0, TAU);
+    ctx.fill();
+
+    ctx.save();
+    ctx.rotate(shift * 0.25);
+    ctx.strokeStyle = 'rgba(110, 231, 183, 0.55)';
+    ctx.lineWidth = 4;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(-36, -18 + shift * 6);
+    ctx.bezierCurveTo(-14, -34 - shift2 * 8, 16, -24 + shift * 8, 36, -14 - shift2 * 6);
+    ctx.stroke();
+    ctx.restore();
+
+    var sparkles = [
+      { ox: -34, oy: -28, ph: 0.0, sz: 7.5, col: '#fef9c3' },
+      { ox: 35,  oy: -24, ph: 1.7, sz: 8.0, col: '#a7f3d0' },
+      { ox: -28, oy: 24,  ph: 3.1, sz: 6.5, col: '#f5d0fe' },
+      { ox: 32,  oy: 20,  ph: 4.5, sz: 7.0, col: '#fde047' }
+    ];
+    for (var i = 0; i < sparkles.length; i++) {
+      var sp = sparkles[i];
+      var tw = Math.sin(mul(time, 0.008) + sp.ph);
+      if (tw > -0.15) {
+        var scale = 0.55 + Math.max(0, tw) * 0.65;
+        drawStarSparkle(sp.ox, sp.oy, sp.sz * scale, sp.col);
+      }
+    }
+
+    ctx.restore();
+  }
+
   function traceCatHeadPath(isSimple) {
     ctx.beginPath();
     if (isSimple) {
@@ -1909,6 +1971,11 @@ window.onload = function() {
 
   function drawChar(p) {
     var sk = CAT_SKINS[p.skin] || CAT_SKINS.cream, isSimple = sk.simple;
+    var time = performance.now();
+
+    if (sk.id === 'gold') {
+      drawGoldCatAurora(p.x, p.y, time);
+    }
 
     ctx.save();
     var labelStr = p.tier ? (p.tier + " " + p.name) : p.name;
@@ -1923,7 +1990,7 @@ window.onload = function() {
     ctx.save();
     ctx.translate(p.x, p.y + 32); ctx.scale(2 - p.squash, p.squash); ctx.translate(0, -32);
 
-    var dir = p.side === 1 ? 1 : -1, speedRatio = Math.abs(p.vx) / p.maxSpeed, time = performance.now();
+    var dir = p.side === 1 ? 1 : -1, speedRatio = Math.abs(p.vx) / p.maxSpeed;
 
     var tailWag = mul(Math.sin(mul(time, 0.008)), 6);
     ctx.lineCap = 'round'; ctx.strokeStyle = '#0f172a'; ctx.lineWidth = isSimple ? 8 : 10;
@@ -2044,7 +2111,31 @@ window.onload = function() {
   }
 
   function drawBall() {
+    var time = performance.now();
     ctx.save(); ctx.translate(ball.x, ball.y);
+
+    if (ball.skin === 'golden') {
+      var pulse = Math.sin(mul(time, 0.006));
+      var goldAurora = ctx.createRadialGradient(0, 0, ball.r * 0.7, 0, 0, ball.r + 16 + pulse * 3);
+      goldAurora.addColorStop(0.0, 'rgba(254, 240, 138, 0.55)');
+      goldAurora.addColorStop(0.55, 'rgba(52, 211, 153, 0.35)');
+      goldAurora.addColorStop(0.82, 'rgba(192, 132, 252, 0.22)');
+      goldAurora.addColorStop(1.0, 'rgba(250, 204, 21, 0)');
+      ctx.fillStyle = goldAurora;
+      ctx.beginPath(); ctx.arc(0, 0, ball.r + 17, 0, TAU); ctx.fill();
+
+      ctx.save();
+      ctx.rotate(mul(time, 0.0025));
+      ctx.strokeStyle = 'rgba(167, 243, 208, 0.75)';
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.ellipse(0, 0, ball.r + 8, ball.r * 0.45, 0, 0, TAU); ctx.stroke();
+      ctx.restore();
+
+      var bTw1 = Math.sin(mul(time, 0.01));
+      if (bTw1 > -0.2) drawStarSparkle(-22, -16, 6.5 * (0.6 + Math.max(0, bTw1) * 0.6), '#fef9c3');
+      var bTw2 = Math.cos(mul(time, 0.009));
+      if (bTw2 > -0.2) drawStarSparkle(23, 14, 6.0 * (0.6 + Math.max(0, bTw2) * 0.6), '#6ee7b7');
+    }
 
     if (ball.spikeType === 'wind') { ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, ball.r + 5, 0, TAU); ctx.stroke(); }
     else if (ball.spikeType === 'meteor') { ctx.fillStyle = 'rgba(249, 115, 22, 0.42)'; ctx.beginPath(); ctx.arc(0, 0, ball.r + 8, 0, TAU); ctx.fill(); }
@@ -2073,8 +2164,12 @@ window.onload = function() {
       ctx.beginPath(); ctx.ellipse(0, 4, 6.5, 5, 0, 0, TAU); ctx.arc(-7, -4, 2.7, 0, TAU); ctx.arc(-2.5, -7, 2.7, 0, TAU); ctx.arc(2.5, -7, 2.7, 0, TAU); ctx.arc(7, -4, 2.7, 0, TAU); ctx.fill();
     } else if (ball.skin === 'golden') {
       var gGrad = ctx.createRadialGradient(-5, -5, 2, 0, 0, ball.r);
-      gGrad.addColorStop(0, '#fef9c3'); gGrad.addColorStop(0.5, '#facc15'); gGrad.addColorStop(1, '#ca8a04');
+      gGrad.addColorStop(0, '#ffffff'); gGrad.addColorStop(0.35, '#fef08a'); gGrad.addColorStop(0.75, '#facc15'); gGrad.addColorStop(1, '#b45309');
       ctx.fillStyle = gGrad; ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
+      var shineX = Math.cos(mul(time, 0.005)) * 8;
+      var shineY = Math.sin(mul(time, 0.005)) * 8;
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+      ctx.beginPath(); ctx.arc(shineX, shineY, 4, 0, TAU); ctx.fill();
     } else {
       ctx.fillStyle = '#facc15'; ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
       ctx.strokeStyle = '#ca8a04'; ctx.lineWidth = 2;
@@ -2092,7 +2187,7 @@ window.onload = function() {
 
     ctx.save(); ctx.translate(ball.x, ball.y);
     ctx.beginPath(); ctx.arc(0, 0, ball.r, 0, TAU); ctx.lineWidth = 3;
-    var strokeCol = '#0f172a';
+    var strokeCol = ball.skin === 'golden' ? '#fef08a' : '#0f172a';
     if (ball.spikeType === 'meteor') strokeCol = '#b91c1c';
     else if (ball.spikeType === 'lightning') strokeCol = '#0284c7';
     else if (ball.spikeType === 'ice') strokeCol = '#7dd3fc';
