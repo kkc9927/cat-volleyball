@@ -5,16 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>냐옹이 배구 온라인</title>
 <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
-  
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-JR4KC87LFG"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-JR4KC87LFG');
-</script>
-  
 <style>
 * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
 body { background: #0f172a; color: #fff; text-align: center; font-family: sans-serif; margin: 0; padding: 6px 8px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; height: 100dvh; overflow: hidden; touch-action: none; }
@@ -350,15 +340,38 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 }
 .reward-btns { display: flex; gap: 8px; width: 100%; max-width: 280px; margin-top: 2px; }
 
-/* 모바일 터치 패드 */
-.controls { width: 100%; max-width: 800px; flex: 1; max-height: 155px; display: flex; justify-content: space-between; align-items: stretch; gap: 12px; padding: 6px 4px 8px; }
-.dpad-group { flex: 1.1; display: flex; gap: 8px; }
-.action-group { flex: 1.1; display: flex; gap: 8px; }
-.touch-btn { flex: 1; height: 100%; min-height: 78px; border-radius: 18px; border: 2.5px solid rgba(255,255,255,0.45); background: rgba(255,255,255,0.14); color: #fff; font-size: 1.45rem; font-weight: bold; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+/* 모바일 터치 패드: 왼쪽에 이동(좌/우) + 점프 통합 배치 */
+.controls { width: 100%; max-width: 800px; flex: 1; max-height: 158px; display: flex; justify-content: space-between; align-items: stretch; gap: 12px; padding: 6px 4px 8px; }
+.dpad-group {
+  flex: 1.65;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.05fr;
+  gap: 7px;
+}
+.action-group {
+  flex: 0.85;
+  display: flex;
+}
+.touch-btn {
+  flex: 1;
+  height: 100%;
+  min-height: 76px;
+  border-radius: 16px;
+  border: 2.5px solid rgba(255,255,255,0.45);
+  background: rgba(255,255,255,0.14);
+  color: #fff;
+  font-size: 1.35rem;
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 .touch-btn:active, .touch-btn.active { background: rgba(56,189,248,0.65); border-color: #7dd3fc; transform: scale(0.96); }
-.jump-btn { background: rgba(56,189,248,0.25); border-color: rgba(125,211,252,0.6); font-size: 1.12rem; }
-.spike-btn { background: rgba(249,115,22,0.45); border-color: #fb923c; font-size: 1.0rem; }
-.sub-label { font-size: 0.68rem; font-weight: normal; opacity: 0.85; margin-top: 2px; }
+.jump-btn { background: rgba(56,189,248,0.28); border-color: rgba(125,211,252,0.75); font-size: 1.05rem; }
+.spike-btn { background: rgba(249,115,22,0.48); border-color: #fb923c; font-size: 1.02rem; }
+.spike-btn.active { background: rgba(249,115,22,0.85); border-color: #fed7aa; }
+.sub-label { font-size: 0.66rem; font-weight: normal; opacity: 0.88; margin-top: 2px; }
 
 /* 관전자 전용 안내 바 */
 .spectator-banner {
@@ -480,15 +493,15 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   </div>
 </div>
 
-<!-- 플레이어용 터치 패드 -->
+<!-- 플레이어용 터치 패드: 왼쪽(이동+점프 통합) / 오른쪽(스파이크) -->
 <div class="controls" id="controlsArea">
   <div class="dpad-group" id="dpadArea">
     <div class="touch-btn" id="btnLeft">◀<span class="sub-label" id="subLeft">왼쪽</span></div>
     <div class="touch-btn" id="btnRight">▶<span class="sub-label" id="subRight">오른쪽</span></div>
+    <div class="touch-btn jump-btn" id="btnJump">▲<span class="sub-label" id="jumpText">점프</span></div>
   </div>
   <div class="action-group">
     <div class="touch-btn spike-btn" id="btnSpike">💥<span id="spikeText">스파이크</span><span class="sub-label" id="subSpike">Space / 터치</span></div>
-    <div class="touch-btn jump-btn" id="btnJump"><span id="jumpText">점프</span><span class="sub-label">▲</span></div>
   </div>
 </div>
 
@@ -1883,44 +1896,92 @@ window.onload = function() {
   document.getElementById("btnCancelRoom").onclick = function() { returnToLobby(T().roomCancelled); };
   btnHome.onclick = function() { returnToLobby(); };
 
-  // --- 8. 터치 및 키보드 조작 ---
+  // --- 8. 터치 및 키보드 조작 (왼쪽 통합 이동+점프 대각선 점프 최적화) ---
   window.onkeydown = function(e) { keys[e.code] = true; if (gameState === 'playing' && gameOver && e.code === 'Space' && (netMode === 'ai' || netMode === 'host')) resetGame(); };
   window.onkeyup = function(e) { keys[e.code] = false; };
   cvs.addEventListener('touchstart', function(e) { if (gameState === 'playing' && gameOver && (netMode === 'ai' || netMode === 'host')) { e.preventDefault(); resetGame(); } });
   cvs.addEventListener('click', function() { if (gameState === 'playing' && gameOver && (netMode === 'ai' || netMode === 'host')) resetGame(); });
 
-  var dpadArea = document.getElementById("dpadArea"), btnLeft = document.getElementById("btnLeft"), btnRight = document.getElementById("btnRight");
-  function handleDpad(e) {
-    e.preventDefault(); SoundEngine.unlockAndStart();
+  var dpadArea = document.getElementById("dpadArea"), btnLeft = document.getElementById("btnLeft"), btnRight = document.getElementById("btnRight"), btnJump = document.getElementById("btnJump");
+
+  function isPointInEl(x, y, el, pad) {
+    var r = el.getBoundingClientRect();
+    return x >= r.left - pad && x <= r.right + pad && y >= r.top - pad && y <= r.bottom + pad;
+  }
+
+  function handleLeftPad(e) {
+    e.preventDefault();
+    SoundEngine.unlockAndStart();
     if (gameState !== 'playing' || netMode === 'spectator') return;
     if (gameOver && (netMode === 'ai' || netMode === 'host')) { resetGame(); return; }
-    var rect = dpadArea.getBoundingClientRect(), midX = rect.left + rect.width / 2, leftActive = false, rightActive = false;
-    for (var i = 0; i < e.touches.length; i++) {
-      var tx = e.touches[i].clientX, ty = e.touches[i].clientY;
-      if (tx >= rect.left - 20 && tx <= rect.right + 20 && ty >= rect.top - 20 && ty <= rect.bottom + 20) {
-        if (tx < midX) leftActive = true; else rightActive = true;
-      }
-    }
-    keys['ArrowLeft'] = leftActive; keys['ArrowRight'] = rightActive;
-    btnLeft.classList.toggle('active', leftActive); btnRight.classList.toggle('active', rightActive);
-  }
-  dpadArea.addEventListener('touchstart', handleDpad, { passive: false }); dpadArea.addEventListener('touchmove', handleDpad, { passive: false });
-  dpadArea.addEventListener('touchend', handleDpad, { passive: false }); dpadArea.addEventListener('touchcancel', handleDpad, { passive: false });
 
-  function bindBtn(id, code) {
-    var btn = document.getElementById(id);
+    var leftActive = false;
+    var rightActive = false;
+    var jumpActive = false;
+
+    for (var i = 0; i < e.touches.length; i++) {
+      var tx = e.touches[i].clientX;
+      var ty = e.touches[i].clientY;
+      if (isPointInEl(tx, ty, btnLeft, 10)) leftActive = true;
+      if (isPointInEl(tx, ty, btnRight, 10)) rightActive = true;
+      if (isPointInEl(tx, ty, btnJump, 10)) jumpActive = true;
+    }
+
+    keys['ArrowLeft'] = leftActive;
+    keys['ArrowRight'] = rightActive;
+    keys['ArrowUp'] = jumpActive;
+
+    btnLeft.classList.toggle('active', leftActive);
+    btnRight.classList.toggle('active', rightActive);
+    btnJump.classList.toggle('active', jumpActive);
+  }
+
+  dpadArea.addEventListener('touchstart', handleLeftPad, { passive: false });
+  dpadArea.addEventListener('touchmove', handleLeftPad, { passive: false });
+  dpadArea.addEventListener('touchend', handleLeftPad, { passive: false });
+  dpadArea.addEventListener('touchcancel', handleLeftPad, { passive: false });
+
+  function bindMouseFallback(btn, code) {
     var down = function(e) {
-      e.preventDefault(); SoundEngine.unlockAndStart();
+      if (e.touches) return;
+      SoundEngine.unlockAndStart();
       if (gameState !== 'playing' || netMode === 'spectator') return;
       if (gameOver && (netMode === 'ai' || netMode === 'host')) { resetGame(); return; }
-      keys[code] = true; btn.classList.add('active');
+      keys[code] = true;
+      btn.classList.add('active');
     };
-    var up = function(e) { e.preventDefault(); keys[code] = false; btn.classList.remove('active'); };
-    btn.addEventListener('touchstart', down, {passive: false}); btn.addEventListener('touchend', up, {passive: false});
-    btn.addEventListener('touchcancel', up, {passive: false}); btn.addEventListener('mousedown', down);
-    btn.addEventListener('mouseup', up); btn.addEventListener('mouseleave', up);
+    var up = function() {
+      keys[code] = false;
+      btn.classList.remove('active');
+    };
+    btn.addEventListener('mousedown', down);
+    btn.addEventListener('mouseup', up);
+    btn.addEventListener('mouseleave', up);
   }
-  bindBtn('btnLeft', 'ArrowLeft'); bindBtn('btnRight', 'ArrowRight'); bindBtn('btnJump', 'ArrowUp'); bindBtn('btnSpike', 'Space');
+  bindMouseFallback(btnLeft, 'ArrowLeft');
+  bindMouseFallback(btnRight, 'ArrowRight');
+  bindMouseFallback(btnJump, 'ArrowUp');
+
+  var btnSpike = document.getElementById("btnSpike");
+  var spikeDown = function(e) {
+    e.preventDefault();
+    SoundEngine.unlockAndStart();
+    if (gameState !== 'playing' || netMode === 'spectator') return;
+    if (gameOver && (netMode === 'ai' || netMode === 'host')) { resetGame(); return; }
+    keys['Space'] = true;
+    btnSpike.classList.add('active');
+  };
+  var spikeUp = function(e) {
+    e.preventDefault();
+    keys['Space'] = false;
+    btnSpike.classList.remove('active');
+  };
+  btnSpike.addEventListener('touchstart', spikeDown, { passive: false });
+  btnSpike.addEventListener('touchend', spikeUp, { passive: false });
+  btnSpike.addEventListener('touchcancel', spikeUp, { passive: false });
+  btnSpike.addEventListener('mousedown', spikeDown);
+  btnSpike.addEventListener('mouseup', spikeUp);
+  btnSpike.addEventListener('mouseleave', spikeUp);
 
   // --- 9. 게임 물리 및 스파이크 이펙트 업데이트 ---
   function update(dt) {
@@ -2211,10 +2272,7 @@ window.onload = function() {
     var isBlackCat = (sk.id === 'black'), isSiamese = (sk.id === 'siamese');
     if (p.hitTimer > 0) {
       ctx.strokeStyle = (isBlackCat || isSiamese) ? '#fde047' : '#0f172a'; ctx.lineWidth = 2.6; ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.moveTo(-12, -4); ctx.lineTo(-8, -7.5); ctx.lineTo(-4, -4);
-      ctx.moveTo(4, -4); ctx.lineTo(8, -7.5); ctx.lineTo(12, -4);
-      ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-12, -4); ctx.lineTo(-8, -7.5); ctx.lineTo(-4, -4); ctx.moveTo(4, -4); ctx.lineTo(8, -7.5); ctx.lineTo(12, -4); ctx.stroke();
     } else {
       var eyeX1 = -8.5 + dir, eyeX2 = 8.5 + dir;
       ctx.fillStyle = isBlackCat ? '#facc15' : (isSiamese ? '#38bdf8' : '#0f172a');
