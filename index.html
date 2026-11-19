@@ -730,7 +730,7 @@ window.onload = function() {
       roomsFoundStatus: function(n) { return "총 " + n + "개의 방이 열려 있습니다! 터치해서 입장하세요."; },
       enterCodePrompt: "입장할 방을 선택하거나 코드를 입력하세요!",
       connectingRoom: function(code) { return "[" + code + "] 방에 접속 중..."; },
-      roomNotFound: "Room not found. Try refreshing.",
+      roomNotFound: "방을 찾을 수 없습니다. 새로고침 후 다시 시도해 주세요.",
       hostClosed: "방장과의 연결이 종료되었습니다.",
       guestLeft: "상대 플레이어(2P)가 퇴장하여 대기화면으로 돌아왔습니다.",
       roomCancelled: "방 만들기를 취소했습니다.",
@@ -2359,13 +2359,14 @@ window.onload = function() {
       if (isSpike) {
         ball.spikeType = p.spikeSkin || 'wind';
         if (p === p2 && netMode === 'ai') {
-          // 네트(x=400, y=260)를 넘기면서 빠르게 내리꽂는 강타 궤적
-          var targetCourtX = 80 + Math.random() * 250;
-          var distToTarget = Math.max(120, ball.x - targetCourtX);
-          var flightFrames = Math.max(24, distToTarget / 11.2);
-          ball.vx = -distToTarget / flightFrames;
-          var dyToFloor = 415 - ball.y;
-          ball.vy = (dyToFloor - 0.5 * 0.115 * flightFrames * flightFrames) / flightFrames;
+          // 네트(x=400, 상단 y=260)를 반드시 넘어간 뒤 내 코트로 떨어지는 포물선 계산
+          var vxSpeed = -9.6 - Math.random() * 1.4;
+          var framesToNet = Math.max(10, (ball.x - 400) / Math.abs(vxSpeed));
+          var netClearY = 215; // 네트 상단(260)보다 45px 위를 통과하도록 보장
+
+          var vyForNet = (netClearY - ball.y - 0.5 * 0.115 * framesToNet * framesToNet) / framesToNet;
+          ball.vx = vxSpeed;
+          ball.vy = Math.min(-4.8, vyForNet);
           aiWillSpike = false;
         } else {
           ball.vx = mul(Math.cos(angle), 10.2) + mul(p.vx, 0.28);
