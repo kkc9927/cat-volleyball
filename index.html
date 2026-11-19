@@ -2245,13 +2245,13 @@ window.onload = function() {
         p2.vx = mul(p2.vx, Math.pow(0.76, dt));
       }
 
-      if (ball.x > 400 && ball.y < cfg.jumpHeightY && ball.vy > -1.0 && p2.y >= 340 && Math.abs(p2.x - ball.x) < cfg.jumpRangeX) {
+if (ball.x > 400 && ball.y < cfg.jumpHeightY && ball.vy > -1.5 && p2.y >= 340 && Math.abs(p2.x - ball.x) < cfg.jumpRangeX) {
         p2.vy = -10.6;
         p2.squash = 1.22;
         aiWillSpike = (Math.random() < cfg.spikeChance);
         SoundEngine.playCatMeow(p2.skin, true);
       }
-      if (p2.y >= 340) aiWillSpike = false;
+
     }
 
     var wasAir2 = p2.y < 340;
@@ -2274,7 +2274,7 @@ window.onload = function() {
     }
 
     hitBall(p1, !!keys["Space"]);
-    var p2Spike = (netMode === 'host') ? !!remoteKeys.S : (aiWillSpike && p2.y < 339);
+    var p2Spike = (netMode === 'host') ? !!remoteKeys.S : aiWillSpike;
     hitBall(p2, p2Spike);
 
     if (ball.y > 430) {
