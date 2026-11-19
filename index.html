@@ -12,8 +12,10 @@ body { background: #0f172a; color: #fff; text-align: center; font-family: sans-s
 /* 상단 헤더 바 */
 .top-bar { width: 100%; max-width: 800px; display: flex; justify-content: space-between; align-items: center; padding: 2px 4px; gap: 6px; }
 h1 { font-size: 0.98rem; margin: 0; white-space: nowrap; }
-.top-right { display: flex; align-items: center; gap: 6px; }
-.spec-badge { background: rgba(168, 85, 247, 0.25); border: 1.5px solid #c084fc; color: #e9d5ff; border-radius: 8px; padding: 4px 8px; font-size: 0.75rem; font-weight: bold; display: none; }
+.top-right { display: flex; align-items: center; gap: 5px; }
+.spec-badge { background: rgba(168, 85, 247, 0.25); border: 1.5px solid #c084fc; color: #e9d5ff; border-radius: 8px; padding: 4px 7px; font-size: 0.72rem; font-weight: bold; display: none; }
+.sound-btn { background: #1e293b; color: #7dd3fc; border: 1.5px solid #38bdf8; border-radius: 8px; padding: 4px 8px; font-size: 0.75rem; font-weight: bold; cursor: pointer; }
+.sound-btn.muted { color: #94a3b8; border-color: #64748b; }
 .home-btn { background: #334155; color: #fff; border: 1.5px solid #64748b; border-radius: 8px; padding: 4px 9px; font-size: 0.78rem; font-weight: bold; cursor: pointer; }
 .home-btn:active { background: #475569; }
 
@@ -184,7 +186,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   background: rgba(250, 204, 21, 0.14);
 }
 .rank-left { display: flex; align-items: center; gap: 6px; font-weight: bold; }
-.rank-num { width: 22px; text-align: center; color: #fde047; }
+.rank-num { width: 24px; text-align: center; color: #fde047; }
 .rank-right { font-size: 0.7rem; color: #bae6fd; }
 
 /* 방 리스트 패널 */
@@ -317,6 +319,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   <h1>🐾 냐옹이 배구</h1>
   <div class="top-right">
     <div class="spec-badge" id="specBadge">👀 관전 0명</div>
+    <button class="sound-btn" id="btnSoundToggle">🔊 BGM</button>
     <button class="home-btn" id="btnHome" style="display:none;">🏠 대기화면</button>
   </div>
 </div>
@@ -347,13 +350,13 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
       <button class="menu-btn btn-list" id="btnOpenRoomList">🔍 참여하기 (방 리스트 보기)</button>
     </div>
 
-    <!-- 2. 스킨 & 이펙트 선택 패널 (24시간 기간제 해금) -->
+    <!-- 2. 스킨 & 이펙트 선택 패널 -->
     <div class="skin-panel" id="skinPanel">
       <div class="skin-scroll" id="skinScrollContainer"></div>
       <button class="menu-btn btn-ai btn-small" id="btnCloseSkins">선택 완료 (돌아가기)</button>
     </div>
 
-    <!-- 3. TOP 10 랭킹 보드 패널 -->
+    <!-- 3. 글로벌 통합 TOP 10 랭킹 보드 패널 -->
     <div class="rank-panel" id="rankPanel">
       <div class="rank-scroll" id="rankListContainer"></div>
       <div class="join-row">
@@ -419,6 +422,8 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 
 <script>
 window.onload = function() {
+  var FIREBASE_DB_URL = "https://vollybal-rank-default-rtdb.firebaseio.com";
+
   var cvs = document.getElementById("cvs");
   var ctx = cvs.getContext("2d", { alpha: false });
   var TAU = 6.283185;
@@ -426,7 +431,356 @@ window.onload = function() {
 
   var HOURS_24_MS = 24 * 60 * 60 * 1000;
 
-  // --- 1. 확장된 스킨 & 스파이크 카탈로그 ---
+  // =========================================================================
+  // 0. 저작권 100% 프리 Web Audio API 사운드 엔진 (은은한 BGM + 고양이별/스파이크별 효과음)
+  // =========================================================================
+  var SoundEngine = (function() {
+    var AudioCtx = window.AudioContext || window.webkitAudioContext;
+    var actx = null;
+    var isMuted = false;
+    var bgmTimer = null;
+    var bgmStep = 0;
+
+    // 경쾌하고 잔잔한 해변 비치볼 멜로디 (음계 주파수)
+    var MELODY = [
+      523.25, 0, 659.25, 783.99, 659.25, 0, 523.25, 587.33,
+      659.25, 0, 783.99, 880.00, 783.99, 659.25, 587.33, 0,
+      440.00, 0, 523.25, 659.25, 587.33, 0, 493.88, 523.25,
+      587.33, 659.25, 523.25, 0, 392.00, 0, 493.88, 0
+    ];
+    var BASS = [
+      261.63, 0, 392.00, 0, 261.63, 0, 392.00, 0,
+      329.63, 0, 392.00, 0, 329.63, 0, 392.00, 0,
+      220.00, 0, 329.63, 0, 246.94, 0, 392.00, 0,
+      293.66, 0, 392.00, 0, 196.00, 0, 246.94, 0
+    ];
+
+    function ensureContext() {
+      if (!AudioCtx) return null;
+      if (!actx) {
+        actx = new AudioCtx();
+      }
+      if (actx.state === 'suspended') {
+        actx.resume();
+      }
+      return actx;
+    }
+
+    function startBGM() {
+      if (bgmTimer || isMuted) return;
+      bgmTimer = setInterval(function() {
+        if (isMuted || !actx || actx.state !== 'running') return;
+        var now = actx.currentTime;
+        var mFreq = MELODY[bgmStep % MELODY.length];
+        var bFreq = BASS[bgmStep % BASS.length];
+
+        // 멜로디 (아주 은은하고 부드러운 사인파, 볼륨 0.022)
+        if (mFreq > 0) {
+          var osc = actx.createOscillator();
+          var gain = actx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(mFreq, now);
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.linearRampToValueAtTime(0.022, now + 0.03);
+          gain.gain.exponentialRampToValueAtTime(0.0005, now + 0.24);
+          osc.connect(gain);
+          gain.connect(actx.destination);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        }
+
+        // 베이스 (부드러운 삼각파, 볼륨 0.02)
+        if (bFreq > 0) {
+          var bOsc = actx.createOscillator();
+          var bGain = actx.createGain();
+          bOsc.type = 'triangle';
+          bOsc.frequency.setValueAtTime(bFreq, now);
+          bGain.gain.setValueAtTime(0.001, now);
+          bGain.gain.linearRampToValueAtTime(0.02, now + 0.02);
+          bGain.gain.exponentialRampToValueAtTime(0.0005, now + 0.26);
+          bOsc.connect(bGain);
+          bGain.connect(actx.destination);
+          bOsc.start(now);
+          bOsc.stop(now + 0.27);
+        }
+
+        bgmStep++;
+      }, 240);
+    }
+
+    function unlockAndStart() {
+      var c = ensureContext();
+      if (c && !isMuted) startBGM();
+    }
+
+    function toggleMute() {
+      isMuted = !isMuted;
+      var btn = document.getElementById("btnSoundToggle");
+      if (isMuted) {
+        btn.innerText = "🔇 음소거";
+        btn.classList.add("muted");
+      } else {
+        btn.innerText = "🔊 BGM";
+        btn.classList.remove("muted");
+        unlockAndStart();
+      }
+      return isMuted;
+    }
+
+    // 화이트 노이즈 버퍼 헬퍼 (바람/폭발/번개용)
+    function playNoise(duration, filterFreq, filterType, vol) {
+      var c = ensureContext();
+      if (!c || isMuted) return;
+      var bufSize = Math.floor(c.sampleRate * duration);
+      var buf = c.createBuffer(1, bufSize, c.sampleRate);
+      var data = buf.getChannelData(0);
+      for (var i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
+
+      var src = c.createBufferSource();
+      src.buffer = buf;
+
+      var filter = c.createBiquadFilter();
+      filter.type = filterType || 'bandpass';
+      filter.frequency.setValueAtTime(filterFreq, c.currentTime);
+
+      var gain = c.createGain();
+      gain.gain.setValueAtTime(vol, c.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + duration);
+
+      src.connect(filter);
+      filter.connect(gain);
+      gain.connect(c.destination);
+      src.start();
+    }
+
+    // 1) 고양이 8종별 고유 '냐옹' 울음소리 합성
+    function playCatMeow(skinId, isJump) {
+      var c = ensureContext();
+      if (!c || isMuted) return;
+      var now = c.currentTime;
+      var osc = c.createOscillator();
+      var gain = c.createGain();
+
+      // 고양이 종류별 음색과 음높이 피치 커브 차별화
+      var baseF = 520, peakF = 760, endF = 430, waveType = 'triangle', dur = 0.22;
+      if (skinId === 'cream') {
+        baseF = 540; peakF = 790; endF = 460; waveType = 'triangle';
+      } else if (skinId === 'gray') {
+        baseF = 460; peakF = 650; endF = 380; waveType = 'sine';
+      } else if (skinId === 'cheese') {
+        baseF = 580; peakF = 880; endF = 500; waveType = 'triangle'; dur = 0.24;
+      } else if (skinId === 'persian') {
+        baseF = 720; peakF = 1040; endF = 640; waveType = 'sine'; dur = 0.26;
+      } else if (skinId === 'black') {
+        baseF = 330; peakF = 470; endF = 270; waveType = 'sawtooth'; dur = 0.23;
+      } else if (skinId === 'calico') {
+        baseF = 620; peakF = 940; endF = 560; waveType = 'triangle'; dur = 0.22;
+      } else if (skinId === 'siamese') {
+        baseF = 680; peakF = 980; endF = 520; waveType = 'sawtooth'; dur = 0.25;
+      } else if (skinId === 'gold') {
+        baseF = 780; peakF = 1180; endF = 880; waveType = 'sine'; dur = 0.28;
+      }
+
+      if (isJump) {
+        // 점프할 때는 짧고 경쾌한 "냥!" 톤
+        dur = 0.13;
+        endF = peakF * 1.08;
+      }
+
+      var vol = (waveType === 'sawtooth') ? 0.032 : 0.055;
+
+      osc.type = waveType;
+      osc.frequency.setValueAtTime(baseF, now);
+      osc.frequency.exponentialRampToValueAtTime(peakF, now + dur * 0.42);
+      osc.frequency.exponentialRampToValueAtTime(endF, now + dur);
+
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.linearRampToValueAtTime(vol, now + 0.025);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
+
+      osc.connect(gain);
+      gain.connect(c.destination);
+      osc.start(now);
+      osc.stop(now + dur + 0.01);
+
+      // 황금냥은 반짝이는 종소리 배음 추가
+      if (skinId === 'gold' && !isJump) {
+        var bell = c.createOscillator();
+        var bGain = c.createGain();
+        bell.type = 'sine';
+        bell.frequency.setValueAtTime(1567.98, now + 0.04);
+        bGain.gain.setValueAtTime(0.03, now + 0.04);
+        bGain.gain.exponentialRampToValueAtTime(0.0005, now + 0.35);
+        bell.connect(bGain);
+        bGain.connect(c.destination);
+        bell.start(now + 0.04);
+        bell.stop(now + 0.36);
+      }
+    }
+
+    // 2) 스파이크 6종별 고유 강타 이펙트 사운드
+    function playSpikeSound(spikeType) {
+      var c = ensureContext();
+      if (!c || isMuted) return;
+      var now = c.currentTime;
+
+      if (spikeType === 'wind') {
+        // 💨 바람슛: 상쾌한 공기 가르기 '휘익~'
+        playNoise(0.24, 1200, 'bandpass', 0.09);
+        var wOsc = c.createOscillator();
+        var wGain = c.createGain();
+        wOsc.type = 'sine';
+        wOsc.frequency.setValueAtTime(420, now);
+        wOsc.frequency.exponentialRampToValueAtTime(880, now + 0.18);
+        wGain.gain.setValueAtTime(0.05, now);
+        wGain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+        wOsc.connect(wGain); wGain.connect(c.destination);
+        wOsc.start(now); wOsc.stop(now + 0.21);
+
+      } else if (spikeType === 'meteor') {
+        // ☄️ 메테오: 묵직한 운석 폭발음 '콰광!'
+        playNoise(0.38, 280, 'lowpass', 0.16);
+        var mOsc = c.createOscillator();
+        var mGain = c.createGain();
+        mOsc.type = 'sawtooth';
+        mOsc.frequency.setValueAtTime(190, now);
+        mOsc.frequency.exponentialRampToValueAtTime(42, now + 0.36);
+        mGain.gain.setValueAtTime(0.09, now);
+        mGain.gain.exponentialRampToValueAtTime(0.001, now + 0.37);
+        mOsc.connect(mGain); mGain.connect(c.destination);
+        mOsc.start(now); mOsc.stop(now + 0.38);
+
+      } else if (spikeType === 'lightning') {
+        // ⚡ 번개슛: 날카로운 전격 '파지직!'
+        playNoise(0.22, 3400, 'highpass', 0.11);
+        var lOsc = c.createOscillator();
+        var lGain = c.createGain();
+        lOsc.type = 'square';
+        lOsc.frequency.setValueAtTime(1450, now);
+        lOsc.frequency.exponentialRampToValueAtTime(220, now + 0.19);
+        lGain.gain.setValueAtTime(0.05, now);
+        lGain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+        lOsc.connect(lGain); lGain.connect(c.destination);
+        lOsc.start(now); lOsc.stop(now + 0.21);
+
+      } else if (spikeType === 'ice') {
+        // ❄️ 얼음슛: 맑은 얼음 결정음 '챙그랑~'
+        var freqs = [1318.5, 1760.0, 2349.3];
+        for (var i = 0; i < freqs.length; i++) {
+          var iOsc = c.createOscillator();
+          var iGain = c.createGain();
+          iOsc.type = 'sine';
+          var st = now + i * 0.035;
+          iOsc.frequency.setValueAtTime(freqs[i], st);
+          iGain.gain.setValueAtTime(0.045, st);
+          iGain.gain.exponentialRampToValueAtTime(0.0005, st + 0.26);
+          iOsc.connect(iGain); iGain.connect(c.destination);
+          iOsc.start(st); iOsc.stop(st + 0.27);
+        }
+
+      } else if (spikeType === 'sakura') {
+        // 🌸 벚꽃슛: 포근한 5음계 하프 아르페지오 '띠리링~'
+        var sFreqs = [523.25, 659.25, 783.99, 1046.5];
+        for (var j = 0; j < sFreqs.length; j++) {
+          var sOsc = c.createOscillator();
+          var sGain = c.createGain();
+          sOsc.type = 'triangle';
+          var t0 = now + j * 0.04;
+          sOsc.frequency.setValueAtTime(sFreqs[j], t0);
+          sGain.gain.setValueAtTime(0.048, t0);
+          sGain.gain.exponentialRampToValueAtTime(0.0005, t0 + 0.25);
+          sOsc.connect(sGain); sGain.connect(c.destination);
+          sOsc.start(t0); sOsc.stop(t0 + 0.26);
+        }
+
+      } else if (spikeType === 'blackhole') {
+        // 🌌 블랙홀슛: 공간이 빨려 들어가는 역상승 워블 '우웅-휙!'
+        var bOsc = c.createOscillator();
+        var bGain = c.createGain();
+        bOsc.type = 'sine';
+        bOsc.frequency.setValueAtTime(95, now);
+        bOsc.frequency.exponentialRampToValueAtTime(680, now + 0.26);
+        bOsc.frequency.exponentialRampToValueAtTime(110, now + 0.34);
+        bGain.gain.setValueAtTime(0.08, now);
+        bGain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        bOsc.connect(bGain); bGain.connect(c.destination);
+        bOsc.start(now); bOsc.stop(now + 0.36);
+      }
+    }
+
+    // 3) 공 튕김 / 네트 / 득점 / 해금 효과음
+    function playBounce(isNet) {
+      var c = ensureContext();
+      if (!c || isMuted) return;
+      var now = c.currentTime;
+      var osc = c.createOscillator();
+      var gain = c.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(isNet ? 180 : 290, now);
+      osc.frequency.exponentialRampToValueAtTime(isNet ? 110 : 410, now + 0.08);
+      gain.gain.setValueAtTime(0.045, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+      osc.connect(gain); gain.connect(c.destination);
+      osc.start(now); osc.stop(now + 0.1);
+    }
+
+    function playScore(isMyPoint) {
+      var c = ensureContext();
+      if (!c || isMuted) return;
+      var now = c.currentTime;
+      var notes = isMyPoint ? [523.25, 659.25, 783.99] : [392.00, 349.23, 311.13];
+      for (var i = 0; i < notes.length; i++) {
+        var osc = c.createOscillator();
+        var gain = c.createGain();
+        osc.type = 'triangle';
+        var st = now + i * 0.08;
+        osc.frequency.setValueAtTime(notes[i], st);
+        gain.gain.setValueAtTime(0.055, st);
+        gain.gain.exponentialRampToValueAtTime(0.001, st + 0.2);
+        osc.connect(gain); gain.connect(c.destination);
+        osc.start(st); osc.stop(st + 0.21);
+      }
+    }
+
+    function playUnlock() {
+      var c = ensureContext();
+      if (!c || isMuted) return;
+      var now = c.currentTime;
+      var notes = [587.33, 739.99, 880.00, 1174.66];
+      for (var i = 0; i < notes.length; i++) {
+        var osc = c.createOscillator();
+        var gain = c.createGain();
+        osc.type = 'sine';
+        var st = now + i * 0.06;
+        osc.frequency.setValueAtTime(notes[i], st);
+        gain.gain.setValueAtTime(0.06, st);
+        gain.gain.exponentialRampToValueAtTime(0.001, st + 0.25);
+        osc.connect(gain); gain.connect(c.destination);
+        osc.start(st); osc.stop(st + 0.26);
+      }
+    }
+
+    return {
+      unlockAndStart: unlockAndStart,
+      toggleMute: toggleMute,
+      playCatMeow: playCatMeow,
+      playSpikeSound: playSpikeSound,
+      playBounce: playBounce,
+      playScore: playScore,
+      playUnlock: playUnlock
+    };
+  })();
+
+  // 첫 사용자 터치/클릭 시 브라우저 오디오 정책 해제 및 BGM 시작
+  document.addEventListener('pointerdown', function() {
+    SoundEngine.unlockAndStart();
+  }, { once: true });
+
+  document.getElementById("btnSoundToggle").onclick = function() {
+    SoundEngine.toggleMute();
+  };
+
+  // --- 1. 스킨 & 스파이크 카탈로그 ---
   var CAT_SKINS = {
     cream:   { id: 'cream',   name: '크림냥(기본)',   free: true,  simple: true,  color: '#fef3c7', shadow: '#78350f', light: '#ffffff', stripe: '#d97706', earInner: '#fda4af' },
     gray:    { id: 'gray',    name: '그레이냥(기본)', free: true,  simple: true,  color: '#cbd5e1', shadow: '#1e293b', light: '#f1f5f9', stripe: '#64748b', earInner: '#fda4af' },
@@ -456,37 +810,46 @@ window.onload = function() {
     blackhole: { id: 'blackhole', name: '🌌 블랙홀슛',     free: false }
   };
 
-  // --- 2. 로컬 저장소 기반 24시간 해금 & 랭크/전적 관리 ---
+  // --- 2. 로컬 저장소 & Firebase 클라우드 누적 랭킹 관리 ---
   var userState = {
+    playerId: '',
     equippedCat: 'cream',
     equippedBall: 'classic',
     equippedSpike: 'wind',
     unlocks: {},
     wins: 0,
-    losses: 0,
-    knownPlayers: [] // 온라인에서 만난 다른 플레이어들의 랭킹 데이터 캐시
+    losses: 0
   };
+
+  function generatePlayerId() {
+    return 'P_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
+  }
 
   function loadUserState() {
     try {
-      var raw = localStorage.getItem('cat_volley_save_v2');
+      var raw = localStorage.getItem('cat_volley_save_v3');
       if (raw) {
         var parsed = JSON.parse(raw);
+        if (parsed.playerId) userState.playerId = parsed.playerId;
         if (parsed.equippedCat && CAT_SKINS[parsed.equippedCat]) userState.equippedCat = parsed.equippedCat;
         if (parsed.equippedBall && BALL_SKINS[parsed.equippedBall]) userState.equippedBall = parsed.equippedBall;
         if (parsed.equippedSpike && SPIKE_SKINS[parsed.equippedSpike]) userState.equippedSpike = parsed.equippedSpike;
         if (parsed.unlocks) userState.unlocks = parsed.unlocks;
         if (typeof parsed.wins === 'number') userState.wins = parsed.wins;
         if (typeof parsed.losses === 'number') userState.losses = parsed.losses;
-        if (Array.isArray(parsed.knownPlayers)) userState.knownPlayers = parsed.knownPlayers;
       }
     } catch (e) {}
+
+    if (!userState.playerId) {
+      userState.playerId = generatePlayerId();
+      saveUserState();
+    }
     validateExpiredUnlocks();
   }
 
   function saveUserState() {
     try {
-      localStorage.setItem('cat_volley_save_v2', JSON.stringify(userState));
+      localStorage.setItem('cat_volley_save_v3', JSON.stringify(userState));
     } catch (e) {}
   }
 
@@ -529,7 +892,6 @@ window.onload = function() {
     else if (total >= 10 && rate >= 65) tier = "💎 다이아";
     else if (total >= 5 && rate >= 55) tier = "🥇 골드";
     else if (total >= 2 && rate >= 40) tier = "🥈 실버";
-    // 랭킹 산정 점수: 승리당 30점 + 승률 보너스
     var score = mul(wins, 30) + rate;
     return {
       tier: tier,
@@ -546,142 +908,120 @@ window.onload = function() {
     return info;
   }
 
+  function syncMyRankToCloud() {
+    var cleanUrl = (FIREBASE_DB_URL || "").trim().replace(/\/+$/, "");
+    if (!cleanUrl || typeof fetch !== 'function') return;
+
+    var myNick = getMyNick(CAT_SKINS[userState.equippedCat].name.replace('(기본)', ''));
+    var info = getRankInfo(userState.wins, userState.losses);
+
+    var payload = {
+      nick: myNick,
+      wins: userState.wins,
+      losses: userState.losses,
+      rate: info.rate,
+      score: info.score,
+      tier: info.tier,
+      updatedAt: Date.now()
+    };
+
+    fetch(cleanUrl + "/leaderboard/" + encodeURIComponent(userState.playerId) + ".json", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    }).catch(function() {});
+  }
+
   function recordMatchResult(isWin) {
     if (isWin) userState.wins++;
     else userState.losses++;
     saveUserState();
     refreshRankUI();
+    syncMyRankToCloud();
   }
 
-  function upsertKnownPlayer(nick, wins, losses) {
-    if (!nick || nick.indexOf('(AI)') !== -1) return;
-    var found = false;
-    for (var i = 0; i < userState.knownPlayers.length; i++) {
-      if (userState.knownPlayers[i].nick === nick) {
-        userState.knownPlayers[i].wins = wins;
-        userState.knownPlayers[i].losses = losses;
-        found = true;
-        break;
-      }
-    }
-    if (!found) {
-      userState.knownPlayers.push({ nick: nick, wins: wins, losses: losses });
-    }
-    if (userState.knownPlayers.length > 30) {
-      userState.knownPlayers = userState.knownPlayers.slice(-30);
-    }
-    saveUserState();
+  function fetchGlobalTop10() {
+    var box = document.getElementById("rankListContainer");
+    var cleanUrl = (FIREBASE_DB_URL || "").trim().replace(/\/+$/, "");
+    var myNick = getMyNick(CAT_SKINS[userState.equippedCat].name.replace('(기본)', ''));
+
+    box.innerHTML = '<div style="padding:18px; color:#bae6fd; font-size:0.8rem;">🌐 실시간 통합 랭킹을 불러오는 중...</div>';
+    lobbyStatus.innerText = "클라우드 서버에서 실시간 TOP 10 랭킹을 조회 중...";
+
+    syncMyRankToCloud();
+
+    fetch(cleanUrl + "/leaderboard.json")
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        var list = [];
+        if (data && typeof data === 'object') {
+          Object.keys(data).forEach(function(pid) {
+            var row = data[pid];
+            if (row && typeof row.wins === 'number') {
+              list.push({
+                playerId: pid,
+                nick: row.nick || '이름없음',
+                wins: row.wins || 0,
+                losses: row.losses || 0,
+                isMe: (pid === userState.playerId)
+              });
+            }
+          });
+        }
+
+        if (!list.some(function(x) { return x.isMe; })) {
+          list.push({
+            playerId: userState.playerId,
+            nick: myNick,
+            wins: userState.wins,
+            losses: userState.losses,
+            isMe: true
+          });
+        }
+
+        list.sort(function(a, b) {
+          var ra = getRankInfo(a.wins, a.losses);
+          var rb = getRankInfo(b.wins, b.losses);
+          if (rb.score !== ra.score) return rb.score - ra.score;
+          if (b.wins !== a.wins) return b.wins - a.wins;
+          return rb.rate - ra.rate;
+        });
+
+        var top10 = list.slice(0, 10);
+        box.innerHTML = "";
+
+        if (top10.length === 0) {
+          box.innerHTML = '<div style="padding:18px; color:#94a3b8; font-size:0.8rem;">아직 등록된 랭킹 기록이 없습니다. 첫 승리를 기록해 보세요!</div>';
+          return;
+        }
+
+        for (var i = 0; i < top10.length; i++) {
+          var item = top10[i];
+          var info = getRankInfo(item.wins, item.losses);
+          var medal = i === 0 ? "🥇" : (i === 1 ? "🥈" : (i === 2 ? "🥉" : (i + 1) + "위"));
+          var rowEl = document.createElement("div");
+          rowEl.className = "rank-row" + (item.isMe ? " me" : "");
+          rowEl.innerHTML =
+            '<div class="rank-left">' +
+              '<span class="rank-num">' + medal + '</span>' +
+              '<span>' + info.tier + ' ' + item.nick + (item.isMe ? ' <span style="color:#fde047;">(나)</span>' : '') + '</span>' +
+            '</div>' +
+            '<div class="rank-right">' + item.wins + '승 ' + item.losses + '패 (' + info.rate + '%)</div>';
+          box.appendChild(rowEl);
+        }
+
+        lobbyStatus.innerText = "총 " + list.length + "명의 실제 플레이어 중 TOP " + top10.length + " 표시 중!";
+      })
+      .catch(function() {
+        box.innerHTML = '<div style="padding:16px; color:#fca5a5; font-size:0.78rem;">랭킹 서버 연결에 실패했습니다. 네트워크 상태나 Firebase 규칙(Publish)을 확인해 주세요.</div>';
+        lobbyStatus.innerText = "랭킹 조회 실패 (새로고침을 눌러 다시 시도하세요)";
+      });
   }
 
   loadUserState();
   refreshRankUI();
 
-  // --- 3. TOP 10 랭킹 보드 렌더링 & 실시간 로비 조회 ---
-  var DEFAULT_RIVALS = [
-    { nick: '냐옹킹', wins: 18, losses: 4 },
-    { nick: '스파이크장인', wins: 14, losses: 5 },
-    { nick: '치즈볼러', wins: 11, losses: 5 },
-    { nick: '페르시안프로', wins: 9, losses: 5 },
-    { nick: '해변의고양이', wins: 7, losses: 4 },
-    { nick: '점프왕냥이', wins: 5, losses: 4 },
-    { nick: '메테오슈터', wins: 4, losses: 3 },
-    { nick: '초보집사', wins: 2, losses: 2 },
-    { nick: '아기고양이', wins: 1, losses: 2 }
-  ];
-
-  function renderTop10Leaderboard(onlineExtras) {
-    var myNick = getMyNick(CAT_SKINS[userState.equippedCat].name.replace('(기본)', ''));
-    var pool = [];
-
-    // 1) 내 전적 추가
-    pool.push({ nick: myNick, wins: userState.wins, losses: userState.losses, isMe: true });
-
-    // 2) 실시간 온라인 로비에서 감지된 플레이어 추가
-    if (Array.isArray(onlineExtras)) {
-      for (var i = 0; i < onlineExtras.length; i++) {
-        var op = onlineExtras[i];
-        if (op.nick && op.nick !== myNick) {
-          upsertKnownPlayer(op.nick, op.wins || 0, op.losses || 0);
-        }
-      }
-    }
-
-    // 3) 저장된 온라인 상대방 전적 병합
-    for (var j = 0; j < userState.knownPlayers.length; j++) {
-      var kp = userState.knownPlayers[j];
-      if (kp.nick !== myNick && !pool.some(function(x) { return x.nick === kp.nick; })) {
-        pool.push({ nick: kp.nick, wins: kp.wins, losses: kp.losses, isMe: false });
-      }
-    }
-
-    // 4) 10명이 안 차면 기본 라이벌 랭커로 채움
-    for (var k = 0; k < DEFAULT_RIVALS.length; k++) {
-      var dr = DEFAULT_RIVALS[k];
-      if (dr.nick !== myNick && !pool.some(function(x) { return x.nick === dr.nick; })) {
-        pool.push({ nick: dr.nick, wins: dr.wins, losses: dr.losses, isMe: false });
-      }
-    }
-
-    // 랭킹 점수 및 승률 기준 내림차순 정렬
-    pool.sort(function(a, b) {
-      var ra = getRankInfo(a.wins, a.losses);
-      var rb = getRankInfo(b.wins, b.losses);
-      if (rb.score !== ra.score) return rb.score - ra.score;
-      return rb.wins - a.wins;
-    });
-
-    var top10 = pool.slice(0, 10);
-    var box = document.getElementById("rankListContainer");
-    box.innerHTML = "";
-
-    for (var idx = 0; idx < top10.length; idx++) {
-      var item = top10[idx];
-      var info = getRankInfo(item.wins, item.losses);
-      var medal = idx === 0 ? "🥇" : (idx === 1 ? "🥈" : (idx === 2 ? "🥉" : (idx + 1) + "위"));
-      var row = document.createElement("div");
-      row.className = "rank-row" + (item.isMe ? " me" : "");
-      row.innerHTML =
-        '<div class="rank-left">' +
-          '<span class="rank-num">' + medal + '</span>' +
-          '<span>' + info.tier + ' ' + item.nick + (item.isMe ? ' <span style="color:#fde047;">(나)</span>' : '') + '</span>' +
-        '</div>' +
-        '<div class="rank-right">' + item.wins + '승 ' + item.losses + '패 (' + info.rate + '%)</div>';
-      box.appendChild(row);
-    }
-  }
-
-  function scanOnlineRanks() {
-    renderTop10Leaderboard([]);
-    if (typeof Peer === 'undefined') return;
-    if (scanPeer) { try { scanPeer.destroy(); } catch (e) {} }
-
-    lobbyStatus.innerText = "실시간 온라인 플레이어 랭킹을 불러오는 중...";
-    var onlinePlayers = [];
-    var sp = new Peer();
-    scanPeer = sp;
-
-    sp.on('open', function() {
-      for (var i = 0; i < LOBBY_SLOTS.length; i++) {
-        (function(slotId) {
-          var c = sp.connect(slotId, { reliable: true });
-          c.on('open', function() { c.send({ type: 'probe' }); });
-          c.on('data', function(data) {
-            if (data && data.type === 'roomInfo') {
-              if (data.hostName) onlinePlayers.push({ nick: data.hostName, wins: data.hostWins || 0, losses: data.hostLosses || 0 });
-              if (data.p2Name) onlinePlayers.push({ nick: data.p2Name, wins: data.p2Wins || 0, losses: data.p2Losses || 0 });
-              renderTop10Leaderboard(onlinePlayers);
-            }
-          });
-          setTimeout(function() { try { c.close(); } catch (e) {} }, 1500);
-        })(LOBBY_SLOTS[i]);
-      }
-      setTimeout(function() {
-        lobbyStatus.innerText = "TOP 10 실시간 랭킹이 최신 상태로 갱신되었습니다!";
-      }, 1600);
-    });
-  }
-
-  // --- 4. 스킨 선택 UI & 24시간 해금 모달 ---
+  // --- 3. 스킨 선택 UI & 24시간 해금 모달 ---
   var pendingUnlock = null;
   var rewardModal = document.getElementById("rewardModal");
 
@@ -698,6 +1038,7 @@ window.onload = function() {
     userState.unlocks[pendingUnlock.key] = Date.now() + HOURS_24_MS;
     if (pendingUnlock.cb) pendingUnlock.cb();
     saveUserState();
+    SoundEngine.playUnlock();
     rewardModal.style.display = "none";
     renderSkinPanel();
     lobbyStatus.innerText = "🎉 [" + pendingUnlock.name + "] 24시간 사용이 활성화되었습니다!";
@@ -714,9 +1055,8 @@ window.onload = function() {
     var box = document.getElementById("skinScrollContainer");
     box.innerHTML = "";
 
-    // 1) 고양이 스킨 섹션
     var catSec = document.createElement("div");
-    catSec.innerHTML = '<div class="skin-cat-title">🐱 고양이 캐릭터 스킨 (8종)</div>';
+    catSec.innerHTML = '<div class="skin-cat-title">🐱 고양이 캐릭터 스킨 (선택 시 울음소리 미리듣기)</div>';
     var catGrid = document.createElement("div");
     catGrid.className = "skin-grid";
     Object.keys(CAT_SKINS).forEach(function(k) {
@@ -729,6 +1069,7 @@ window.onload = function() {
       var sub = sk.free ? "무료 기본" : (unlocked ? getRemainingHoursText(uKey) : "🔒 24시간 열기");
       btn.innerHTML = (equipped ? "✅ " : "") + sk.name + '<span class="skin-sub">' + sub + '</span>';
       btn.onclick = function() {
+        SoundEngine.playCatMeow(k, false);
         if (unlocked) {
           userState.equippedCat = k;
           saveUserState();
@@ -742,7 +1083,6 @@ window.onload = function() {
     catSec.appendChild(catGrid);
     box.appendChild(catSec);
 
-    // 2) 배구공 스킨 섹션
     var ballSec = document.createElement("div");
     ballSec.innerHTML = '<div class="skin-cat-title">🏐 배구공 스킨 (6종)</div>';
     var ballGrid = document.createElement("div");
@@ -757,6 +1097,7 @@ window.onload = function() {
       var sub = sk.free ? "무료 기본" : (unlocked ? getRemainingHoursText(uKey) : "🔒 24시간 열기");
       btn.innerHTML = (equipped ? "✅ " : "") + sk.name + '<span class="skin-sub">' + sub + '</span>';
       btn.onclick = function() {
+        SoundEngine.playBounce(false);
         if (unlocked) {
           userState.equippedBall = k;
           saveUserState();
@@ -770,9 +1111,8 @@ window.onload = function() {
     ballSec.appendChild(ballGrid);
     box.appendChild(ballSec);
 
-    // 3) 스파이크 이펙트 섹션
     var spkSec = document.createElement("div");
-    spkSec.innerHTML = '<div class="skin-cat-title">💥 스파이크(강타) 이펙트 (6종)</div>';
+    spkSec.innerHTML = '<div class="skin-cat-title">💥 스파이크 이펙트 (선택 시 효과음 미리듣기)</div>';
     var spkGrid = document.createElement("div");
     spkGrid.className = "skin-grid";
     Object.keys(SPIKE_SKINS).forEach(function(k) {
@@ -785,6 +1125,7 @@ window.onload = function() {
       var sub = sk.free ? "무료 기본" : (unlocked ? getRemainingHoursText(uKey) : "🔒 24시간 열기");
       btn.innerHTML = (equipped ? "✅ " : "") + sk.name + '<span class="skin-sub">' + sub + '</span>';
       btn.onclick = function() {
+        SoundEngine.playSpikeSound(k);
         if (unlocked) {
           userState.equippedSpike = k;
           saveUserState();
@@ -799,7 +1140,7 @@ window.onload = function() {
     box.appendChild(spkSec);
   }
 
-  // --- 5. 공개 로비 슬롯 및 배경 애니메이션 ---
+  // --- 4. 공개 로비 슬롯 및 배경 애니메이션 ---
   var LOBBY_SLOTS = [];
   for (var s = 1; s <= 10; s++) LOBBY_SLOTS.push("CAT-ROOM-" + s);
 
@@ -907,14 +1248,14 @@ window.onload = function() {
     return { top: '#0284c7', bot: '#7dd3fc', sand: '#fde047', line: '#eab308' };
   }
 
-  // --- 6. 플레이어 및 공 객체 ---
-  var p1 = { x: 150, y: 340, vx: 0, vy: 0, r: 26, maxSpeed: 7.5, side: 1, name: '크림냥', tier: '🥉 브론즈', wins: 0, losses: 0, skin: 'cream', spikeSkin: 'wind', hitTimer: 0, squash: 1 };
-  var p2 = { x: 650, y: 340, vx: 0, vy: 0, r: 26, maxSpeed: 7.5, side: 2, name: '그레이냥', tier: '🥉 브론즈', wins: 0, losses: 0, skin: 'gray', spikeSkin: 'wind', hitTimer: 0, squash: 1 };
+  // --- 5. 플레이어 및 공 객체 ---
+  var p1 = { x: 150, y: 340, vx: 0, vy: 0, r: 26, maxSpeed: 7.5, side: 1, name: '크림냥', tier: '🥉 브론즈', skin: 'cream', spikeSkin: 'wind', hitTimer: 0, squash: 1 };
+  var p2 = { x: 650, y: 340, vx: 0, vy: 0, r: 26, maxSpeed: 7.5, side: 2, name: '그레이냥', tier: '🥉 브론즈', skin: 'gray', spikeSkin: 'wind', hitTimer: 0, squash: 1 };
 
-  // spikeType: 'none' | 'wind' | 'meteor' | 'lightning' | 'ice' | 'sakura' | 'blackhole'
   var ball = { x: 400, y: 150, vx: 1.6, vy: -2.2, r: 20, spikeType: 'none', skin: 'classic' };
   var particles = [];
   var score1 = 0, score2 = 0, gameOver = false, matchRecorded = false, winnerText = "", keys = {};
+  var prevHit1 = 0, prevHit2 = 0, prevSpike = 'none', prevScore1 = 0, prevScore2 = 0;
   var lastTime = performance.now();
 
   var gameState = 'lobby';
@@ -997,7 +1338,8 @@ window.onload = function() {
   }
 
   function resetGame() {
-    score1 = 0; score2 = 0; gameOver = false; matchRecorded = false;
+    score1 = 0; score2 = 0; prevScore1 = 0; prevScore2 = 0;
+    gameOver = false; matchRecorded = false;
     resetPositions();
     if (netMode === 'host') {
       broadcastToAll({ type: 'reset' });
@@ -1056,7 +1398,7 @@ window.onload = function() {
     lobbyStatus.innerText = msg || "닉네임과 스킨을 고르고 게임을 시작하세요!";
   }
 
-  // --- 7. 방 생성 & 공개 방 리스트 스캔 ---
+  // --- 6. 방 생성 & 공개 방 리스트 스캔 ---
   function tryCreateHostSlot(slotIndex, fixedCode) {
     if (typeof Peer === 'undefined') {
       lobbyStatus.innerText = "인터넷 연결이 필요합니다.";
@@ -1077,8 +1419,6 @@ window.onload = function() {
     var rInfo = getRankInfo(userState.wins, userState.losses);
     p1.name = getMyNick(CAT_SKINS[userState.equippedCat].name.replace('(기본)', ''));
     p1.tier = rInfo.tier;
-    p1.wins = userState.wins;
-    p1.losses = userState.losses;
     p1.skin = userState.equippedCat;
     p1.spikeSkin = userState.equippedSpike;
     ball.skin = userState.equippedBall;
@@ -1111,11 +1451,7 @@ window.onload = function() {
             roomId: myRoomId,
             hostName: p1.name,
             hostTier: p1.tier,
-            hostWins: p1.wins,
-            hostLosses: p1.losses,
             p2Name: isPlaying ? p2.name : "",
-            p2Wins: isPlaying ? p2.wins : 0,
-            p2Losses: isPlaying ? p2.losses : 0,
             status: isPlaying ? 'playing' : 'waiting',
             specCount: spectatorConns.length
           });
@@ -1128,12 +1464,9 @@ window.onload = function() {
             player2Conn = c;
             p2.name = data.nick || '그레이냥';
             p2.tier = data.tier || '🥉 브론즈';
-            p2.wins = data.wins || 0;
-            p2.losses = data.losses || 0;
             p2.skin = (data.catSkin && CAT_SKINS[data.catSkin]) ? data.catSkin : 'gray';
             p2.spikeSkin = (data.spikeSkin && SPIKE_SKINS[data.spikeSkin]) ? data.spikeSkin : 'wind';
-            upsertKnownPlayer(p2.name, p2.wins, p2.losses);
-            c.send({ type: 'role', role: 'guest', p1Name: p1.name, p1Tier: p1.tier, p1Wins: p1.wins, p1Losses: p1.losses, p1Skin: p1.skin, ballSkin: ball.skin });
+            c.send({ type: 'role', role: 'guest', p1Name: p1.name, p1Tier: p1.tier, p1Skin: p1.skin, ballSkin: ball.skin });
             if (gameState !== 'playing') startMatch('host');
           } else {
             spectatorConns.push(c);
@@ -1212,7 +1545,6 @@ window.onload = function() {
           c.on('data', function(data) {
             if (data && data.type === 'roomInfo') {
               foundRooms.push(data);
-              if (data.hostName) upsertKnownPlayer(data.hostName, data.hostWins || 0, data.hostLosses || 0);
               finishOne();
             }
           });
@@ -1286,8 +1618,6 @@ window.onload = function() {
           type: 'hello',
           nick: myNick,
           tier: rInfo.tier,
-          wins: userState.wins,
-          losses: userState.losses,
           catSkin: userState.equippedCat,
           spikeSkin: userState.equippedSpike
         });
@@ -1298,7 +1628,6 @@ window.onload = function() {
             p1.tier = data.p1Tier || '🥉 브론즈';
             p1.skin = data.p1Skin || 'cream';
             ball.skin = data.ballSkin || 'classic';
-            upsertKnownPlayer(p1.name, data.p1Wins || 0, data.p1Losses || 0);
             if (data.role === 'guest') {
               p2.name = myNick;
               p2.tier = rInfo.tier;
@@ -1312,6 +1641,23 @@ window.onload = function() {
               startMatch('spectator');
             }
           } else if (data.type === 'state') {
+            // 게스트/관전자 화면에서도 고양이 울음소리 및 스파이크 효과음 동기화 재생
+            if (data.p1.ht > 14 && prevHit1 <= 14) {
+              if (data.b.st !== 'none') SoundEngine.playSpikeSound(data.b.st);
+              else SoundEngine.playCatMeow(data.p1.sk, false);
+            }
+            if (data.p2.ht > 14 && prevHit2 <= 14) {
+              if (data.b.st !== 'none') SoundEngine.playSpikeSound(data.b.st);
+              else SoundEngine.playCatMeow(data.p2.sk, false);
+            }
+            if (data.s1 !== prevScore1) SoundEngine.playScore(netMode !== 'guest');
+            if (data.s2 !== prevScore2) SoundEngine.playScore(netMode === 'guest');
+
+            prevHit1 = data.p1.ht;
+            prevHit2 = data.p2.ht;
+            prevScore1 = data.s1;
+            prevScore2 = data.s2;
+
             p1.x = data.p1.x; p1.y = data.p1.y; p1.vx = data.p1.vx; p1.hitTimer = data.p1.ht; p1.squash = data.p1.sq; p1.name = data.p1.nm; p1.tier = data.p1.tr; p1.skin = data.p1.sk;
             p2.x = data.p2.x; p2.y = data.p2.y; p2.vx = data.p2.vx; p2.hitTimer = data.p2.ht; p2.squash = data.p2.sq; p2.name = data.p2.nm; p2.tier = data.p2.tr; p2.skin = data.p2.sk;
             ball.x = data.b.x; ball.y = data.b.y; ball.spikeType = data.b.st; ball.skin = data.b.sk;
@@ -1325,6 +1671,7 @@ window.onload = function() {
             updateSpecBadge(data.sc || 0);
           } else if (data.type === 'reset') {
             gameOver = false; matchRecorded = false; particles = [];
+            prevScore1 = 0; prevScore2 = 0;
           }
         });
       });
@@ -1351,12 +1698,12 @@ window.onload = function() {
     if (pendingRoom) tryCreateHostSlot(0, pendingRoom);
   } catch (e) {}
 
-  // --- 8. 로비 버튼 이벤트 ---
+  // --- 7. 로비 버튼 이벤트 ---
   document.getElementById("btnOpenSkins").onclick = function() {
     renderSkinPanel();
     mainMenuBox.style.display = 'none';
     skinPanel.style.display = 'flex';
-    lobbyStatus.innerText = "잠긴 스킨을 터치하면 24시간 무료로 열 수 있습니다!";
+    lobbyStatus.innerText = "아이템을 누르면 고양이 울음소리와 이펙트 효과음을 미리 들을 수 있어요!";
   };
 
   document.getElementById("btnCloseSkins").onclick = function() {
@@ -1373,13 +1720,12 @@ window.onload = function() {
     skinPanel.style.display = 'none';
     listPanel.style.display = 'none';
     rankPanel.style.display = 'flex';
-    scanOnlineRanks();
+    fetchGlobalTop10();
   }
   document.getElementById("btnOpenRank").onclick = openRankBoard;
   document.getElementById("rankSummaryBadge").onclick = openRankBoard;
-  document.getElementById("btnRefreshRank").onclick = scanOnlineRanks;
+  document.getElementById("btnRefreshRank").onclick = fetchGlobalTop10;
   document.getElementById("btnCloseRank").onclick = function() {
-    if (scanPeer) { try { scanPeer.destroy(); } catch (e) {} scanPeer = null; }
     rankPanel.style.display = 'none';
     mainMenuBox.style.display = 'flex';
     lobbyStatus.innerText = "닉네임과 스킨을 고르고 게임을 시작하세요!";
@@ -1401,6 +1747,7 @@ window.onload = function() {
     p2.spikeSkin = 'wind';
 
     ball.skin = userState.equippedBall;
+    SoundEngine.playCatMeow(p1.skin, false);
     startMatch('ai');
   };
 
@@ -1432,7 +1779,7 @@ window.onload = function() {
   document.getElementById("btnCancelRoom").onclick = function() { returnToLobby("방 만들기를 취소했습니다."); };
   btnHome.onclick = function() { returnToLobby(); };
 
-  // --- 9. 터치 및 키보드 조작 ---
+  // --- 8. 터치 및 키보드 조작 ---
   window.onkeydown = function(e) {
     keys[e.code] = true;
     if (gameState === 'playing' && gameOver && e.code === 'Space' && (netMode === 'ai' || netMode === 'host')) resetGame();
@@ -1500,7 +1847,7 @@ window.onload = function() {
   bindBtn('btnJump', 'ArrowUp');
   bindBtn('btnSpike', 'Space');
 
-  // --- 10. 게임 물리 및 스파이크 이펙트 업데이트 ---
+  // --- 9. 게임 물리 및 스파이크 이펙트 업데이트 ---
   function update(dt) {
     updateEnvironment(dt);
 
@@ -1512,6 +1859,9 @@ window.onload = function() {
 
     if (netMode === 'guest' || netMode === 'spectator') {
       if (netMode === 'guest' && conn && conn.open) {
+        if ((keys["ArrowUp"] || keys["KeyW"]) && p2.y >= 338) {
+          SoundEngine.playCatMeow(p2.skin, true);
+        }
         conn.send({
           type: 'keys',
           keys: {
@@ -1546,6 +1896,7 @@ window.onload = function() {
     if ((keys["ArrowUp"] || keys["KeyW"]) && p1.y >= 340) {
       p1.vy = -10.8;
       p1.squash = 1.22;
+      SoundEngine.playCatMeow(p1.skin, true);
     }
 
     var wasAir1 = p1.y < 340;
@@ -1570,7 +1921,11 @@ window.onload = function() {
         p2.vx = mul(p2.vx, Math.pow(0.76, dt));
         if (Math.abs(p2.vx) < 0.15) p2.vx = 0;
       }
-      if (remoteKeys.U && p2.y >= 340) { p2.vy = -10.8; p2.squash = 1.22; }
+      if (remoteKeys.U && p2.y >= 340) {
+        p2.vy = -10.8;
+        p2.squash = 1.22;
+        SoundEngine.playCatMeow(p2.skin, true);
+      }
     } else {
       var aiMax = 4.5;
       var targetX = ball.x > 400 ? ball.x + 10 : 650;
@@ -1586,6 +1941,7 @@ window.onload = function() {
       if (ball.x > 400 && ball.y < 250 && ball.vy > 0 && p2.y >= 340 && Math.abs(p2.x - ball.x) < 70) {
         p2.vy = -10.5;
         p2.squash = 1.22;
+        SoundEngine.playCatMeow(p2.skin, true);
       }
     }
 
@@ -1605,13 +1961,14 @@ window.onload = function() {
 
     updateParticles(dt);
 
-    if (ball.x < ball.r) { ball.x = ball.r; ball.vx = -ball.vx; }
-    if (ball.x > 800 - ball.r) { ball.x = 800 - ball.r; ball.vx = -ball.vx; }
-    if (ball.y < ball.r) { ball.y = ball.r; ball.vy = -ball.vy; }
+    if (ball.x < ball.r) { ball.x = ball.r; ball.vx = -ball.vx; SoundEngine.playBounce(false); }
+    if (ball.x > 800 - ball.r) { ball.x = 800 - ball.r; ball.vx = -ball.vx; SoundEngine.playBounce(false); }
+    if (ball.y < ball.r) { ball.y = ball.r; ball.vy = -ball.vy; SoundEngine.playBounce(false); }
 
     if (ball.x + ball.r > 395 && ball.x - ball.r < 405 && ball.y + ball.r > 260) {
       if (ball.y < 275) { ball.y = 260 - ball.r; ball.vy = mul(ball.vy, -0.92); }
       else { ball.vx = mul(ball.vx, -0.85); ball.x = ball.x < 400 ? 395 - ball.r : 405 + ball.r; }
+      SoundEngine.playBounce(true);
     }
 
     hitBall(p1, !!keys["Space"]);
@@ -1620,6 +1977,7 @@ window.onload = function() {
     if (ball.y > 430) {
       if (ball.x < 400) {
         score2++;
+        SoundEngine.playScore(false);
         if (score2 >= 15) {
           gameOver = true;
           winnerText = "🎉 " + p2.name + " 승리! (터치해 재시작)";
@@ -1629,6 +1987,7 @@ window.onload = function() {
         }
       } else {
         score1++;
+        SoundEngine.playScore(true);
         if (score1 >= 15) {
           gameOver = true;
           winnerText = "🎉 " + p1.name + " 승리! (터치해 재시작)";
@@ -1652,7 +2011,6 @@ window.onload = function() {
     }
   }
 
-  // 스파이크 종류(바람 / 메테오 / 번개 / 얼음 / 벚꽃 / 블랙홀)별 전용 파티클 생성
   function updateParticles(dt) {
     if (ball.spikeType !== 'none' && particles.length < 40) {
       var pColor = '#ffffff';
@@ -1715,15 +2073,17 @@ window.onload = function() {
         ball.spikeType = p.spikeSkin || 'wind';
         ball.vx = mul(Math.cos(angle), 12.2) + mul(p.vx, 0.3);
         ball.vy = mul(Math.sin(angle), 12.2) - 3.5;
+        SoundEngine.playSpikeSound(ball.spikeType);
       } else {
         ball.spikeType = 'none';
         ball.vx = mul(Math.cos(angle), 6.5) + mul(p.vx, 0.25);
         ball.vy = mul(Math.sin(angle), 6.5) - 2.4;
+        SoundEngine.playCatMeow(p.skin, false);
       }
     }
   }
 
-  // --- 11. 캐릭터 / 공 / 이펙트 그리기 ---
+  // --- 10. 캐릭터 / 공 / 이펙트 그리기 ---
   function traceCatHeadPath(isSimple) {
     ctx.beginPath();
     if (isSimple) {
@@ -1742,7 +2102,6 @@ window.onload = function() {
     var sk = CAT_SKINS[p.skin] || CAT_SKINS.cream;
     var isSimple = sk.simple;
 
-    // 닉네임 + 랭크 티어 이름표
     ctx.save();
     var labelStr = p.tier ? (p.tier + " " + p.name) : p.name;
     ctx.font = 'bold 12px sans-serif';
@@ -1765,7 +2124,6 @@ window.onload = function() {
     var speedRatio = Math.abs(p.vx) / p.maxSpeed;
     var time = performance.now();
 
-    // 1. 꼬리
     var tailWag = mul(Math.sin(mul(time, 0.008)), 6);
     ctx.lineCap = 'round';
     ctx.strokeStyle = '#0f172a';
@@ -1786,7 +2144,6 @@ window.onload = function() {
       ctx.fill();
     }
 
-    // 2. 몸통
     ctx.fillStyle = sk.color;
     ctx.beginPath();
     ctx.ellipse(0, 17, 16, 13, 0, 0, TAU);
@@ -1810,7 +2167,6 @@ window.onload = function() {
       ctx.fill();
     }
 
-    // 3. 앞발
     var paw = mul(Math.sin(mul(time, 0.022)), mul(4.2, speedRatio));
     ctx.fillStyle = (sk.id === 'persian' || sk.id === 'siamese') ? '#3e2723' : '#ffffff';
     ctx.strokeStyle = '#0f172a';
@@ -1818,7 +2174,6 @@ window.onload = function() {
     ctx.beginPath(); ctx.arc(-8, 28 + paw, 5, 0, TAU); ctx.fill(); ctx.stroke();
     ctx.beginPath(); ctx.arc(8, 28 - paw, 5, 0, TAU); ctx.fill(); ctx.stroke();
 
-    // 4. 귀
     var leftEarColor = (sk.id === 'persian') ? '#334155' : (sk.id === 'siamese' ? '#4e342e' : (sk.id === 'calico' ? '#ea580c' : sk.color));
     var rightEarColor = (sk.id === 'persian') ? '#334155' : (sk.id === 'siamese' ? '#4e342e' : (sk.id === 'calico' ? '#1e293b' : sk.color));
 
@@ -1846,7 +2201,6 @@ window.onload = function() {
       ctx.moveTo(20, -14); ctx.quadraticCurveTo(22, -29, 18.5, -31); ctx.quadraticCurveTo(15, -31, 11, -20); ctx.closePath(); ctx.fill();
     }
 
-    // 5. 머리
     ctx.fillStyle = sk.color;
     traceCatHeadPath(isSimple);
     ctx.fill();
@@ -1862,13 +2216,11 @@ window.onload = function() {
         ctx.fillStyle = '#e0f2fe';
         ctx.beginPath(); ctx.arc(-22, 6, 10, 0, TAU); ctx.arc(22, 6, 10, 0, TAU); ctx.fill();
       } else if (sk.id === 'calico') {
-        // 삼색냥 얼룩 패치
         ctx.fillStyle = '#ea580c';
         ctx.beginPath(); ctx.arc(-18, -14, 15, 0, TAU); ctx.fill();
         ctx.fillStyle = '#1e293b';
         ctx.beginPath(); ctx.arc(20, -12, 14, 0, TAU); ctx.fill();
       } else if (sk.id === 'siamese') {
-        // 샴냥 특유의 코·입 주변 짙은 초코 포인트 마스크
         ctx.fillStyle = '#5d4037';
         ctx.beginPath(); ctx.ellipse(dir * 2, 3, 15, 11, 0, 0, TAU); ctx.fill();
       } else {
@@ -1876,7 +2228,6 @@ window.onload = function() {
         ctx.beginPath(); ctx.ellipse(-6, -15, 13, 6, -0.25, 0, TAU); ctx.fill();
       }
 
-      // 이마 & 볼 줄무늬
       if (sk.id !== 'siamese') {
         ctx.fillStyle = sk.stripe;
         ctx.beginPath();
@@ -1897,7 +2248,6 @@ window.onload = function() {
     traceCatHeadPath(isSimple);
     ctx.stroke();
 
-    // 황금냥 전용 미니 왕관 장식
     if (sk.id === 'gold') {
       ctx.fillStyle = '#fef08a';
       ctx.strokeStyle = '#854d0e';
@@ -1915,14 +2265,12 @@ window.onload = function() {
       ctx.stroke();
     }
 
-    // 6. 볼터치
     ctx.fillStyle = 'rgba(244, 63, 94, 0.35)';
     ctx.beginPath();
     ctx.ellipse(-15, 4, 4.5, 3, 0, 0, TAU);
     ctx.ellipse(15, 4, 4.5, 3, 0, 0, TAU);
     ctx.fill();
 
-    // 7. 눈
     var isBlackCat = (sk.id === 'black');
     var isSiamese = (sk.id === 'siamese');
     if (p.hitTimer > 0) {
@@ -1957,7 +2305,6 @@ window.onload = function() {
       ctx.fill();
     }
 
-    // 8. 코 & 입
     var noseX = dir;
     ctx.fillStyle = '#fb7185';
     ctx.beginPath();
@@ -1981,7 +2328,6 @@ window.onload = function() {
     ctx.save();
     ctx.translate(ball.x, ball.y);
 
-    // 스파이크 상태일 때 공 주변 오라 광채
     if (ball.spikeType === 'wind') {
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
       ctx.lineWidth = 2;
@@ -2003,7 +2349,6 @@ window.onload = function() {
       ctx.beginPath(); ctx.arc(0, 0, ball.r + 10, 0, TAU); ctx.fill();
     }
 
-    // 공 스킨 클리핑 내부 그리기
     ctx.beginPath();
     ctx.arc(0, 0, ball.r, 0, TAU);
     ctx.clip();
@@ -2061,7 +2406,6 @@ window.onload = function() {
       ctx.beginPath(); ctx.arc(7, 0, 15, 2.0, 4.2); ctx.stroke();
     }
 
-    // 스파이크 오버레이 색조
     if (ball.spikeType === 'meteor') {
       ctx.fillStyle = 'rgba(239, 68, 68, 0.58)';
       ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
@@ -2081,7 +2425,6 @@ window.onload = function() {
 
     ctx.restore();
 
-    // 공 테두리
     ctx.save();
     ctx.translate(ball.x, ball.y);
     ctx.beginPath();
@@ -2246,7 +2589,6 @@ window.onload = function() {
 
     drawChar(p1); drawChar(p2);
 
-    // 스파이크 파티클 렌더링 (바람 / 메테오 / 번개 / 얼음 / 벚꽃 / 블랙홀)
     for (var i = 0; i < particles.length; i++) {
       var pt = particles[i];
       ctx.save();
@@ -2287,7 +2629,6 @@ window.onload = function() {
         ctx.arc(pt.x, pt.y, pt.size * 0.85, 0, TAU);
         ctx.stroke();
       } else {
-        // 메테오(운석 불꽃)
         ctx.fillStyle = pt.color;
         ctx.beginPath();
         ctx.arc(pt.x, pt.y, pt.size, 0, TAU);
