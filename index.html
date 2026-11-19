@@ -432,7 +432,7 @@ window.onload = function() {
   var HOURS_24_MS = 24 * 60 * 60 * 1000;
 
   // =========================================================================
-  // 0. 고선명 Web Audio API 사운드 엔진 (은은한 BGM + 또렷한 고양이 울음소리 + 스파이크음)
+  // 0. 고양이 8종별 억양·음절·질감이 확실히 다른 개성 만점 Web Audio 사운드 엔진
   // =========================================================================
   var SoundEngine = (function() {
     var AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -479,7 +479,7 @@ window.onload = function() {
           osc.type = 'sine';
           osc.frequency.setValueAtTime(mFreq, now);
           gain.gain.setValueAtTime(0.001, now);
-          gain.gain.linearRampToValueAtTime(0.018, now + 0.03);
+          gain.gain.linearRampToValueAtTime(0.016, now + 0.03);
           gain.gain.exponentialRampToValueAtTime(0.0005, now + 0.24);
           osc.connect(gain);
           gain.connect(actx.destination);
@@ -493,7 +493,7 @@ window.onload = function() {
           bOsc.type = 'triangle';
           bOsc.frequency.setValueAtTime(bFreq, now);
           bGain.gain.setValueAtTime(0.001, now);
-          bGain.gain.linearRampToValueAtTime(0.016, now + 0.02);
+          bGain.gain.linearRampToValueAtTime(0.014, now + 0.02);
           bGain.gain.exponentialRampToValueAtTime(0.0005, now + 0.26);
           bOsc.connect(bGain);
           bGain.connect(actx.destination);
@@ -549,96 +549,146 @@ window.onload = function() {
       src.start();
     }
 
-    // ★ 듀얼 오실레이터 + 성대 포먼트 필터로 만든 리얼하고 또렷한 고양이 '미야옹~' 소리
+    function synthSyllable(c, startTime, opt) {
+      var osc1 = c.createOscillator();
+      var osc2 = c.createOscillator();
+      var filter = c.createBiquadFilter();
+      var gain = c.createGain();
+      var osc2Gain = c.createGain();
+
+      osc1.type = opt.wave1 || 'triangle';
+      osc2.type = opt.wave2 || 'sawtooth';
+
+      var dur = opt.dur || 0.24;
+      osc1.frequency.setValueAtTime(opt.fStart, startTime);
+      osc1.frequency.exponentialRampToValueAtTime(opt.fPeak, startTime + dur * (opt.peakRatio || 0.35));
+      osc1.frequency.exponentialRampToValueAtTime(opt.fEnd, startTime + dur);
+
+      osc2.frequency.setValueAtTime(opt.fStart * (opt.harmonic || 1), startTime);
+      osc2.frequency.exponentialRampToValueAtTime(opt.fPeak * (opt.harmonic || 1), startTime + dur * (opt.peakRatio || 0.35));
+      osc2.frequency.exponentialRampToValueAtTime(opt.fEnd * (opt.harmonic || 1), startTime + dur);
+
+      if (opt.vibFreq && opt.vibDepth) {
+        var lfo = c.createOscillator();
+        var lfoGain = c.createGain();
+        lfo.frequency.setValueAtTime(opt.vibFreq, startTime);
+        lfoGain.gain.setValueAtTime(opt.vibDepth, startTime);
+        lfo.connect(lfoGain);
+        lfoGain.connect(osc1.frequency);
+        lfoGain.connect(osc2.frequency);
+        lfo.start(startTime);
+        lfo.stop(startTime + dur + 0.02);
+      }
+
+      filter.type = 'bandpass';
+      filter.Q.setValueAtTime(opt.q || 2.2, startTime);
+      filter.frequency.setValueAtTime(opt.filtStart || 900, startTime);
+      filter.frequency.exponentialRampToValueAtTime(opt.filtPeak || 1650, startTime + dur * 0.35);
+      filter.frequency.exponentialRampToValueAtTime(opt.filtEnd || 850, startTime + dur);
+
+      osc2Gain.gain.setValueAtTime(opt.mix2 || 0.38, startTime);
+
+      var vol = opt.vol || 0.14;
+      gain.gain.setValueAtTime(0.001, startTime);
+      gain.gain.linearRampToValueAtTime(vol, startTime + 0.025);
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + dur);
+
+      osc1.connect(filter);
+      osc2.connect(osc2Gain);
+      osc2Gain.connect(filter);
+      filter.connect(gain);
+      gain.connect(c.destination);
+
+      osc1.start(startTime);
+      osc2.start(startTime);
+      osc1.stop(startTime + dur + 0.02);
+      osc2.stop(startTime + dur + 0.02);
+    }
+
     function playCatMeow(skinId, isJump) {
       var c = unlockAndStart();
       if (!c || isMuted) return;
 
       var runMeow = function() {
         var now = c.currentTime;
-        // 고양이 8종별 음높이와 억양 설정
-        var baseF = 560, peakF = 880, endF = 480, dur = 0.26, vol = 0.14;
+
         if (skinId === 'cream') {
-          baseF = 580; peakF = 920; endF = 510;
+          synthSyllable(c, now, {
+            fStart: 500, fPeak: 820, fEnd: 460,
+            dur: isJump ? 0.13 : 0.25,
+            wave1: 'triangle', wave2: 'sine', mix2: 0.4, vol: isJump ? 0.11 : 0.15
+          });
         } else if (skinId === 'gray') {
-          baseF = 490; peakF = 760; endF = 420;
+          synthSyllable(c, now, {
+            fStart: 410, fPeak: 640, fEnd: 350,
+            dur: isJump ? 0.13 : 0.26,
+            wave1: 'sine', wave2: 'triangle', mix2: 0.35, filtPeak: 1250, vol: isJump ? 0.11 : 0.15
+          });
         } else if (skinId === 'cheese') {
-          baseF = 620; peakF = 980; endF = 540; dur = 0.28;
+          synthSyllable(c, now, {
+            fStart: 540, fPeak: 680, fEnd: 1120, peakRatio: 0.45,
+            dur: isJump ? 0.14 : 0.27,
+            wave1: 'triangle', wave2: 'sawtooth', mix2: 0.38, filtPeak: 1850, vol: isJump ? 0.11 : 0.15
+          });
         } else if (skinId === 'persian') {
-          baseF = 740; peakF = 1160; endF = 680; dur = 0.30;
+          synthSyllable(c, now, {
+            fStart: 760, fPeak: 1220, fEnd: 720,
+            dur: isJump ? 0.15 : 0.34,
+            wave1: 'sine', wave2: 'triangle', harmonic: 1.5, mix2: 0.3,
+            vibFreq: 16, vibDepth: 45, filtStart: 1200, filtPeak: 2100, vol: isJump ? 0.11 : 0.14
+          });
         } else if (skinId === 'black') {
-          baseF = 380; peakF = 580; endF = 320; dur = 0.27;
+          synthSyllable(c, now, {
+            fStart: 240, fPeak: 430, fEnd: 210,
+            dur: isJump ? 0.14 : 0.30,
+            wave1: 'sawtooth', wave2: 'square', mix2: 0.3,
+            vibFreq: 28, vibDepth: 35, q: 3.0, filtStart: 550, filtPeak: 950, filtEnd: 500,
+            vol: isJump ? 0.09 : 0.12
+          });
         } else if (skinId === 'calico') {
-          baseF = 650; peakF = 1040; endF = 600; dur = 0.26;
+          if (isJump) {
+            synthSyllable(c, now, {
+              fStart: 640, fPeak: 1020, fEnd: 780, dur: 0.12,
+              wave1: 'triangle', wave2: 'sawtooth', mix2: 0.35, vol: 0.11
+            });
+          } else {
+            synthSyllable(c, now, {
+              fStart: 620, fPeak: 960, fEnd: 740, dur: 0.11,
+              wave1: 'triangle', wave2: 'sawtooth', mix2: 0.35, vol: 0.13
+            });
+            synthSyllable(c, now + 0.13, {
+              fStart: 680, fPeak: 1120, fEnd: 580, dur: 0.21,
+              wave1: 'triangle', wave2: 'sawtooth', mix2: 0.35, vol: 0.14
+            });
+          }
         } else if (skinId === 'siamese') {
-          baseF = 700; peakF = 1100; endF = 560; dur = 0.29;
+          synthSyllable(c, now, {
+            fStart: 640, fPeak: 1160, fEnd: 520, peakRatio: 0.25,
+            dur: isJump ? 0.15 : 0.33,
+            wave1: 'sawtooth', wave2: 'triangle', mix2: 0.45,
+            q: 3.5, filtStart: 1100, filtPeak: 2200, filtEnd: 950,
+            vol: isJump ? 0.10 : 0.13
+          });
         } else if (skinId === 'gold') {
-          baseF = 800; peakF = 1280; endF = 940; dur = 0.32;
-        }
-
-        if (isJump) {
-          // 점프 시 짧고 경쾌한 "냥!" 기합 소리
-          dur = 0.14;
-          endF = peakF * 1.1;
-          vol = 0.11;
-        }
-
-        // 메인 성대 오실레이터 (삼각파 + 톱니파 혼합으로 스마트폰 스피커에서도 선명함)
-        var osc1 = c.createOscillator();
-        var osc2 = c.createOscillator();
-        var filter = c.createBiquadFilter();
-        var gain = c.createGain();
-
-        osc1.type = 'triangle';
-        osc2.type = 'sawtooth';
-
-        // "미-야-옹" 입모양 피치 변화 (시작음 -> 급상승 -> 부드럽게 하강)
-        osc1.frequency.setValueAtTime(baseF * 0.85, now);
-        osc1.frequency.exponentialRampToValueAtTime(peakF, now + dur * 0.35);
-        osc1.frequency.exponentialRampToValueAtTime(endF, now + dur);
-
-        osc2.frequency.setValueAtTime(baseF * 0.85, now);
-        osc2.frequency.exponentialRampToValueAtTime(peakF, now + dur * 0.35);
-        osc2.frequency.exponentialRampToValueAtTime(endF, now + dur);
-
-        // 고양이 입안 공명(포먼트) 밴드패스 필터
-        filter.type = 'bandpass';
-        filter.Q.setValueAtTime(2.2, now);
-        filter.frequency.setValueAtTime(900, now);
-        filter.frequency.exponentialRampToValueAtTime(1650, now + dur * 0.35);
-        filter.frequency.exponentialRampToValueAtTime(850, now + dur);
-
-        // 볼륨 엔벨로프
-        var osc2Gain = c.createGain();
-        osc2Gain.gain.setValueAtTime(0.35, now);
-
-        gain.gain.setValueAtTime(0.001, now);
-        gain.gain.linearRampToValueAtTime(vol, now + 0.03);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
-
-        osc1.connect(filter);
-        osc2.connect(osc2Gain);
-        osc2Gain.connect(filter);
-        filter.connect(gain);
-        gain.connect(c.destination);
-
-        osc1.start(now);
-        osc2.start(now);
-        osc1.stop(now + dur + 0.02);
-        osc2.stop(now + dur + 0.02);
-
-        // 황금냥 전용 반짝이는 벨 화음
-        if (skinId === 'gold' && !isJump) {
-          var bell = c.createOscillator();
-          var bGain = c.createGain();
-          bell.type = 'sine';
-          bell.frequency.setValueAtTime(1567.98, now + 0.05);
-          bGain.gain.setValueAtTime(0.06, now + 0.05);
-          bGain.gain.exponentialRampToValueAtTime(0.0005, now + 0.38);
-          bell.connect(bGain);
-          bGain.connect(c.destination);
-          bell.start(now + 0.05);
-          bell.stop(now + 0.39);
+          synthSyllable(c, now, {
+            fStart: 780, fPeak: 1260, fEnd: 980,
+            dur: isJump ? 0.14 : 0.30,
+            wave1: 'sine', wave2: 'triangle', harmonic: 1.5, mix2: 0.45, vol: isJump ? 0.11 : 0.14
+          });
+          var bellNotes = isJump ? [1567.98] : [1318.5, 1567.98, 2093.0];
+          for (var b = 0; b < bellNotes.length; b++) {
+            var bell = c.createOscillator();
+            var bGain = c.createGain();
+            var t0 = now + 0.04 + b * 0.055;
+            bell.type = 'sine';
+            bell.frequency.setValueAtTime(bellNotes[b], t0);
+            bGain.gain.setValueAtTime(0.055, t0);
+            bGain.gain.exponentialRampToValueAtTime(0.0005, t0 + 0.32);
+            bell.connect(bGain);
+            bGain.connect(c.destination);
+            bell.start(t0);
+            bell.stop(t0 + 0.33);
+          }
         }
       };
 
@@ -649,7 +699,6 @@ window.onload = function() {
       }
     }
 
-    // 스파이크 6종별 고유 강타 이펙트 사운드
     function playSpikeSound(spikeType) {
       var c = unlockAndStart();
       if (!c || isMuted) return;
@@ -1081,7 +1130,7 @@ window.onload = function() {
     box.innerHTML = "";
 
     var catSec = document.createElement("div");
-    catSec.innerHTML = '<div class="skin-cat-title">🐱 고양이 캐릭터 스킨 (터치 시 울음소리 재생)</div>';
+    catSec.innerHTML = '<div class="skin-cat-title">🐱 고양이 캐릭터 스킨 (터치 시 고유 울음소리 재생)</div>';
     var catGrid = document.createElement("div");
     catGrid.className = "skin-grid";
     Object.keys(CAT_SKINS).forEach(function(k) {
@@ -1277,7 +1326,7 @@ window.onload = function() {
   var p1 = { x: 150, y: 340, vx: 0, vy: 0, r: 26, maxSpeed: 7.5, side: 1, name: '크림냥', tier: '🥉 브론즈', skin: 'cream', spikeSkin: 'wind', hitTimer: 0, squash: 1 };
   var p2 = { x: 650, y: 340, vx: 0, vy: 0, r: 26, maxSpeed: 7.5, side: 2, name: '그레이냥', tier: '🥉 브론즈', skin: 'gray', spikeSkin: 'wind', hitTimer: 0, squash: 1 };
 
-  var ball = { x: 400, y: 150, vx: 1.6, vy: -2.2, r: 20, spikeType: 'none', skin: 'classic' };
+  var ball = { x: 400, y: 150, vx: 1.3, vy: -1.8, r: 20, spikeType: 'none', skin: 'classic' };
   var particles = [];
   var score1 = 0, score2 = 0, gameOver = false, matchRecorded = false, winnerText = "", keys = {};
   var prevHit1 = 0, prevHit2 = 0, prevScore1 = 0, prevScore2 = 0;
@@ -1351,7 +1400,7 @@ window.onload = function() {
   function resetPositions() {
     p1.x = 150; p1.y = 340; p1.vx = 0; p1.vy = 0; p1.squash = 1;
     p2.x = 650; p2.y = 340; p2.vx = 0; p2.vy = 0; p2.squash = 1;
-    ball.x = 400; ball.y = 150; ball.vx = 1.6; ball.vy = -2.2; ball.spikeType = 'none';
+    ball.x = 400; ball.y = 150; ball.vx = 1.3; ball.vy = -1.8; ball.spikeType = 'none';
     particles = [];
   }
 
@@ -1727,7 +1776,7 @@ window.onload = function() {
     renderSkinPanel();
     mainMenuBox.style.display = 'none';
     skinPanel.style.display = 'flex';
-    lobbyStatus.innerText = "고양이 버튼을 터치하면 각 고양이의 울음소리를 들을 수 있어요!";
+    lobbyStatus.innerText = "고양이 버튼을 터치해 각 고양이의 개성 있는 울음소리를 비교해 보세요!";
   };
 
   document.getElementById("btnCloseSkins").onclick = function() {
@@ -1873,7 +1922,7 @@ window.onload = function() {
   bindBtn('btnJump', 'ArrowUp');
   bindBtn('btnSpike', 'Space');
 
-  // --- 9. 게임 물리 및 스파이크 이펙트 업데이트 ---
+  // --- 9. 게임 물리 및 스파이크 이펙트 업데이트 (초보자용 체공 시간 증가) ---
   function update(dt) {
     updateEnvironment(dt);
 
@@ -1953,7 +2002,7 @@ window.onload = function() {
         SoundEngine.playCatMeow(p2.skin, true);
       }
     } else {
-      var aiMax = 4.5;
+      var aiMax = 4.2;
       var targetX = ball.x > 400 ? ball.x + 10 : 650;
       var diffX = targetX - p2.x;
       if (Math.abs(diffX) > 6) {
@@ -1981,7 +2030,8 @@ window.onload = function() {
     if (p2.x < 410 + p2.r) { p2.x = 410 + p2.r; p2.vx = 0; }
     if (p2.x > 800 - p2.r - 6) { p2.x = 800 - p2.r - 6; p2.vx = 0; }
 
-    ball.vy += mul(0.15, dt);
+    // 초보자용 체공 시간 증가: 중력 가속도를 낮춰 공중에 더 오래 머물게 함
+    ball.vy += mul(0.115, dt);
     ball.x += mul(ball.vx, dt);
     ball.y += mul(ball.vy, dt);
 
@@ -2009,7 +2059,7 @@ window.onload = function() {
           winnerText = "🎉 " + p2.name + " 승리! (터치해 재시작)";
           if (!matchRecorded) { matchRecorded = true; recordMatchResult(false); }
         } else {
-          ball.x = 580; ball.y = 140; ball.vx = -1.6; ball.vy = -2.2; ball.spikeType = 'none'; particles = [];
+          ball.x = 580; ball.y = 140; ball.vx = -1.3; ball.vy = -1.8; ball.spikeType = 'none'; particles = [];
         }
       } else {
         score1++;
@@ -2019,7 +2069,7 @@ window.onload = function() {
           winnerText = "🎉 " + p1.name + " 승리! (터치해 재시작)";
           if (!matchRecorded) { matchRecorded = true; recordMatchResult(true); }
         } else {
-          ball.x = 220; ball.y = 140; ball.vx = 1.6; ball.vy = -2.2; ball.spikeType = 'none'; particles = [];
+          ball.x = 220; ball.y = 140; ball.vx = 1.3; ball.vy = -1.8; ball.spikeType = 'none'; particles = [];
         }
       }
     }
@@ -2068,8 +2118,8 @@ window.onload = function() {
       particles.push({
         x: ball.x + mul(Math.random() - 0.5, 20),
         y: ball.y + mul(Math.random() - 0.5, 20),
-        vx: mul(Math.random() - 0.5, 3.0) - mul(ball.vx, 0.25),
-        vy: mul(Math.random() - 0.5, 3.0) - mul(ball.vy, 0.25),
+        vx: mul(Math.random() - 0.5, 2.8) - mul(ball.vx, 0.22),
+        vy: mul(Math.random() - 0.5, 2.8) - mul(ball.vy, 0.22),
         size: pSize,
         color: pColor,
         kind: pKind,
@@ -2098,13 +2148,13 @@ window.onload = function() {
       SoundEngine.playCatMeow(p.skin, false);
       if (isSpike) {
         ball.spikeType = p.spikeSkin || 'wind';
-        ball.vx = mul(Math.cos(angle), 12.2) + mul(p.vx, 0.3);
-        ball.vy = mul(Math.sin(angle), 12.2) - 3.5;
+        ball.vx = mul(Math.cos(angle), 10.2) + mul(p.vx, 0.28);
+        ball.vy = mul(Math.sin(angle), 10.2) - 3.2;
         SoundEngine.playSpikeSound(ball.spikeType);
       } else {
         ball.spikeType = 'none';
-        ball.vx = mul(Math.cos(angle), 6.5) + mul(p.vx, 0.25);
-        ball.vy = mul(Math.sin(angle), 6.5) - 2.4;
+        ball.vx = mul(Math.cos(angle), 5.5) + mul(p.vx, 0.22);
+        ball.vy = mul(Math.sin(angle), 5.5) - 2.3;
       }
     }
   }
