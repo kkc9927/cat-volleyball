@@ -37,7 +37,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   display: none;
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 35%, #1e1b4b, #090d16 85%);
+  background: radial-gradient(circle at 50% 35%, #1e1b4b, #090d16 88%);
   border-radius: 10px;
   border: 3px solid #facc15;
   flex-direction: column;
@@ -46,6 +46,12 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   padding: 10px 14px;
   z-index: 18;
   cursor: pointer;
+  opacity: 1;
+  transition: opacity 0.65s ease;
+}
+.intro-overlay.fading-out {
+  opacity: 0;
+  pointer-events: none;
 }
 .intro-top-row {
   width: 100%;
@@ -55,6 +61,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   font-size: 0.72rem;
   color: #fde68a;
   font-weight: bold;
+  z-index: 2;
 }
 .intro-skip-btn {
   background: rgba(30, 41, 59, 0.9);
@@ -68,9 +75,9 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 }
 .intro-canvas {
   width: 100%;
-  max-width: 680px;
+  max-width: 720px;
   flex: 1;
-  max-height: 220px;
+  max-height: 240px;
   border: none;
   background: transparent;
 }
@@ -82,8 +89,9 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   border: 1px solid rgba(250, 204, 21, 0.45);
   border-radius: 10px;
   padding: 5px 12px;
-  max-width: 540px;
+  max-width: 560px;
   line-height: 1.35;
+  z-index: 2;
 }
 
 /* 메인 대기화면(로비) 오버레이 */
@@ -611,14 +619,14 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 <div class="game-wrapper">
   <canvas id="cvs" width="800" height="450"></canvas>
 
-  <!-- 사이트 첫 접속 시 재생되는 귀여운 스토리 인트로 -->
+  <!-- 사이트 첫 접속 시 재생되는 4컷 스토리 인트로 -->
   <div class="intro-overlay" id="introOverlay">
     <div class="intro-top-row">
       <span id="introBadge">✨ STORY INTRO · 냐옹이 배구</span>
       <button class="intro-skip-btn" id="btnSkipIntro">건너뛰기 ▶</button>
     </div>
-    <canvas class="intro-canvas" id="introCvs" width="680" height="220"></canvas>
-    <div class="intro-caption" id="introCaption">별똥별이 떨어지자 고양이들이 달려갔어요...</div>
+    <canvas class="intro-canvas" id="introCvs" width="720" height="240"></canvas>
+    <div class="intro-caption" id="introCaption">고양이 두 마리가 밤하늘을 바라보고 있어요...</div>
   </div>
 
   <!-- 대기화면(로비) -->
@@ -807,9 +815,9 @@ window.onload = function() {
       closePolicyBtn: "닫기",
       introBadge: "✨ STORY INTRO · 냐옹이 배구",
       introSkipBtn: "건너뛰기 ▶",
-      introCap1: "밤하늘에서 반짝이는 별똥별 하나가 떨어졌어요! ⭐",
-      introCap2: "크림냥과 그레이냥이 별빛 자취를 따라 성큼성큼 달려갑니다. 🐾",
-      introCap3: "도착한 곳에는 오로라처럼 빛나는 황금 배구공이 있었어요! 🏐✨",
+      introCap1: "고양이 두 마리가 나란히 밤하늘을 바라보고 있어요... 별똥별이 떨어진다! ⭐",
+      introCap2: "별똥별을 향해 고양이들이 신나게 달려가요! 🐾",
+      introCap3: "떨어진 곳엔 빛나는 배구공이 있었고, 고양이들이 가까이 다가옵니다! 🏐✨",
       guideHtml:
         "<h4>1. 게임 소개 및 규칙</h4>" +
         "<ul>" +
@@ -976,9 +984,9 @@ window.onload = function() {
       closePolicyBtn: "Close",
       introBadge: "✨ STORY INTRO · Nyaong Volleyball",
       introSkipBtn: "Skip ▶",
-      introCap1: "A bright shooting star fell across the night sky! ⭐",
-      introCap2: "CreamCat and GrayCat trotted toward the glowing trail. 🐾",
-      introCap3: "They found a radiant golden volleyball shimmering with aurora light! 🏐✨",
+      introCap1: "Two cats gaze up at the night sky side by side... A shooting star falls! ⭐",
+      introCap2: "The cats dash joyfully toward the falling star! 🐾",
+      introCap3: "A glowing volleyball shines where it landed as the cats run closer! 🏐✨",
       guideHtml:
         "<h4>1. Gameplay & Rules</h4>" +
         "<ul>" +
@@ -1195,114 +1203,243 @@ window.onload = function() {
   };
 
   // =========================================================================
-  // 귀여운 스토리 인트로 연출 (별똥별 → 고양이들 달려감 → 빛나는 배구공 발견)
+  // 4컷 영화풍 스토리 인트로
+  // 컷1 (0~2.2s): 고양이 2마리 근접 뒷모습 + 밤하늘 별똥별
+  // 컷2 (2.2~4.4s): 화면전환 → 별똥별 향해 달려가는 고양이들
+  // 컷3 (4.4~7.0s): 화면전환 → 빛나는 배구공 & 멀리서 가까이 달려오는 고양이들
+  // 컷4 (7.0~7.8s): 천천히 화면전환(페이드아웃) → 메인 대기화면
   // =========================================================================
   var introOverlay = document.getElementById("introOverlay");
   var introCvs = document.getElementById("introCvs");
   var ictx = introCvs.getContext("2d");
   var introTimer = null;
+  var introFadeTimeout = null;
   var introElapsed = 0;
   var introActive = false;
 
-  function drawMiniCat(g, x, y, col, earCol, hop, faceRight) {
+  function drawCatBackCloseUp(g, x, y, col, earCol, tilt, scale) {
+    g.save();
+    g.translate(x, y);
+    g.scale(scale, scale);
+    g.rotate(tilt);
+
+    // 뒷모습 귀 (뾰족한 외곽 + 핑크/톤 안쪽)
+    g.fillStyle = earCol || col; g.strokeStyle = '#0f172a'; g.lineWidth = 3;
+    g.beginPath(); g.moveTo(-26, -16); g.lineTo(-22, -46); g.lineTo(-7, -28); g.closePath(); g.fill(); g.stroke();
+    g.fillStyle = '#fda4af';
+    g.beginPath(); g.moveTo(-22, -20); g.lineTo(-20, -39); g.lineTo(-11, -28); g.closePath(); g.fill();
+
+    g.fillStyle = earCol || col;
+    g.beginPath(); g.moveTo(26, -16); g.lineTo(22, -46); g.lineTo(7, -28); g.closePath(); g.fill(); g.stroke();
+    g.fillStyle = '#fda4af';
+    g.beginPath(); g.moveTo(22, -20); g.lineTo(20, -39); g.lineTo(11, -28); g.closePath(); g.fill();
+
+    // 뒷모습 머리 & 어깨
+    g.fillStyle = col;
+    g.beginPath(); g.arc(0, -4, 34, 0, TAU); g.fill(); g.stroke();
+
+    g.beginPath(); g.ellipse(0, 32, 32, 22, 0, 0, TAU); g.fill(); g.stroke();
+
+    // 살랑이는 꼬리 실루엣
+    var wag = Math.sin(performance.now() * 0.007) * 6;
+    g.strokeStyle = '#0f172a'; g.lineWidth = 8; g.lineCap = 'round';
+    g.beginPath(); g.moveTo(16, 36); g.quadraticCurveTo(36, 22 + wag, 28, 4 + wag); g.stroke();
+    g.strokeStyle = col; g.lineWidth = 4.5; g.stroke();
+
+    g.restore();
+  }
+
+  function drawSideCat(g, x, y, col, earCol, hop, scale, faceRight) {
     g.save();
     g.translate(x, y + hop);
-    var dir = faceRight ? 1 : -1;
-    // 꼬리
+    g.scale(scale * (faceRight ? 1 : -1), scale);
+
+    var wag = Math.sin(performance.now() * 0.015) * 6;
     g.strokeStyle = '#0f172a'; g.lineWidth = 5; g.lineCap = 'round';
-    g.beginPath(); g.moveTo(-dir * 10, 8); g.quadraticCurveTo(-dir * 24, -4, -dir * 18, -14); g.stroke();
+    g.beginPath(); g.moveTo(-11, 8); g.quadraticCurveTo(-25, -4 + wag, -19, -15 + wag); g.stroke();
     g.strokeStyle = col; g.lineWidth = 2.5; g.stroke();
-    // 몸통
-    g.fillStyle = col; g.strokeStyle = '#0f172a'; g.lineWidth = 2;
-    g.beginPath(); g.ellipse(0, 9, 11, 9, 0, 0, TAU); g.fill(); g.stroke();
-    // 귀
+
+    g.fillStyle = col; g.strokeStyle = '#0f172a'; g.lineWidth = 2.2;
+    g.beginPath(); g.ellipse(0, 9, 12, 9.5, 0, 0, TAU); g.fill(); g.stroke();
+
     g.fillStyle = earCol || col;
-    g.beginPath(); g.moveTo(-14, -6); g.lineTo(-11, -20); g.lineTo(-3, -12); g.closePath(); g.fill(); g.stroke();
-    g.beginPath(); g.moveTo(14, -6); g.lineTo(11, -20); g.lineTo(3, -12); g.closePath(); g.fill(); g.stroke();
-    // 얼굴
+    g.beginPath(); g.moveTo(-14, -6); g.lineTo(-11, -21); g.lineTo(-3, -12); g.closePath(); g.fill(); g.stroke();
+    g.beginPath(); g.moveTo(14, -6); g.lineTo(11, -21); g.lineTo(3, -12); g.closePath(); g.fill(); g.stroke();
+
     g.fillStyle = col;
-    g.beginPath(); g.arc(0, -3, 15, 0, TAU); g.fill(); g.stroke();
-    // 눈
+    g.beginPath(); g.arc(0, -3, 15.5, 0, TAU); g.fill(); g.stroke();
+
     g.fillStyle = '#0f172a';
-    g.beginPath(); g.arc(-5 + dir * 2, -4, 2.3, 0, TAU); g.arc(5 + dir * 2, -4, 2.3, 0, TAU); g.fill();
+    g.beginPath(); g.arc(5, -4, 2.3, 0, TAU); g.arc(11, -4, 2.1, 0, TAU); g.fill();
     g.fillStyle = '#fff';
-    g.beginPath(); g.arc(-5.7 + dir * 2, -4.8, 0.9, 0, TAU); g.arc(4.3 + dir * 2, -4.8, 0.9, 0, TAU); g.fill();
-    // 볼터치
+    g.beginPath(); g.arc(4.3, -4.8, 0.9, 0, TAU); g.arc(10.3, -4.8, 0.8, 0, TAU); g.fill();
+
     g.fillStyle = 'rgba(244, 63, 94, 0.42)';
-    g.beginPath(); g.ellipse(-9, 1, 3, 2, 0, 0, TAU); g.ellipse(9, 1, 3, 2, 0, 0, TAU); g.fill();
+    g.beginPath(); g.ellipse(7, 1, 3.2, 2, 0, 0, TAU); g.fill();
     g.restore();
+  }
+
+  function drawGlowingVolleyBall(g, x, y, radius, ms) {
+    var pulse = Math.sin(ms * 0.008) * 5;
+    var aura = g.createRadialGradient(x, y, radius * 0.2, x, y, radius * 2.8 + pulse);
+    aura.addColorStop(0, 'rgba(254, 249, 195, 0.95)');
+    aura.addColorStop(0.45, 'rgba(52, 211, 153, 0.42)');
+    aura.addColorStop(0.75, 'rgba(192, 132, 252, 0.22)');
+    aura.addColorStop(1, 'rgba(250, 204, 21, 0)');
+    g.fillStyle = aura;
+    g.beginPath(); g.arc(x, y, radius * 2.9 + pulse, 0, TAU); g.fill();
+
+    g.save(); g.translate(x, y);
+    var grad = g.createRadialGradient(-radius * 0.3, -radius * 0.3, 2, 0, 0, radius);
+    grad.addColorStop(0, '#ffffff');
+    grad.addColorStop(0.4, '#fef08a');
+    grad.addColorStop(1, '#eab308');
+    g.fillStyle = grad; g.strokeStyle = '#fef9c3'; g.lineWidth = 2.4;
+    g.beginPath(); g.arc(0, 0, radius, 0, TAU); g.fill(); g.stroke();
+
+    g.strokeStyle = '#ca8a04'; g.lineWidth = 1.6;
+    g.beginPath(); g.arc(-radius * 0.35, 0, radius * 0.72, -1.0, 1.0); g.stroke();
+    g.beginPath(); g.arc(radius * 0.35, 0, radius * 0.72, 2.1, 4.1); g.stroke();
+    g.restore();
+  }
+
+  function drawNightStars(g, w, h, ms) {
+    for (var i = 0; i < 32; i++) {
+      var sx = ((i * 113 + 29) % (w - 16)) + 8;
+      var sy = ((i * 53 + 17) % Math.max(60, h - 55)) + 10;
+      var tw = 0.35 + 0.65 * Math.abs(Math.sin(ms * 0.004 + i * 0.9));
+      g.fillStyle = "rgba(255, 255, 240, " + tw.toFixed(2) + ")";
+      g.beginPath(); g.arc(sx, sy, (i % 4 === 0) ? 2.2 : 1.3, 0, TAU); g.fill();
+    }
   }
 
   function renderIntroFrame(ms) {
     var w = introCvs.width, h = introCvs.height;
     ictx.clearRect(0, 0, w, h);
 
-    // 반짝이는 별들
-    for (var i = 0; i < 24; i++) {
-      var sx = ((i * 97) % (w - 20)) + 10;
-      var sy = ((i * 43) % 120) + 12;
-      var alpha = 0.35 + 0.65 * Math.abs(Math.sin(ms * 0.004 + i));
-      ictx.fillStyle = "rgba(255, 255, 240, " + alpha.toFixed(2) + ")";
-      ictx.beginPath(); ictx.arc(sx, sy, (i % 3 === 0) ? 2 : 1.2, 0, TAU); ictx.fill();
-    }
-
-    // 땅
-    ictx.fillStyle = '#1e293b'; ictx.fillRect(0, 178, w, 42);
-    ictx.strokeStyle = '#38bdf8'; ictx.lineWidth = 2;
-    ictx.beginPath(); ictx.moveTo(0, 178); ictx.lineTo(w, 178); ictx.stroke();
-
-    // 1단계 (0~2.2초): 별똥별 떨어짐
-    var p1Star = Math.min(1, ms / 2000);
-    var starX = 110 + p1Star * 320;
-    var starY = 24 + p1Star * 135;
-    if (ms < 2500) {
-      var tailGrad = ictx.createLinearGradient(starX, starY, starX - 65, starY - 35);
-      tailGrad.addColorStop(0, 'rgba(254, 240, 138, 0.95)');
-      tailGrad.addColorStop(1, 'rgba(254, 240, 138, 0)');
-      ictx.strokeStyle = tailGrad; ictx.lineWidth = 4; ictx.lineCap = 'round';
-      ictx.beginPath(); ictx.moveTo(starX, starY); ictx.lineTo(starX - 65, starY - 35); ictx.stroke();
-      ictx.fillStyle = '#fef08a';
-      ictx.beginPath(); ictx.arc(starX, starY, 5.5, 0, TAU); ictx.fill();
-    }
-
-    // 빛나는 배구공 위치 (중앙 오른쪽)
-    var ballX = 435;
-    var ballY = 156;
-    var glowAlpha = ms > 1800 ? Math.min(1, (ms - 1800) / 900) : 0.25;
-    var pulse = Math.sin(ms * 0.008) * 4;
-
-    if (glowAlpha > 0.1) {
-      var aura = ictx.createRadialGradient(ballX, ballY, 6, ballX, ballY, 44 + pulse);
-      aura.addColorStop(0, "rgba(254, 240, 138, " + (0.75 * glowAlpha).toFixed(2) + ")");
-      aura.addColorStop(0.55, "rgba(52, 211, 153, " + (0.35 * glowAlpha).toFixed(2) + ")");
-      aura.addColorStop(1, "rgba(250, 204, 21, 0)");
-      ictx.fillStyle = aura;
-      ictx.beginPath(); ictx.arc(ballX, ballY, 46 + pulse, 0, TAU); ictx.fill();
-
-      ictx.fillStyle = '#facc15'; ictx.strokeStyle = '#fef9c3'; ictx.lineWidth = 2.5;
-      ictx.beginPath(); ictx.arc(ballX, ballY, 16, 0, TAU); ictx.fill(); ictx.stroke();
-    }
-
-    // 2단계 (1.2초~4.8초): 고양이 두 마리가 달려가 멈춤
-    var runProg = Math.min(1, Math.max(0, (ms - 1100) / 2400));
-    var cat1X = 95 + runProg * 265;
-    var cat2X = 52 + runProg * 265;
-    var hop1 = runProg < 1 ? Math.abs(Math.sin(ms * 0.018)) * -9 : Math.sin(ms * 0.008) * -2;
-    var hop2 = runProg < 1 ? Math.abs(Math.cos(ms * 0.018)) * -9 : Math.cos(ms * 0.008) * -2;
-
-    drawMiniCat(ictx, cat1X, 156, '#fef3c7', '#fde68a', hop1, true);
-    drawMiniCat(ictx, cat2X, 156, '#cbd5e1', '#94a3b8', hop2, true);
-
     var d = T();
     var capEl = document.getElementById("introCaption");
-    if (ms < 1600) capEl.innerText = d.introCap1;
-    else if (ms < 3400) capEl.innerText = d.introCap2;
-    else capEl.innerText = d.introCap3;
+
+    // 컷1 (0 ~ 2200ms): 밤하늘 별똥별 + 고양이 2마리 근접 뒷모습
+    if (ms < 2200) {
+      capEl.innerText = d.introCap1;
+      drawNightStars(ictx, w, h, ms);
+
+      // 초승달
+      ictx.fillStyle = '#fef08a';
+      ictx.beginPath(); ictx.arc(570, 52, 18, 0, TAU); ictx.fill();
+      ictx.fillStyle = '#141336';
+      ictx.beginPath(); ictx.arc(578, 47, 15, 0, TAU); ictx.fill();
+
+      // 별똥별 낙하
+      var pStar = Math.min(1, ms / 1850);
+      var stX = 210 + pStar * 290;
+      var stY = 24 + pStar * 105;
+      var tail = ictx.createLinearGradient(stX, stY, stX - 75, stY - 32);
+      tail.addColorStop(0, 'rgba(254, 240, 138, 0.98)');
+      tail.addColorStop(1, 'rgba(254, 240, 138, 0)');
+      ictx.strokeStyle = tail; ictx.lineWidth = 4.5; ictx.lineCap = 'round';
+      ictx.beginPath(); ictx.moveTo(stX, stY); ictx.lineTo(stX - 75, stY - 32); ictx.stroke();
+      ictx.fillStyle = '#ffffff';
+      ictx.beginPath(); ictx.arc(stX, stY, 5, 0, TAU); ictx.fill();
+
+      // 근접 뒷모습 고양이 2마리 (화면 하단)
+      var lookTilt = Math.sin(ms * 0.005) * 0.05;
+      drawCatBackCloseUp(ictx, w * 0.41, h - 18, '#fef3c7', '#fde68a', lookTilt, 1.38);
+      drawCatBackCloseUp(ictx, w * 0.59, h - 18, '#cbd5e1', '#94a3b8', -lookTilt, 1.38);
+
+      // 컷 전환 플래시/페이드 (2000~2200ms)
+      if (ms > 2000) {
+        ictx.fillStyle = "rgba(9, 13, 22, " + ((ms - 2000) / 200).toFixed(2) + ")";
+        ictx.fillRect(0, 0, w, h);
+      }
+      return;
+    }
+
+    // 컷2 (2200 ~ 4400ms): 화면전환 → 별똥별 향해 달려가는 고양이들
+    if (ms < 4400) {
+      var t2 = ms - 2200;
+      capEl.innerText = d.introCap2;
+      drawNightStars(ictx, w, h, ms);
+
+      // 지면
+      ictx.fillStyle = '#1e293b'; ictx.fillRect(0, h - 38, w, 38);
+      ictx.strokeStyle = '#38bdf8'; ictx.lineWidth = 2;
+      ictx.beginPath(); ictx.moveTo(0, h - 38); ictx.lineTo(w, h - 38); ictx.stroke();
+
+      // 떨어지는 별똥별
+      var p2s = Math.min(1, t2 / 1500);
+      var bx = 340 + p2s * 240;
+      var by = 22 + p2s * 145;
+      var grd2 = ictx.createLinearGradient(bx, by, bx - 60, by - 30);
+      grd2.addColorStop(0, 'rgba(254, 240, 138, 0.95)');
+      grd2.addColorStop(1, 'rgba(254, 240, 138, 0)');
+      ictx.strokeStyle = grd2; ictx.lineWidth = 3.5; ictx.lineCap = 'round';
+      ictx.beginPath(); ictx.moveTo(bx, by); ictx.lineTo(bx - 60, by - 30); ictx.stroke();
+      ictx.fillStyle = '#fef08a';
+      ictx.beginPath(); ictx.arc(bx, by, 4.5, 0, TAU); ictx.fill();
+
+      // 달려가는 고양이 2마리
+      var runProg = Math.min(1, t2 / 1950);
+      var c1x = 90 + runProg * 360;
+      var c2x = 45 + runProg * 350;
+      var hop1 = Math.abs(Math.sin(t2 * 0.016)) * -12;
+      var hop2 = Math.abs(Math.cos(t2 * 0.016)) * -12;
+      drawSideCat(ictx, c1x, h - 56, '#fef3c7', '#fde68a', hop1, 1.05, true);
+      drawSideCat(ictx, c2x, h - 56, '#cbd5e1', '#94a3b8', hop2, 1.05, true);
+
+      if (t2 < 200) {
+        ictx.fillStyle = "rgba(9, 13, 22, " + (1 - t2 / 200).toFixed(2) + ")";
+        ictx.fillRect(0, 0, w, h);
+      } else if (t2 > 2000) {
+        ictx.fillStyle = "rgba(9, 13, 22, " + ((t2 - 2000) / 200).toFixed(2) + ")";
+        ictx.fillRect(0, 0, w, h);
+      }
+      return;
+    }
+
+    // 컷3 (4400 ~ 7000ms): 화면전환 → 별똥별 떨어진 곳의 빛나는 배구공 & 멀리서 가까이 달려오는 고양이
+    var t3 = ms - 4400;
+    capEl.innerText = d.introCap3;
+    drawNightStars(ictx, w, h, ms);
+
+    // 원근감 있는 바닥
+    var groundGrad = ictx.createLinearGradient(0, h - 68, 0, h);
+    groundGrad.addColorStop(0, '#1e293b');
+    groundGrad.addColorStop(1, '#0f172a');
+    ictx.fillStyle = groundGrad;
+    ictx.fillRect(0, h - 68, w, 68);
+    ictx.strokeStyle = '#818cf8'; ictx.lineWidth = 1.5;
+    ictx.beginPath(); ictx.moveTo(0, h - 68); ictx.lineTo(w, h - 68); ictx.stroke();
+
+    // 별똥별이 떨어진 자리의 빛나는 배구공 (중앙)
+    var ballY = (h - 92) + Math.sin(t3 * 0.006) * 4;
+    drawGlowingVolleyBall(ictx, w * 0.5, ballY, 20, ms);
+
+    // 멀리(작고 안쪽)에서 가까이(크고 바깥쪽) 달려오는 고양이 2마리
+    var approachProg = Math.min(1, t3 / 2100);
+    var ease = approachProg * approachProg;
+    var nearScale = 0.42 + ease * 1.05;
+    var baseLineY = (h - 68) + ease * 28;
+    var hopNear = Math.abs(Math.sin(t3 * 0.017)) * (-10 * nearScale);
+
+    var leftCatX = (w * 0.5 - 55) - ease * 145;
+    var rightCatX = (w * 0.5 + 55) + ease * 145;
+
+    drawSideCat(ictx, leftCatX, baseLineY, '#fef3c7', '#fde68a', hopNear, nearScale, true);
+    drawSideCat(ictx, rightCatX, baseLineY, '#cbd5e1', '#94a3b8', hopNear, nearScale, false);
+
+    if (t3 < 220) {
+      ictx.fillStyle = "rgba(9, 13, 22, " + (1 - t3 / 220).toFixed(2) + ")";
+      ictx.fillRect(0, 0, w, h);
+    }
   }
 
   function closeIntro() {
     introActive = false;
     if (introTimer) { clearInterval(introTimer); introTimer = null; }
+    if (introFadeTimeout) { clearTimeout(introFadeTimeout); introFadeTimeout = null; }
+    introOverlay.classList.remove('fading-out');
     introOverlay.style.display = 'none';
   }
 
@@ -1313,13 +1450,21 @@ window.onload = function() {
     introOverlay.style.display = 'flex';
     renderIntroFrame(0);
     var prev = performance.now();
+    var fadeStarted = false;
+
     introTimer = setInterval(function() {
       var now = performance.now();
       introElapsed += (now - prev);
       prev = now;
       renderIntroFrame(introElapsed);
-      if (introElapsed >= 5200) {
-        closeIntro();
+
+      // 7.0초부터 천천히 페이드아웃하며 메인 대기화면으로 전환
+      if (introElapsed >= 7000 && !fadeStarted) {
+        fadeStarted = true;
+        introOverlay.classList.add('fading-out');
+        introFadeTimeout = setTimeout(function() {
+          closeIntro();
+        }, 680);
       }
     }, 33);
   }
@@ -3158,7 +3303,7 @@ window.onload = function() {
     document.getElementById("lobbyAdSlot").innerHTML = AD_CONFIG.lobbyBannerHtml;
   }
 
-  // 첫 접속 시 세션당 1회 귀여운 인트로 재생
+  // 첫 접속 시 세션당 1회 4컷 스토리 인트로 재생
   var seenIntro = false;
   try { seenIntro = (sessionStorage.getItem('cat_intro_seen') === '1'); } catch (e) {}
   if (!seenIntro && gameState === 'lobby') {
