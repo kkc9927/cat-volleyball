@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>냐옹이 배구 온라인</title>
 <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-JR4KC87LFG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-JR4KC87LFG');
+</script>
 <style>
 * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
 body { background: #0f172a; color: #fff; text-align: center; font-family: sans-serif; margin: 0; padding: 6px 8px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; height: 100dvh; overflow: hidden; touch-action: none; }
@@ -128,7 +136,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 .lobby-ad-slot {
   width: 100%;
   max-width: 320px;
-  min-height: 34px;
+  min-height: 50px;
   margin-top: 3px;
   background: rgba(15, 23, 42, 0.85);
   border: 1px dashed rgba(148, 163, 184, 0.55);
@@ -722,7 +730,7 @@ window.onload = function() {
       roomsFoundStatus: function(n) { return "총 " + n + "개의 방이 열려 있습니다! 터치해서 입장하세요."; },
       enterCodePrompt: "입장할 방을 선택하거나 코드를 입력하세요!",
       connectingRoom: function(code) { return "[" + code + "] 방에 접속 중..."; },
-      roomNotFound: "방을 찾을 수 없습니다. 새로고침 후 다시 시도해 주세요.",
+      roomNotFound: "Room not found. Try refreshing.",
       hostClosed: "방장과의 연결이 종료되었습니다.",
       guestLeft: "상대 플레이어(2P)가 퇴장하여 대기화면으로 돌아왔습니다.",
       roomCancelled: "방 만들기를 취소했습니다.",
@@ -1280,6 +1288,7 @@ window.onload = function() {
 
   var currentAiConfig = AI_DIFFICULTIES[0];
   var aiWillSpike = false;
+  var aiJumpCooldown = 0;
 
   var currentSeason = { key: 'W_20260101', label: '' };
 
@@ -1737,6 +1746,7 @@ window.onload = function() {
     p2.x = 650; p2.y = 340; p2.vx = 0; p2.vy = 0; p2.squash = 1;
     ball.x = 400; ball.y = 150; ball.vx = 1.3; ball.vy = -1.8; ball.spikeType = 'none';
     aiWillSpike = false;
+    aiJumpCooldown = 0;
     particles = [];
   }
 
@@ -2011,9 +2021,19 @@ window.onload = function() {
   document.getElementById("btnStartAI").onclick = function() {
     validateUnlocks(); isHostingRoom = false;
     try { sessionStorage.removeItem('cat_host_room'); } catch (e) {}
+    var rInfo = getRankInfo(userState.wins, userState.losses);
+    currentAiConfig = AI_DIFFICULTIES[rInfo.lv] || AI_DIFFICULTIES[0];
+
     p1.name = getMyNick(getCatMeta(userState.equippedCat).name);
+    p1.tier = rInfo.tier;
     p1.skin = userState.equippedCat;
     p1.spikeSkin = userState.equippedSpike;
+
+    p2.name = T().aiName + " Lv." + currentAiConfig.lv;
+    p2.tier = rInfo.tier;
+    p2.skin = (userState.equippedCat === currentAiConfig.skin) ? 'cream' : currentAiConfig.skin;
+    p2.spikeSkin = currentAiConfig.spikeSkin;
+
     ball.skin = userState.equippedBall;
     SoundEngine.playCatMeow(p1.skin, false);
     startMatch('ai');
@@ -2216,11 +2236,13 @@ window.onload = function() {
       if (remoteKeys.U && p2.y >= 340) { p2.vy = -10.8; p2.squash = 1.22; SoundEngine.playCatMeow(p2.skin, true); }
     } else {
       // 내 랭크에 비례해 강해지는 AI 로직
+      if (aiJumpCooldown > 0) aiJumpCooldown -= dt;
+
       var cfg = currentAiConfig;
       var aiMax = cfg.maxSpeed;
       var predictedBallX = ball.x + mul(ball.vx, cfg.predictLead * 0.25);
-      var targetX = ball.x > 370 ? (predictedBallX + 24) : 630;
-      if (targetX < 442) targetX = 442;
+      var targetX = ball.x > 370 ? (predictedBallX + 26) : 630;
+      if (targetX < 445) targetX = 445;
       if (targetX > 765) targetX = 765;
 
       var diffX = targetX - p2.x;
@@ -2234,11 +2256,19 @@ window.onload = function() {
         p2.vx = mul(p2.vx, Math.pow(0.76, dt));
       }
 
-      if (ball.x > 390 && ball.y > 110 && ball.y < cfg.jumpHeightY && ball.vy > -1.2 && p2.y >= 340 && Math.abs(p2.x - (ball.x + 18)) < cfg.jumpRangeX) {
-        p2.vy = -10.8;
+      // 공이 일정 높이(120~275)에 있고 AI 앞쪽에 왔을 때만 점프 (헛점프 반복 방지)
+      var canJumpAttack = (ball.x > 405 && ball.y > 120 && ball.y < 275 && ball.vy > -2.0);
+      if (canJumpAttack && p2.y >= 340 && aiJumpCooldown <= 0 && Math.abs(p2.x - (ball.x + 20)) < cfg.jumpRangeX) {
+        p2.vy = -11.2;
         p2.squash = 1.22;
+        aiJumpCooldown = 28; // 착지 후 연속 헛점프 방지
         aiWillSpike = (cfg.spikeChance > 0 && Math.random() < cfg.spikeChance);
         SoundEngine.playCatMeow(p2.skin, true);
+      }
+
+      // 땅에 완전히 착지했을 때만 스파이크 장전 해제
+      if (p2.y >= 340 && p2.vy === 0) {
+        aiWillSpike = false;
       }
     }
 
@@ -2268,7 +2298,7 @@ window.onload = function() {
     if (netMode === 'host') {
       p2Spike = !!remoteKeys.S;
     } else if (Math.hypot(ball.x - p2.x, ball.y - p2.y) < ball.r + p2.r + 6) {
-      p2Spike = aiWillSpike || (currentAiConfig.spikeChance > 0 && Math.random() < currentAiConfig.spikeChance);
+      p2Spike = aiWillSpike;
     }
     hitBall(p2, p2Spike);
 
@@ -2276,11 +2306,11 @@ window.onload = function() {
       if (ball.x < 400) {
         score2++; SoundEngine.playScore(false);
         if (score2 >= WIN_SCORE) { gameOver = true; winnerText = T().winMsg(p2.name); if (!matchRecorded) { matchRecorded = true; recordMatchResult(false); } }
-        else { ball.x = 580; ball.y = 140; ball.vx = -1.3; ball.vy = -1.8; ball.spikeType = 'none'; aiWillSpike = false; particles = []; }
+        else { ball.x = 580; ball.y = 140; ball.vx = -1.3; ball.vy = -1.8; ball.spikeType = 'none'; aiWillSpike = false; aiJumpCooldown = 0; particles = []; }
       } else {
         score1++; SoundEngine.playScore(true);
         if (score1 >= WIN_SCORE) { gameOver = true; winnerText = T().winMsg(p1.name); if (!matchRecorded) { matchRecorded = true; recordMatchResult(true); } }
-        else { ball.x = 220; ball.y = 140; ball.vx = 1.3; ball.vy = -1.8; ball.spikeType = 'none'; aiWillSpike = false; particles = []; }
+        else { ball.x = 220; ball.y = 140; ball.vx = 1.3; ball.vy = -1.8; ball.spikeType = 'none'; aiWillSpike = false; aiJumpCooldown = 0; particles = []; }
       }
     }
 
@@ -2329,10 +2359,10 @@ window.onload = function() {
       if (isSpike) {
         ball.spikeType = p.spikeSkin || 'wind';
         if (p === p2 && netMode === 'ai') {
-          // 네트(x=400, y=260)를 반드시 넘겨 플레이어 코트에 내리꽂는 포물선 물리 계산
-          var targetCourtX = 90 + Math.random() * 240;
-          var distToTarget = ball.x - targetCourtX;
-          var flightFrames = Math.max(36, distToTarget / 9.2);
+          // 네트(x=400, y=260)를 넘기면서 빠르게 내리꽂는 강타 궤적
+          var targetCourtX = 80 + Math.random() * 250;
+          var distToTarget = Math.max(120, ball.x - targetCourtX);
+          var flightFrames = Math.max(24, distToTarget / 11.2);
           ball.vx = -distToTarget / flightFrames;
           var dyToFloor = 415 - ball.y;
           ball.vy = (dyToFloor - 0.5 * 0.115 * flightFrames * flightFrames) / flightFrames;
