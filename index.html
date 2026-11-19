@@ -1745,8 +1745,26 @@ window.onload = function() {
     for (var i = 0; i < spectatorConns.length; i++) { if (spectatorConns[i].open) spectatorConns[i].send(payload); }
   }
 
+  function applyCurrentRankToMatch() {
+    var rInfo = getRankInfo(userState.wins, userState.losses);
+    if (netMode === 'ai') {
+      currentAiConfig = AI_DIFFICULTIES[rInfo.lv] || AI_DIFFICULTIES[0];
+      p1.tier = rInfo.tier;
+      p2.name = T().aiName + " Lv." + currentAiConfig.lv;
+      p2.tier = rInfo.tier;
+      p2.skin = (userState.equippedCat === currentAiConfig.skin) ? 'cream' : currentAiConfig.skin;
+      p2.spikeSkin = currentAiConfig.spikeSkin;
+    } else if (netMode === 'host') {
+      p1.tier = rInfo.tier;
+    } else if (netMode === 'guest') {
+      p2.tier = rInfo.tier;
+    }
+  }
+
   function resetGame() {
-    score1 = 0; score2 = 0; prevScore1 = 0; prevScore2 = 0; gameOver = false; matchRecorded = false;
+    score1 = 0; score2 = 0; prevScore1 = 0; prevScore2 = 0;
+    gameOver = false; matchRecorded = false;
+    applyCurrentRankToMatch();
     resetPositions();
     if (netMode === 'host') broadcastToAll({ type: 'reset' });
   }
