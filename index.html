@@ -113,6 +113,17 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 .btn-create { background: linear-gradient(135deg, #ea580c, #c2410c); border: 1.5px solid #fdba74; }
 .btn-list { background: linear-gradient(135deg, #16a34a, #15803d); border: 1.5px solid #86efac; }
 
+/* 조작법 안내 배지 */
+.ctrl-hint {
+  font-size: 0.65rem;
+  color: #cbd5e1;
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid #475569;
+  border-radius: 7px;
+  padding: 2px 8px;
+  margin-top: 2px;
+}
+
 /* 대기화면 하단 배너 광고 슬롯 (320x50 규격) */
 .lobby-ad-slot {
   width: 100%;
@@ -451,6 +462,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
       </div>
     </div>
 
+    <div class="ctrl-hint" id="ctrlHintText">⌨️ PC: ←→(A/D) 이동 · ↑(W) 점프 · Space 스파이크(강타)</div>
     <div class="lobby-status" id="lobbyStatus"></div>
 
     <!-- 대기화면 하단 배너 광고 슬롯 -->
@@ -465,7 +477,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
     <div class="touch-btn" id="btnRight">▶<span class="sub-label" id="subRight">오른쪽</span></div>
   </div>
   <div class="action-group">
-    <div class="touch-btn spike-btn" id="btnSpike">💥<span id="spikeText">스파이크</span><span class="sub-label" id="subSpike">강타</span></div>
+    <div class="touch-btn spike-btn" id="btnSpike">💥<span id="spikeText">스파이크</span><span class="sub-label" id="subSpike">Space / 터치</span></div>
     <div class="touch-btn jump-btn" id="btnJump"><span id="jumpText">점프</span><span class="sub-label">▲</span></div>
   </div>
 </div>
@@ -509,6 +521,7 @@ window.onload = function() {
       aiBtn: "🐱 1인 플레이 (AI 대전)",
       createRoomBtn: "🏠 방 만들기 (공개방 생성)",
       roomListBtn: "🔍 참여하기 (방 리스트 보기)",
+      ctrlHint: "⌨️ PC: ←→(A/D) 이동 · ↑(W) 점프 · Space 스파이크(강타)",
       lobbyReadyMsg: "닉네임과 스킨을 고르고 게임을 시작하세요!",
       skinDetailDefaultName: "스킨을 선택하세요",
       skinDetailDefaultDesc: "매주 월요일 새 시즌이 시작되면 랭크와 스킨 해금이 초기화됩니다. 조건 달성 후 5초 광고로 시즌 스킨을 열어보세요!",
@@ -531,7 +544,7 @@ window.onload = function() {
       leftLabel: "왼쪽",
       rightLabel: "오른쪽",
       spikeText: "스파이크",
-      subSpike: "강타",
+      subSpike: "Space / 터치",
       jumpText: "점프",
       specBadge: function(n) { return "👀 관전 " + n + "명"; },
       specBannerTitle: "👀 관전 모드로 입장했습니다",
@@ -637,6 +650,7 @@ window.onload = function() {
       aiBtn: "🐱 Solo Play (vs AI)",
       createRoomBtn: "🏠 Create Public Room",
       roomListBtn: "🔍 Join / Room List",
+      ctrlHint: "⌨️ PC: ←→(A/D) Move · ↑(W) Jump · Space Spike",
       lobbyReadyMsg: "Pick a nickname & skins, then start!",
       skinDetailDefaultName: "Select a skin",
       skinDetailDefaultDesc: "Ranks and season skins reset every Monday. Reach the rank and watch a 5s ad to unlock for this season!",
@@ -659,7 +673,7 @@ window.onload = function() {
       leftLabel: "Left",
       rightLabel: "Right",
       spikeText: "Spike",
-      subSpike: "Smash",
+      subSpike: "Space / Tap",
       jumpText: "Jump",
       specBadge: function(n) { return "👀 " + n + " watching"; },
       specBannerTitle: "👀 Spectator Mode",
@@ -782,6 +796,7 @@ window.onload = function() {
     document.getElementById("btnStartAI").innerText = d.aiBtn;
     document.getElementById("btnCreateRoom").innerText = d.createRoomBtn;
     document.getElementById("btnOpenRoomList").innerText = d.roomListBtn;
+    document.getElementById("ctrlHintText").innerText = d.ctrlHint;
 
     document.getElementById("btnCloseSkins").innerText = d.closeSkinsBtn;
     document.getElementById("btnRefreshRank").innerText = d.refreshRankBtn;
@@ -844,8 +859,6 @@ window.onload = function() {
     var loc = T().spikes[id] || I18N.ko.spikes.wind;
     return { id: base.id, name: loc.name, desc: loc.desc, free: base.free, reqLv: base.reqLv };
   }
-
-  var HOURS_24_MS = 24 * 60 * 60 * 1000;
 
   // =========================================================================
   // 0. 고양이 8종별 억양·음절·질감이 확실히 다른 개성 만점 Web Audio 사운드 엔진
@@ -2188,7 +2201,10 @@ window.onload = function() {
     var isBlackCat = (sk.id === 'black'), isSiamese = (sk.id === 'siamese');
     if (p.hitTimer > 0) {
       ctx.strokeStyle = (isBlackCat || isSiamese) ? '#fde047' : '#0f172a'; ctx.lineWidth = 2.6; ctx.lineCap = 'round';
-      ctx.beginPath(); ctx.moveTo(-12, -4); ctx.lineTo(-8, -7.5); ctx.lineTo(-4, -4); ctx.moveTo(4, -4); ctx.lineTo(8, -7.5); ctx.lineTo(12, -4); ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(-12, -4); ctx.lineTo(-8, -7.5); ctx.lineTo(-4, -4);
+      ctx.moveTo(4, -4); ctx.lineTo(8, -7.5); ctx.lineTo(12, -4);
+      ctx.stroke();
     } else {
       var eyeX1 = -8.5 + dir, eyeX2 = 8.5 + dir;
       ctx.fillStyle = isBlackCat ? '#facc15' : (isSiamese ? '#38bdf8' : '#0f172a');
@@ -2430,7 +2446,6 @@ window.onload = function() {
     }
   }
 
-  // 초기 언어·상태 적용
   currentLang = detectInitialLang();
   loadUserState();
   applyLanguageUI();
