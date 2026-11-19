@@ -20,16 +20,71 @@ body { background: #0f172a; color: #fff; text-align: center; font-family: sans-s
 /* 상단 헤더 바 */
 .top-bar { width: 100%; max-width: 800px; display: flex; justify-content: space-between; align-items: center; padding: 2px 4px; gap: 6px; }
 h1 { font-size: 0.96rem; margin: 0; white-space: nowrap; }
-.top-right { display: flex; align-items: center; gap: 5px; }
+.top-right { display: flex; align-items: center; gap: 4px; flex-wrap: nowrap; }
 .spec-badge { background: rgba(168, 85, 247, 0.25); border: 1.5px solid #c084fc; color: #e9d5ff; border-radius: 8px; padding: 4px 7px; font-size: 0.7rem; font-weight: bold; display: none; }
-.sound-btn, .lang-btn { background: #1e293b; color: #7dd3fc; border: 1.5px solid #38bdf8; border-radius: 8px; padding: 4px 7px; font-size: 0.72rem; font-weight: bold; cursor: pointer; white-space: nowrap; }
+.sound-btn, .lang-btn, .info-btn { background: #1e293b; color: #7dd3fc; border: 1.5px solid #38bdf8; border-radius: 8px; padding: 4px 7px; font-size: 0.7rem; font-weight: bold; cursor: pointer; white-space: nowrap; }
+.info-btn { color: #fde047; border-color: #facc15; }
 .sound-btn.muted { color: #94a3b8; border-color: #64748b; }
-.home-btn { background: #334155; color: #fff; border: 1.5px solid #64748b; border-radius: 8px; padding: 4px 8px; font-size: 0.74rem; font-weight: bold; cursor: pointer; white-space: nowrap; }
+.home-btn { background: #334155; color: #fff; border: 1.5px solid #64748b; border-radius: 8px; padding: 4px 8px; font-size: 0.72rem; font-weight: bold; cursor: pointer; white-space: nowrap; }
 .home-btn:active { background: #475569; }
 
 /* 게임 캔버스 래퍼 */
 .game-wrapper { position: relative; width: 100%; max-width: 800px; max-height: 58dvh; aspect-ratio: 800 / 450; }
 canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%; display: block; background: #0284c7; transform: translateZ(0); }
+
+/* 귀여운 스토리 인트로 오버레이 */
+.intro-overlay {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 35%, #1e1b4b, #090d16 85%);
+  border-radius: 10px;
+  border: 3px solid #facc15;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  z-index: 18;
+  cursor: pointer;
+}
+.intro-top-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.72rem;
+  color: #fde68a;
+  font-weight: bold;
+}
+.intro-skip-btn {
+  background: rgba(30, 41, 59, 0.9);
+  color: #f8fafc;
+  border: 1px solid #94a3b8;
+  border-radius: 8px;
+  padding: 3px 9px;
+  font-size: 0.68rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+.intro-canvas {
+  width: 100%;
+  max-width: 680px;
+  flex: 1;
+  max-height: 220px;
+  border: none;
+  background: transparent;
+}
+.intro-caption {
+  font-size: 0.82rem;
+  font-weight: bold;
+  color: #fef08a;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(250, 204, 21, 0.45);
+  border-radius: 10px;
+  padding: 5px 12px;
+  max-width: 540px;
+  line-height: 1.35;
+}
 
 /* 메인 대기화면(로비) 오버레이 */
 .lobby-overlay {
@@ -318,22 +373,22 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 .btn-cancel { flex: 1; background: #475569; border: 1.5px solid #94a3b8; }
 .lobby-status { font-size: 0.69rem; color: #bae6fd; margin-top: 2px; min-height: 13px; }
 
-/* 5초 광고 해금 모달 */
-.reward-modal {
+/* 5초 광고 해금 모달 & 게임 안내·개인정보처리방침 모달 */
+.reward-modal, .policy-modal {
   display: none;
   position: absolute;
-  inset: 10px;
+  inset: 8px;
   background: rgba(15, 23, 42, 0.98);
   border: 2px solid #facc15;
   border-radius: 12px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 12px;
-  z-index: 20;
+  padding: 10px 12px;
+  z-index: 25;
   gap: 6px;
 }
-.reward-modal h3 { margin: 0; color: #fde047; font-size: 0.96rem; }
+.reward-modal h3, .policy-modal h3 { margin: 0; color: #fde047; font-size: 0.94rem; }
 .reward-modal p { margin: 0; font-size: 0.74rem; color: #e2e8f0; line-height: 1.35; max-width: 320px; }
 .ad-5s-box {
   width: 100%;
@@ -347,6 +402,42 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   font-weight: bold;
 }
 .reward-btns { display: flex; gap: 8px; width: 100%; max-width: 280px; margin-top: 2px; }
+
+.policy-tabs { display: flex; gap: 6px; width: 100%; max-width: 440px; }
+.policy-tab-btn {
+  flex: 1;
+  padding: 5px 8px;
+  border-radius: 8px;
+  border: 1.5px solid #475569;
+  background: #1e293b;
+  color: #cbd5e1;
+  font-size: 0.72rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+.policy-tab-btn.active {
+  border-color: #38bdf8;
+  background: rgba(56, 189, 248, 0.2);
+  color: #e0f2fe;
+}
+.policy-scroll {
+  width: 100%;
+  max-width: 480px;
+  flex: 1;
+  overflow-y: auto;
+  background: #1e293b;
+  border: 1px solid #475569;
+  border-radius: 9px;
+  padding: 8px 10px;
+  text-align: left;
+  font-size: 0.69rem;
+  line-height: 1.45;
+  color: #e2e8f0;
+  user-select: text;
+  -webkit-user-select: text;
+}
+.policy-scroll h4 { margin: 4px 0 2px; color: #fde047; font-size: 0.74rem; }
+.policy-scroll ul { margin: 2px 0 6px; padding-left: 16px; }
 
 /* RPG 스타일 아날로그 조이패드 + 드래그 표시 + 오른쪽 스파이크 */
 .controls {
@@ -510,6 +601,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   <h1 id="appTitle">🐾 냐옹이 배구</h1>
   <div class="top-right">
     <div class="spec-badge" id="specBadge">👀 관전 0명</div>
+    <button class="info-btn" id="btnInfoPolicy">📜 안내·방침</button>
     <button class="lang-btn" id="btnLangToggle">EN</button>
     <button class="sound-btn" id="btnSoundToggle">🔊 BGM</button>
     <button class="home-btn" id="btnHome" style="display:none;">🏠 대기화면</button>
@@ -518,6 +610,16 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 
 <div class="game-wrapper">
   <canvas id="cvs" width="800" height="450"></canvas>
+
+  <!-- 사이트 첫 접속 시 재생되는 귀여운 스토리 인트로 -->
+  <div class="intro-overlay" id="introOverlay">
+    <div class="intro-top-row">
+      <span id="introBadge">✨ STORY INTRO · 냐옹이 배구</span>
+      <button class="intro-skip-btn" id="btnSkipIntro">건너뛰기 ▶</button>
+    </div>
+    <canvas class="intro-canvas" id="introCvs" width="680" height="220"></canvas>
+    <div class="intro-caption" id="introCaption">별똥별이 떨어지자 고양이들이 달려갔어요...</div>
+  </div>
 
   <!-- 대기화면(로비) -->
   <div class="lobby-overlay" id="lobbyOverlay">
@@ -596,6 +698,20 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
       </div>
     </div>
 
+    <!-- 광고 심사 대비용 게임 안내 & 개인정보처리방침 모달 -->
+    <div class="policy-modal" id="policyModal">
+      <h3 id="policyModalTitle">📜 게임 안내 & 개인정보처리방침</h3>
+      <div class="policy-tabs">
+        <button class="policy-tab-btn active" id="tabGuide">🎮 게임 안내</button>
+        <button class="policy-tab-btn" id="tabPrivacy">🔒 개인정보처리방침</button>
+      </div>
+      <div class="policy-scroll" id="policyScrollBody"></div>
+      <div class="join-row" style="max-width:440px;">
+        <button class="menu-btn btn-ai btn-small" id="btnReplayIntro">✨ 인트로 다시보기</button>
+        <button class="menu-btn btn-cancel btn-small" id="btnClosePolicy">닫기</button>
+      </div>
+    </div>
+
     <div class="ctrl-hint" id="ctrlHintText">⌨️ PC: ←→(A/D) 이동 · ↑(W) 점프 · Space 스파이크 (10점 선승)</div>
     <div class="lobby-status" id="lobbyStatus"></div>
 
@@ -652,6 +768,7 @@ window.onload = function() {
     ko: {
       pageTitle: "냐옹이 배구 온라인",
       appTitle: "🐾 냐옹이 배구",
+      infoBtn: "📜 안내·방침",
       homeBtn: "🏠 대기화면",
       bgmOn: "🔊 BGM",
       bgmMuted: "🔇 음소거",
@@ -683,6 +800,49 @@ window.onload = function() {
       adStartBtn: "🎬 5초 광고 시작",
       adPlayingBox: function(s) { return "📺 광고 재생 중... " + s + "초 남음"; },
       adPlayingBtn: function(s) { return "⏳ " + s + "초..."; },
+      policyModalTitle: "📜 게임 안내 & 개인정보처리방침",
+      tabGuide: "🎮 게임 안내",
+      tabPrivacy: "🔒 개인정보처리방침",
+      replayIntroBtn: "✨ 인트로 다시보기",
+      closePolicyBtn: "닫기",
+      introBadge: "✨ STORY INTRO · 냐옹이 배구",
+      introSkipBtn: "건너뛰기 ▶",
+      introCap1: "밤하늘에서 반짝이는 별똥별 하나가 떨어졌어요! ⭐",
+      introCap2: "크림냥과 그레이냥이 별빛 자취를 따라 성큼성큼 달려갑니다. 🐾",
+      introCap3: "도착한 곳에는 오로라처럼 빛나는 황금 배구공이 있었어요! 🏐✨",
+      guideHtml:
+        "<h4>1. 게임 소개 및 규칙</h4>" +
+        "<ul>" +
+        "<li><strong>10점 선승제:</strong> 먼저 10점에 도달하는 쪽이 승리합니다.</li>" +
+        "<li><strong>1인 플레이 (AI 대전):</strong> 내 시즌 랭크 등급에 따라 상대 AI의 속도와 스파이크 패턴이 단계적으로 강해집니다.</li>" +
+        "<li><strong>온라인 대전 & 관전:</strong> 공개 방을 만들거나 방 리스트·코드로 입장해 1:1 대전을 즐길 수 있으며, 3번째 입장자부터는 실시간 관전이 가능합니다.</li>" +
+        "</ul>" +
+        "<h4>2. 조작 방법</h4>" +
+        "<ul>" +
+        "<li><strong>모바일:</strong> 왼쪽 아날로그 조이패드를 드래그해 이동/대각선 점프, 오른쪽 <strong>스파이크</strong> 버튼으로 강타를 날립니다.</li>" +
+        "<li><strong>PC:</strong> ←/→(또는 A/D) 이동, ↑(또는 W) 점프, Space 스파이크.</li>" +
+        "</ul>" +
+        "<h4>3. 주간 시즌 & 스킨 해금</h4>" +
+        "<ul>" +
+        "<li>매주 월요일 00:00 새 시즌이 시작되며 시즌 전적·랭크·시즌 스킨 해금이 초기화됩니다.</li>" +
+        "<li>랭크 조건을 달성한 시즌 스킨·공·이펙트는 5초 광고 연출 후 해당 시즌 동안 장착할 수 있습니다.</li>" +
+        "</ul>",
+      privacyHtml:
+        "<h4>1. 수집 및 이용하는 정보</h4>" +
+        "<ul>" +
+        "<li><strong>랭크 기록:</strong> 시즌 랭킹 보드 제공을 위해 닉네임, 승/패 전적, 승률, 등급, 갱신 시각이 Firebase Realtime Database에 저장될 수 있습니다.</li>" +
+        "<li><strong>브라우저 저장소(localStorage / sessionStorage):</strong> 시즌 전적, 스킨 해금 상태, 언어·닉네임·방 연결 정보는 이용자의 브라우저에 저장됩니다.</li>" +
+        "<li><strong>방문 분석(Google Analytics 4):</strong> 서비스 이용 현황 파악 및 품질 개선을 위해 GA4(측정 ID: G-JR4KC87LFG)를 통해 익명화된 접속·이용 통계가 수집될 수 있습니다.</li>" +
+        "</ul>" +
+        "<h4>2. 광고 및 쿠키 안내</h4>" +
+        "<ul>" +
+        "<li>향후 광고 서비스 연동 시 광고 제공사(예: Google AdSense 등)가 맞춤형/일반 광고 제공 및 빈도 제한을 위해 쿠키 또는 유사 식별자를 사용할 수 있습니다.</li>" +
+        "<li>브라우저 설정에서 쿠키 및 사이트 데이터를 차단하거나 삭제할 수 있으며, 이 경우 일부 저장 데이터가 초기화될 수 있습니다.</li>" +
+        "</ul>" +
+        "<h4>3. 문의 및 운영 주체</h4>" +
+        "<ul>" +
+        "<li>서비스 제작/운영: GCK · 문의 채널: GitHub 저장소 이슈 또는 배포 페이지 안내를 통해 접수하실 수 있습니다.</li>" +
+        "</ul>",
       spikeText: "스파이크",
       subSpike: "Space / 터치",
       specBadge: function(n) { return "👀 관전 " + n + "명"; },
@@ -777,6 +937,7 @@ window.onload = function() {
     en: {
       pageTitle: "Nyaong Volleyball Online",
       appTitle: "🐾 Nyaong Volleyball",
+      infoBtn: "📜 Info·Policy",
       homeBtn: "🏠 Lobby",
       bgmOn: "🔊 BGM",
       bgmMuted: "🔇 Muted",
@@ -808,6 +969,49 @@ window.onload = function() {
       adStartBtn: "🎬 Start 5s Ad",
       adPlayingBox: function(s) { return "📺 Ad playing... " + s + "s left"; },
       adPlayingBtn: function(s) { return "⏳ " + s + "s..."; },
+      policyModalTitle: "📜 Game Info & Privacy Policy",
+      tabGuide: "🎮 Game Guide",
+      tabPrivacy: "🔒 Privacy Policy",
+      replayIntroBtn: "✨ Replay Intro",
+      closePolicyBtn: "Close",
+      introBadge: "✨ STORY INTRO · Nyaong Volleyball",
+      introSkipBtn: "Skip ▶",
+      introCap1: "A bright shooting star fell across the night sky! ⭐",
+      introCap2: "CreamCat and GrayCat trotted toward the glowing trail. 🐾",
+      introCap3: "They found a radiant golden volleyball shimmering with aurora light! 🏐✨",
+      guideHtml:
+        "<h4>1. Gameplay & Rules</h4>" +
+        "<ul>" +
+        "<li><strong>First to 10:</strong> The first side to reach 10 points wins the match.</li>" +
+        "<li><strong>Solo Play (vs AI):</strong> AI movement speed and spike frequency scale with your current season rank.</li>" +
+        "<li><strong>Online & Spectator:</strong> Host or join public/code rooms for 1v1 matches; additional visitors can watch live as spectators.</li>" +
+        "</ul>" +
+        "<h4>2. Controls</h4>" +
+        "<ul>" +
+        "<li><strong>Mobile:</strong> Drag the left analog stick to move/jump diagonally, and tap <strong>Spike</strong> on the right to smash.</li>" +
+        "<li><strong>PC:</strong> ←/→ (or A/D) to move, ↑ (or W) to jump, Space to spike.</li>" +
+        "</ul>" +
+        "<h4>3. Weekly Seasons & Unlocks</h4>" +
+        "<ul>" +
+        "<li>Season records, ranks, and season unlocks reset every Monday at 00:00.</li>" +
+        "<li>Eligible season skins, balls, and spike effects can be unlocked for the season via a 5s ad sequence.</li>" +
+        "</ul>",
+      privacyHtml:
+        "<h4>1. Information Handled</h4>" +
+        "<ul>" +
+        "<li><strong>Season Leaderboard:</strong> Nickname, wins/losses, win rate, rank tier, and update timestamp may be stored in Firebase Realtime Database for rankings.</li>" +
+        "<li><strong>Browser Storage:</strong> Season progress, unlocked items, language preference, nickname, and room state are stored locally in your browser.</li>" +
+        "<li><strong>Analytics (GA4):</strong> Anonymous usage metrics may be collected via Google Analytics 4 (Measurement ID: G-JR4KC87LFG) to improve the game.</li>" +
+        "</ul>" +
+        "<h4>2. Ads & Cookies</h4>" +
+        "<ul>" +
+        "<li>When ad networks (such as Google AdSense) are enabled, cookies or similar identifiers may be used to serve and measure ads.</li>" +
+        "<li>You can clear or block cookies/storage in your browser settings at any time.</li>" +
+        "</ul>" +
+        "<h4>3. Operator & Contact</h4>" +
+        "<ul>" +
+        "<li>Creator / Operator: GCK · Support via the project repository or hosting page.</li>" +
+        "</ul>",
       spikeText: "Spike",
       subSpike: "Space / Tap",
       specBadge: function(n) { return "👀 " + n + " watching"; },
@@ -912,11 +1116,28 @@ window.onload = function() {
     return nav.indexOf('ko') === 0 ? 'ko' : 'en';
   }
 
+  var activePolicyTab = 'guide';
+  function renderPolicyBody() {
+    var d = T();
+    document.getElementById("policyModalTitle").innerText = d.policyModalTitle;
+    document.getElementById("tabGuide").innerText = d.tabGuide;
+    document.getElementById("tabPrivacy").innerText = d.tabPrivacy;
+    document.getElementById("btnReplayIntro").innerText = d.replayIntroBtn;
+    document.getElementById("btnClosePolicy").innerText = d.closePolicyBtn;
+    document.getElementById("introBadge").innerText = d.introBadge;
+    document.getElementById("btnSkipIntro").innerText = d.introSkipBtn;
+
+    document.getElementById("tabGuide").classList.toggle("active", activePolicyTab === 'guide');
+    document.getElementById("tabPrivacy").classList.toggle("active", activePolicyTab === 'privacy');
+    document.getElementById("policyScrollBody").innerHTML = (activePolicyTab === 'guide') ? d.guideHtml : d.privacyHtml;
+  }
+
   function applyLanguageUI() {
     var d = T();
     document.documentElement.lang = currentLang;
     document.title = d.pageTitle;
     document.getElementById("appTitle").innerText = d.appTitle;
+    document.getElementById("btnInfoPolicy").innerText = d.infoBtn;
     document.getElementById("btnHome").innerText = d.homeBtn;
     document.getElementById("btnLangToggle").innerText = d.langToggleBtn;
 
@@ -954,6 +1175,7 @@ window.onload = function() {
         : "📢 Lobby Banner Ad Slot (320×50)";
     }
 
+    renderPolicyBody();
     refreshRankUI();
     if (!lobbyStatus.innerText) {
       lobbyStatus.innerText = d.lobbyReadyMsg;
@@ -971,6 +1193,154 @@ window.onload = function() {
     try { localStorage.setItem('cat_volley_lang', currentLang); } catch (e) {}
     applyLanguageUI();
   };
+
+  // =========================================================================
+  // 귀여운 스토리 인트로 연출 (별똥별 → 고양이들 달려감 → 빛나는 배구공 발견)
+  // =========================================================================
+  var introOverlay = document.getElementById("introOverlay");
+  var introCvs = document.getElementById("introCvs");
+  var ictx = introCvs.getContext("2d");
+  var introTimer = null;
+  var introElapsed = 0;
+  var introActive = false;
+
+  function drawMiniCat(g, x, y, col, earCol, hop, faceRight) {
+    g.save();
+    g.translate(x, y + hop);
+    var dir = faceRight ? 1 : -1;
+    // 꼬리
+    g.strokeStyle = '#0f172a'; g.lineWidth = 5; g.lineCap = 'round';
+    g.beginPath(); g.moveTo(-dir * 10, 8); g.quadraticCurveTo(-dir * 24, -4, -dir * 18, -14); g.stroke();
+    g.strokeStyle = col; g.lineWidth = 2.5; g.stroke();
+    // 몸통
+    g.fillStyle = col; g.strokeStyle = '#0f172a'; g.lineWidth = 2;
+    g.beginPath(); g.ellipse(0, 9, 11, 9, 0, 0, TAU); g.fill(); g.stroke();
+    // 귀
+    g.fillStyle = earCol || col;
+    g.beginPath(); g.moveTo(-14, -6); g.lineTo(-11, -20); g.lineTo(-3, -12); g.closePath(); g.fill(); g.stroke();
+    g.beginPath(); g.moveTo(14, -6); g.lineTo(11, -20); g.lineTo(3, -12); g.closePath(); g.fill(); g.stroke();
+    // 얼굴
+    g.fillStyle = col;
+    g.beginPath(); g.arc(0, -3, 15, 0, TAU); g.fill(); g.stroke();
+    // 눈
+    g.fillStyle = '#0f172a';
+    g.beginPath(); g.arc(-5 + dir * 2, -4, 2.3, 0, TAU); g.arc(5 + dir * 2, -4, 2.3, 0, TAU); g.fill();
+    g.fillStyle = '#fff';
+    g.beginPath(); g.arc(-5.7 + dir * 2, -4.8, 0.9, 0, TAU); g.arc(4.3 + dir * 2, -4.8, 0.9, 0, TAU); g.fill();
+    // 볼터치
+    g.fillStyle = 'rgba(244, 63, 94, 0.42)';
+    g.beginPath(); g.ellipse(-9, 1, 3, 2, 0, 0, TAU); g.ellipse(9, 1, 3, 2, 0, 0, TAU); g.fill();
+    g.restore();
+  }
+
+  function renderIntroFrame(ms) {
+    var w = introCvs.width, h = introCvs.height;
+    ictx.clearRect(0, 0, w, h);
+
+    // 반짝이는 별들
+    for (var i = 0; i < 24; i++) {
+      var sx = ((i * 97) % (w - 20)) + 10;
+      var sy = ((i * 43) % 120) + 12;
+      var alpha = 0.35 + 0.65 * Math.abs(Math.sin(ms * 0.004 + i));
+      ictx.fillStyle = "rgba(255, 255, 240, " + alpha.toFixed(2) + ")";
+      ictx.beginPath(); ictx.arc(sx, sy, (i % 3 === 0) ? 2 : 1.2, 0, TAU); ictx.fill();
+    }
+
+    // 땅
+    ictx.fillStyle = '#1e293b'; ictx.fillRect(0, 178, w, 42);
+    ictx.strokeStyle = '#38bdf8'; ictx.lineWidth = 2;
+    ictx.beginPath(); ictx.moveTo(0, 178); ictx.lineTo(w, 178); ictx.stroke();
+
+    // 1단계 (0~2.2초): 별똥별 떨어짐
+    var p1Star = Math.min(1, ms / 2000);
+    var starX = 110 + p1Star * 320;
+    var starY = 24 + p1Star * 135;
+    if (ms < 2500) {
+      var tailGrad = ictx.createLinearGradient(starX, starY, starX - 65, starY - 35);
+      tailGrad.addColorStop(0, 'rgba(254, 240, 138, 0.95)');
+      tailGrad.addColorStop(1, 'rgba(254, 240, 138, 0)');
+      ictx.strokeStyle = tailGrad; ictx.lineWidth = 4; ictx.lineCap = 'round';
+      ictx.beginPath(); ictx.moveTo(starX, starY); ictx.lineTo(starX - 65, starY - 35); ictx.stroke();
+      ictx.fillStyle = '#fef08a';
+      ictx.beginPath(); ictx.arc(starX, starY, 5.5, 0, TAU); ictx.fill();
+    }
+
+    // 빛나는 배구공 위치 (중앙 오른쪽)
+    var ballX = 435;
+    var ballY = 156;
+    var glowAlpha = ms > 1800 ? Math.min(1, (ms - 1800) / 900) : 0.25;
+    var pulse = Math.sin(ms * 0.008) * 4;
+
+    if (glowAlpha > 0.1) {
+      var aura = ictx.createRadialGradient(ballX, ballY, 6, ballX, ballY, 44 + pulse);
+      aura.addColorStop(0, "rgba(254, 240, 138, " + (0.75 * glowAlpha).toFixed(2) + ")");
+      aura.addColorStop(0.55, "rgba(52, 211, 153, " + (0.35 * glowAlpha).toFixed(2) + ")");
+      aura.addColorStop(1, "rgba(250, 204, 21, 0)");
+      ictx.fillStyle = aura;
+      ictx.beginPath(); ictx.arc(ballX, ballY, 46 + pulse, 0, TAU); ictx.fill();
+
+      ictx.fillStyle = '#facc15'; ictx.strokeStyle = '#fef9c3'; ictx.lineWidth = 2.5;
+      ictx.beginPath(); ictx.arc(ballX, ballY, 16, 0, TAU); ictx.fill(); ictx.stroke();
+    }
+
+    // 2단계 (1.2초~4.8초): 고양이 두 마리가 달려가 멈춤
+    var runProg = Math.min(1, Math.max(0, (ms - 1100) / 2400));
+    var cat1X = 95 + runProg * 265;
+    var cat2X = 52 + runProg * 265;
+    var hop1 = runProg < 1 ? Math.abs(Math.sin(ms * 0.018)) * -9 : Math.sin(ms * 0.008) * -2;
+    var hop2 = runProg < 1 ? Math.abs(Math.cos(ms * 0.018)) * -9 : Math.cos(ms * 0.008) * -2;
+
+    drawMiniCat(ictx, cat1X, 156, '#fef3c7', '#fde68a', hop1, true);
+    drawMiniCat(ictx, cat2X, 156, '#cbd5e1', '#94a3b8', hop2, true);
+
+    var d = T();
+    var capEl = document.getElementById("introCaption");
+    if (ms < 1600) capEl.innerText = d.introCap1;
+    else if (ms < 3400) capEl.innerText = d.introCap2;
+    else capEl.innerText = d.introCap3;
+  }
+
+  function closeIntro() {
+    introActive = false;
+    if (introTimer) { clearInterval(introTimer); introTimer = null; }
+    introOverlay.style.display = 'none';
+  }
+
+  function startIntroSequence() {
+    closeIntro();
+    introActive = true;
+    introElapsed = 0;
+    introOverlay.style.display = 'flex';
+    renderIntroFrame(0);
+    var prev = performance.now();
+    introTimer = setInterval(function() {
+      var now = performance.now();
+      introElapsed += (now - prev);
+      prev = now;
+      renderIntroFrame(introElapsed);
+      if (introElapsed >= 5200) {
+        closeIntro();
+      }
+    }, 33);
+  }
+
+  document.getElementById("btnSkipIntro").onclick = function(e) { e.stopPropagation(); closeIntro(); };
+  introOverlay.onclick = function() { closeIntro(); };
+
+  // 안내 & 개인정보처리방침 모달 제어
+  var policyModal = document.getElementById("policyModal");
+  document.getElementById("btnInfoPolicy").onclick = function() {
+    activePolicyTab = 'guide';
+    renderPolicyBody();
+    policyModal.style.display = 'flex';
+  };
+  document.getElementById("tabGuide").onclick = function() { activePolicyTab = 'guide'; renderPolicyBody(); };
+  document.getElementById("tabPrivacy").onclick = function() { activePolicyTab = 'privacy'; renderPolicyBody(); };
+  document.getElementById("btnReplayIntro").onclick = function() {
+    policyModal.style.display = 'none';
+    startIntroSequence();
+  };
+  document.getElementById("btnClosePolicy").onclick = function() { policyModal.style.display = 'none'; };
 
   function getCatMeta(id) {
     var base = CAT_SKINS[id] || CAT_SKINS.cream;
@@ -1277,13 +1647,12 @@ window.onload = function() {
     blackhole: { id: 'blackhole', free: false, reqLv: 4 }
   };
 
-  // 내 랭크 레벨(0~4)에 따른 AI 난이도 프리셋 (속도, 점프 거리/타점, 스파이크 확률 & 이펙트)
   var AI_DIFFICULTIES = [
-    { lv: 1, maxSpeed: 4.3, jumpHeightY: 270, jumpRangeX: 85,  predictLead: 10, spikeChance: 0.00, spikeSkin: 'wind',      skin: 'gray'    }, // 브론즈
-    { lv: 2, maxSpeed: 5.1, jumpHeightY: 285, jumpRangeX: 95,  predictLead: 18, spikeChance: 0.55, spikeSkin: 'wind',      skin: 'cheese'  }, // 실버
-    { lv: 3, maxSpeed: 5.9, jumpHeightY: 300, jumpRangeX: 105, predictLead: 25, spikeChance: 0.85, spikeSkin: 'lightning', skin: 'persian' }, // 골드
-    { lv: 4, maxSpeed: 6.7, jumpHeightY: 312, jumpRangeX: 115, predictLead: 32, spikeChance: 0.95, spikeSkin: 'ice',       skin: 'siamese' }, // 다이아
-    { lv: 5, maxSpeed: 7.4, jumpHeightY: 322, jumpRangeX: 125, predictLead: 38, spikeChance: 1.00, spikeSkin: 'meteor',    skin: 'gold'    }  // 챌린저냥
+    { lv: 1, maxSpeed: 4.3, jumpHeightY: 270, jumpRangeX: 85,  predictLead: 10, spikeChance: 0.00, spikeSkin: 'wind',      skin: 'gray'    },
+    { lv: 2, maxSpeed: 5.1, jumpHeightY: 285, jumpRangeX: 95,  predictLead: 18, spikeChance: 0.55, spikeSkin: 'wind',      skin: 'cheese'  },
+    { lv: 3, maxSpeed: 5.9, jumpHeightY: 300, jumpRangeX: 105, predictLead: 25, spikeChance: 0.85, spikeSkin: 'lightning', skin: 'persian' },
+    { lv: 4, maxSpeed: 6.7, jumpHeightY: 312, jumpRangeX: 115, predictLead: 32, spikeChance: 0.95, spikeSkin: 'ice',       skin: 'siamese' },
+    { lv: 5, maxSpeed: 7.4, jumpHeightY: 322, jumpRangeX: 125, predictLead: 38, spikeChance: 1.00, spikeSkin: 'meteor',    skin: 'gold'    }
   ];
 
   var currentAiConfig = AI_DIFFICULTIES[0];
@@ -1780,6 +2149,7 @@ window.onload = function() {
   }
 
   function startMatch(mode) {
+    closeIntro();
     clearAdTimer();
     resetJoypadVisuals();
     netMode = mode; gameState = 'playing';
@@ -1790,6 +2160,7 @@ window.onload = function() {
   }
 
   function returnToLobby(msg) {
+    closeIntro();
     clearAdTimer();
     resetJoypadVisuals();
     isHostingRoom = false;
@@ -1808,7 +2179,7 @@ window.onload = function() {
     resetPositions();
 
     lobbyOverlay.style.display = 'flex'; mainMenuBox.style.display = 'flex';
-    skinPanel.style.display = 'none'; rankPanel.style.display = 'none'; listPanel.style.display = 'none'; waitPanel.style.display = 'none'; rewardModal.style.display = 'none';
+    skinPanel.style.display = 'none'; rankPanel.style.display = 'none'; listPanel.style.display = 'none'; waitPanel.style.display = 'none'; rewardModal.style.display = 'none'; policyModal.style.display = 'none';
     btnHome.style.display = 'none'; controlsArea.style.display = 'flex'; spectatorBanner.style.display = 'none';
     refreshRankUI();
     lobbyStatus.innerText = msg || T().lobbyReadyMsg;
@@ -2050,7 +2421,11 @@ window.onload = function() {
   btnHome.onclick = function() { returnToLobby(); };
 
   // --- 8. 터치 및 키보드 조작 (아날로그 조이패드 + 드래그 시각화) ---
-  window.onkeydown = function(e) { keys[e.code] = true; if (gameState === 'playing' && gameOver && e.code === 'Space' && (netMode === 'ai' || netMode === 'host')) resetGame(); };
+  window.onkeydown = function(e) {
+    if (introActive && (e.code === 'Space' || e.code === 'Escape' || e.code === 'Enter')) { closeIntro(); return; }
+    keys[e.code] = true;
+    if (gameState === 'playing' && gameOver && e.code === 'Space' && (netMode === 'ai' || netMode === 'host')) resetGame();
+  };
   window.onkeyup = function(e) { keys[e.code] = false; };
   cvs.addEventListener('touchstart', function(e) { if (gameState === 'playing' && gameOver && (netMode === 'ai' || netMode === 'host')) { e.preventDefault(); resetGame(); } });
   cvs.addEventListener('click', function() { if (gameState === 'playing' && gameOver && (netMode === 'ai' || netMode === 'host')) resetGame(); });
@@ -2235,7 +2610,6 @@ window.onload = function() {
       else { p2.vx = mul(p2.vx, Math.pow(0.76, dt)); if (Math.abs(p2.vx) < 0.15) p2.vx = 0; }
       if (remoteKeys.U && p2.y >= 340) { p2.vy = -10.8; p2.squash = 1.22; SoundEngine.playCatMeow(p2.skin, true); }
     } else {
-      // 내 랭크에 비례해 강해지는 AI 로직
       if (aiJumpCooldown > 0) aiJumpCooldown -= dt;
 
       var cfg = currentAiConfig;
@@ -2256,17 +2630,15 @@ window.onload = function() {
         p2.vx = mul(p2.vx, Math.pow(0.76, dt));
       }
 
-      // 공이 일정 높이(120~275)에 있고 AI 앞쪽에 왔을 때만 점프 (헛점프 반복 방지)
       var canJumpAttack = (ball.x > 405 && ball.y > 120 && ball.y < 275 && ball.vy > -2.0);
       if (canJumpAttack && p2.y >= 340 && aiJumpCooldown <= 0 && Math.abs(p2.x - (ball.x + 20)) < cfg.jumpRangeX) {
         p2.vy = -11.2;
         p2.squash = 1.22;
-        aiJumpCooldown = 28; // 착지 후 연속 헛점프 방지
+        aiJumpCooldown = 28;
         aiWillSpike = (cfg.spikeChance > 0 && Math.random() < cfg.spikeChance);
         SoundEngine.playCatMeow(p2.skin, true);
       }
 
-      // 땅에 완전히 착지했을 때만 스파이크 장전 해제
       if (p2.y >= 340 && p2.vy === 0) {
         aiWillSpike = false;
       }
@@ -2293,7 +2665,6 @@ window.onload = function() {
 
     hitBall(p1, !!keys["Space"]);
 
-    // AI가 공을 치는 순간: 코트 위치(네트 앞/뒤) 상관없이 확률적으로 스파이크 발동
     var p2Spike = false;
     if (netMode === 'host') {
       p2Spike = !!remoteKeys.S;
@@ -2359,10 +2730,9 @@ window.onload = function() {
       if (isSpike) {
         ball.spikeType = p.spikeSkin || 'wind';
         if (p === p2 && netMode === 'ai') {
-          // 네트(x=400, 상단 y=260)를 반드시 넘어간 뒤 내 코트로 떨어지는 포물선 계산
           var vxSpeed = -9.6 - Math.random() * 1.4;
           var framesToNet = Math.max(10, (ball.x - 400) / Math.abs(vxSpeed));
-          var netClearY = 215; // 네트 상단(260)보다 45px 위를 통과하도록 보장
+          var netClearY = 215;
 
           var vyForNet = (netClearY - ball.y - 0.5 * 0.115 * framesToNet * framesToNet) / framesToNet;
           ball.vx = vxSpeed;
@@ -2786,6 +3156,14 @@ window.onload = function() {
   applyLanguageUI();
   if (AD_CONFIG.lobbyBannerHtml) {
     document.getElementById("lobbyAdSlot").innerHTML = AD_CONFIG.lobbyBannerHtml;
+  }
+
+  // 첫 접속 시 세션당 1회 귀여운 인트로 재생
+  var seenIntro = false;
+  try { seenIntro = (sessionStorage.getItem('cat_intro_seen') === '1'); } catch (e) {}
+  if (!seenIntro && gameState === 'lobby') {
+    try { sessionStorage.setItem('cat_intro_seen', '1'); } catch (e) {}
+    startIntroSequence();
   }
 
   function loop(now) {
