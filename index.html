@@ -2274,7 +2274,7 @@ window.onload = function() {
     }
 
     hitBall(p1, !!keys["Space"]);
-    var p2Spike = (netMode === 'host') ? !!remoteKeys.S : (aiWillSpike && p2.y < 325);
+    var p2Spike = (netMode === 'host') ? !!remoteKeys.S : (aiWillSpike && p2.y < 339);
     hitBall(p2, p2Spike);
 
     if (ball.y > 430) {
