@@ -340,96 +340,129 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 }
 .reward-btns { display: flex; gap: 8px; width: 100%; max-width: 280px; margin-top: 2px; }
 
-/* RPG 스타일 반원형(좌·우·상) 패드 + 오른쪽 스파이크 */
+/* RPG 스타일 아날로그 조이패드 + 드래그 표시 + 오른쪽 스파이크 */
 .controls {
   width: 100%;
   max-width: 800px;
   flex: 1;
-  max-height: 165px;
+  max-height: 168px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 14px;
-  padding: 4px 10px 8px;
+  padding: 4px 16px 8px;
 }
 
-.semi-pad-wrap {
+.joypad-zone {
   position: relative;
-  width: 224px;
-  height: 128px;
+  width: 152px;
+  height: 152px;
   flex-shrink: 0;
-  background: radial-gradient(circle at 50% 100%, rgba(56, 189, 248, 0.14) 0%, rgba(30, 41, 59, 0.72) 72%, rgba(15, 23, 42, 0.25) 100%);
-  border: 2px solid rgba(125, 211, 252, 0.35);
-  border-bottom: none;
-  border-radius: 128px 128px 16px 16px;
-  box-shadow: inset 0 4px 14px rgba(0, 0, 0, 0.35);
-}
-
-.semi-btn {
-  position: absolute;
-  width: 68px;
-  height: 54px;
-  border-radius: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.45);
-  background: rgba(255, 255, 255, 0.15);
-  color: #fff;
-  font-weight: bold;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  transition: transform 0.06s ease, background 0.08s ease;
 }
 
-.semi-left {
-  left: 10px;
-  bottom: 8px;
-  font-size: 1.25rem;
+.joy-base {
+  position: relative;
+  width: 136px;
+  height: 136px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(56, 189, 248, 0.24), rgba(15, 23, 42, 0.88) 72%);
+  border: 2.5px solid rgba(125, 211, 252, 0.55);
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.2), inset 0 0 14px rgba(2, 132, 199, 0.35);
+  transition: border-color 0.12s ease, box-shadow 0.12s ease;
 }
 
-.semi-right {
-  right: 10px;
-  bottom: 8px;
-  font-size: 1.25rem;
+.joy-base.dragging {
+  border-color: #38bdf8;
+  box-shadow: 0 0 24px rgba(56, 189, 248, 0.48), inset 0 0 18px rgba(56, 189, 248, 0.4);
 }
 
-.semi-up {
+/* 십자 & 대각선 가이드 링 */
+.joy-inner-ring {
+  position: absolute;
+  inset: 22px;
+  border-radius: 50%;
+  border: 1px dashed rgba(186, 230, 253, 0.32);
+  pointer-events: none;
+}
+
+.joy-dir {
+  position: absolute;
+  font-size: 0.78rem;
+  font-weight: bold;
+  color: rgba(186, 230, 253, 0.65);
+  pointer-events: none;
+  transition: color 0.08s ease, transform 0.08s ease;
+}
+.joy-dir.up    { top: 7px; left: 50%; transform: translateX(-50%); }
+.joy-dir.left  { left: 9px; top: 50%; transform: translateY(-50%); }
+.joy-dir.right { right: 9px; top: 50%; transform: translateY(-50%); }
+.joy-dir.diag-l { top: 20px; left: 21px; font-size: 0.68rem; }
+.joy-dir.diag-r { top: 20px; right: 21px; font-size: 0.68rem; }
+
+.joy-dir.lit {
+  color: #fde047;
+  text-shadow: 0 0 8px rgba(250, 204, 21, 0.9);
+}
+
+/* 드래그 방향과 거리를 보여주는 네온 연결 바 */
+.joy-vector {
+  position: absolute;
   left: 50%;
-  top: 8px;
-  transform: translateX(-50%);
-  width: 78px;
+  top: 50%;
+  height: 5px;
+  width: 0px;
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, rgba(56, 189, 248, 0.25), #fde047);
+  border-radius: 99px;
+  box-shadow: 0 0 10px rgba(250, 204, 21, 0.8);
+  pointer-events: none;
+  opacity: 0;
+}
+
+/* 드래그 시 손가락을 따라 움직이는 썸스틱 노브 */
+.joy-stick {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 52px;
   height: 52px;
-  background: rgba(56, 189, 248, 0.3);
-  border-color: rgba(125, 211, 252, 0.8);
-  font-size: 1.08rem;
+  margin-left: -26px;
+  margin-top: -26px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 30%, #e0f2fe, #38bdf8 55%, #0284c7 100%);
+  border: 2.5px solid #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45), 0 0 14px rgba(56, 189, 248, 0.65);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  color: #0f172a;
 }
 
-.semi-btn.active {
-  background: rgba(56, 189, 248, 0.72);
-  border-color: #e0f2fe;
-}
-.semi-up.active {
-  transform: translateX(-50%) scale(0.95);
-}
-.semi-left.active, .semi-right.active {
-  transform: scale(0.95);
+.joy-base.dragging .joy-stick {
+  background: radial-gradient(circle at 32% 30%, #fef9c3, #facc15 60%, #d97706 100%);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), 0 0 18px rgba(250, 204, 21, 0.85);
 }
 
-.sub-label { font-size: 0.62rem; font-weight: normal; opacity: 0.9; margin-top: 1px; }
+.sub-label { font-size: 0.66rem; font-weight: normal; opacity: 0.9; margin-top: 2px; }
 
 .action-group {
   flex: 1;
-  max-width: 155px;
-  height: 112px;
+  max-width: 148px;
+  height: 118px;
   display: flex;
 }
 
 .spike-btn {
   width: 100%;
   height: 100%;
-  border-radius: 22px;
+  border-radius: 26px;
   border: 2.5px solid #fb923c;
-  background: rgba(249, 115, 22, 0.48);
+  background: radial-gradient(circle at 35% 25%, rgba(251, 146, 60, 0.65), rgba(194, 65, 12, 0.55));
   color: #fff;
   font-weight: bold;
   font-size: 1.05rem;
@@ -437,11 +470,13 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.3);
 }
 .spike-btn.active {
-  background: rgba(249, 115, 22, 0.88);
-  border-color: #fed7aa;
-  transform: scale(0.96);
+  background: radial-gradient(circle at 35% 25%, #fdba74, #ea580c);
+  border-color: #fef08a;
+  transform: scale(0.95);
+  box-shadow: 0 0 20px rgba(251, 146, 60, 0.85);
 }
 
 /* 관전자 전용 안내 바 */
@@ -556,7 +591,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
       </div>
     </div>
 
-    <div class="ctrl-hint" id="ctrlHintText">⌨️ PC: ←→(A/D) 이동 · ↑(W) 점프 · Space 스파이크(강타)</div>
+    <div class="ctrl-hint" id="ctrlHintText">⌨️ PC: ←→(A/D) 이동 · ↑(W) 점프 · Space 스파이크 (10점 선승)</div>
     <div class="lobby-status" id="lobbyStatus"></div>
 
     <!-- 대기화면 하단 배너 광고 슬롯 -->
@@ -564,12 +599,19 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   </div>
 </div>
 
-<!-- 플레이어용 터치 패드: RPG 반원형 좌·우·상 + 오른쪽 스파이크 -->
+<!-- 플레이어용 터치 패드: 예쁜 아날로그 조이패드(드래그 표시) + 오른쪽 스파이크 -->
 <div class="controls" id="controlsArea">
-  <div class="semi-pad-wrap" id="semiPadBox">
-    <div class="semi-btn semi-up" id="btnJump">▲<span class="sub-label" id="jumpText">점프</span></div>
-    <div class="semi-btn semi-left" id="btnLeft">◀<span class="sub-label" id="subLeft">왼쪽</span></div>
-    <div class="semi-btn semi-right" id="btnRight">▶<span class="sub-label" id="subRight">오른쪽</span></div>
+  <div class="joypad-zone" id="joypadZone">
+    <div class="joy-base" id="joyBase">
+      <div class="joy-inner-ring"></div>
+      <span class="joy-dir diag-l" id="dirDiagL">↖</span>
+      <span class="joy-dir up" id="dirUp">▲</span>
+      <span class="joy-dir diag-r" id="dirDiagR">↗</span>
+      <span class="joy-dir left" id="dirLeft">◀</span>
+      <span class="joy-dir right" id="dirRight">▶</span>
+      <div class="joy-vector" id="joyVector"></div>
+      <div class="joy-stick" id="joyStick">🐾</div>
+    </div>
   </div>
   <div class="action-group">
     <div class="spike-btn" id="btnSpike">💥<span id="spikeText">스파이크</span><span class="sub-label" id="subSpike">Space / 터치</span></div>
@@ -585,6 +627,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 <script>
 window.onload = function() {
   var FIREBASE_DB_URL = "https://vollybal-rank-default-rtdb.firebaseio.com";
+  var WIN_SCORE = 10; // 10점 선승제
 
   var AD_CONFIG = {
     lobbyBannerHtml: ""
@@ -615,7 +658,7 @@ window.onload = function() {
       aiBtn: "🐱 1인 플레이 (AI 대전)",
       createRoomBtn: "🏠 방 만들기 (공개방 생성)",
       roomListBtn: "🔍 참여하기 (방 리스트 보기)",
-      ctrlHint: "⌨️ PC: ←→(A/D) 이동 · ↑(W) 점프 · Space 스파이크(강타)",
+      ctrlHint: "⌨️ PC: ←→(A/D) 이동 · ↑(W) 점프 · Space 스파이크 (10점 선승)",
       lobbyReadyMsg: "닉네임과 스킨을 고르고 게임을 시작하세요!",
       skinDetailDefaultName: "스킨을 선택하세요",
       skinDetailDefaultDesc: "매주 월요일 새 시즌이 시작되면 랭크와 스킨 해금이 초기화됩니다. 조건 달성 후 5초 광고로 시즌 스킨을 열어보세요!",
@@ -635,11 +678,8 @@ window.onload = function() {
       adStartBtn: "🎬 5초 광고 시작",
       adPlayingBox: function(s) { return "📺 광고 재생 중... " + s + "초 남음"; },
       adPlayingBtn: function(s) { return "⏳ " + s + "초..."; },
-      leftLabel: "왼쪽",
-      rightLabel: "오른쪽",
       spikeText: "스파이크",
       subSpike: "Space / 터치",
-      jumpText: "점프",
       specBadge: function(n) { return "👀 관전 " + n + "명"; },
       specBannerTitle: "👀 관전 모드로 입장했습니다",
       specWatching: function(a, b) { return "[" + a + "] vs [" + b + "] 실시간 대전을 관람 중입니다!"; },
@@ -744,7 +784,7 @@ window.onload = function() {
       aiBtn: "🐱 Solo Play (vs AI)",
       createRoomBtn: "🏠 Create Public Room",
       roomListBtn: "🔍 Join / Room List",
-      ctrlHint: "⌨️ PC: ←→(A/D) Move · ↑(W) Jump · Space Spike",
+      ctrlHint: "⌨️ PC: ←→(A/D) Move · ↑(W) Jump · Space Spike (First to 10)",
       lobbyReadyMsg: "Pick a nickname & skins, then start!",
       skinDetailDefaultName: "Select a skin",
       skinDetailDefaultDesc: "Ranks and season skins reset every Monday. Reach the rank and watch a 5s ad to unlock for this season!",
@@ -764,11 +804,8 @@ window.onload = function() {
       adStartBtn: "🎬 Start 5s Ad",
       adPlayingBox: function(s) { return "📺 Ad playing... " + s + "s left"; },
       adPlayingBtn: function(s) { return "⏳ " + s + "s..."; },
-      leftLabel: "Left",
-      rightLabel: "Right",
       spikeText: "Spike",
       subSpike: "Space / Tap",
-      jumpText: "Jump",
       specBadge: function(n) { return "👀 " + n + " watching"; },
       specBannerTitle: "👀 Spectator Mode",
       specWatching: function(a, b) { return "Watching [" + a + "] vs [" + b + "] live!"; },
@@ -904,11 +941,8 @@ window.onload = function() {
     document.getElementById("btnCopyCode").innerText = d.copyCodeBtn;
     document.getElementById("btnCancelRoom").innerText = d.cancelRoomBtn;
 
-    document.getElementById("subLeft").innerText = d.leftLabel;
-    document.getElementById("subRight").innerText = d.rightLabel;
     document.getElementById("spikeText").innerText = d.spikeText;
     document.getElementById("subSpike").innerText = d.subSpike;
-    document.getElementById("jumpText").innerText = d.jumpText;
 
     document.getElementById("specBannerTitle").innerText = d.specBannerTitle;
 
@@ -1710,6 +1744,7 @@ window.onload = function() {
 
   function startMatch(mode) {
     clearAdTimer();
+    resetJoypadVisuals();
     netMode = mode; gameState = 'playing';
     lobbyOverlay.style.display = 'none'; btnHome.style.display = 'inline-block';
     if (mode === 'spectator') { controlsArea.style.display = 'none'; spectatorBanner.style.display = 'flex'; }
@@ -1719,6 +1754,7 @@ window.onload = function() {
 
   function returnToLobby(msg) {
     clearAdTimer();
+    resetJoypadVisuals();
     isHostingRoom = false;
     try { sessionStorage.removeItem('cat_host_room'); } catch (e) {}
 
@@ -1900,9 +1936,9 @@ window.onload = function() {
             ball.x = data.b.x; ball.y = data.b.y; ball.spikeType = data.b.st; ball.skin = data.b.sk;
             score1 = data.s1; score2 = data.s2; gameOver = data.go;
             if (gameOver) {
-              var winSideName = score1 >= 15 ? p1.name : p2.name;
+              var winSideName = score1 >= WIN_SCORE ? p1.name : p2.name;
               winnerText = cur.winMsg(winSideName);
-              if (!matchRecorded && netMode === 'guest') { matchRecorded = true; recordMatchResult(score2 >= 15); }
+              if (!matchRecorded && netMode === 'guest') { matchRecorded = true; recordMatchResult(score2 >= WIN_SCORE); }
             }
             if (typeof data.wtm === 'number') worldTime = data.wtm;
             updateSpecBadge(data.sc || 0);
@@ -1967,80 +2003,134 @@ window.onload = function() {
   document.getElementById("btnCancelRoom").onclick = function() { returnToLobby(T().roomCancelled); };
   btnHome.onclick = function() { returnToLobby(); };
 
-  // --- 8. 터치 및 키보드 조작 (RPG 스타일 좌·우·상 반원형 패드 + 대각선 점프 지원) ---
+  // --- 8. 터치 및 키보드 조작 (아날로그 조이패드 + 드래그 시각화) ---
   window.onkeydown = function(e) { keys[e.code] = true; if (gameState === 'playing' && gameOver && e.code === 'Space' && (netMode === 'ai' || netMode === 'host')) resetGame(); };
   window.onkeyup = function(e) { keys[e.code] = false; };
   cvs.addEventListener('touchstart', function(e) { if (gameState === 'playing' && gameOver && (netMode === 'ai' || netMode === 'host')) { e.preventDefault(); resetGame(); } });
   cvs.addEventListener('click', function() { if (gameState === 'playing' && gameOver && (netMode === 'ai' || netMode === 'host')) resetGame(); });
 
-  var semiPadBox = document.getElementById("semiPadBox"), btnLeft = document.getElementById("btnLeft"), btnRight = document.getElementById("btnRight"), btnJump = document.getElementById("btnJump");
+  var joypadZone = document.getElementById("joypadZone");
+  var joyBase = document.getElementById("joyBase");
+  var joyStick = document.getElementById("joyStick");
+  var joyVector = document.getElementById("joyVector");
+  var dirUp = document.getElementById("dirUp");
+  var dirLeft = document.getElementById("dirLeft");
+  var dirRight = document.getElementById("dirRight");
+  var dirDiagL = document.getElementById("dirDiagL");
+  var dirDiagR = document.getElementById("dirDiagR");
 
-  function handleSemiPad(e) {
-    e.preventDefault();
-    SoundEngine.unlockAndStart();
-    if (gameState !== 'playing' || netMode === 'spectator') return;
-    if (gameOver && (netMode === 'ai' || netMode === 'host')) { resetGame(); return; }
+  var joyTouchId = null;
+  var isMouseJoyDragging = false;
+  var JOY_MAX_RADIUS = 44;
 
-    var leftActive = false;
-    var rightActive = false;
-    var jumpActive = false;
+  function resetJoypadVisuals() {
+    joyTouchId = null;
+    isMouseJoyDragging = false;
+    keys['ArrowLeft'] = false;
+    keys['ArrowRight'] = false;
+    keys['ArrowUp'] = false;
+    joyBase.classList.remove('dragging');
+    joyStick.style.transform = 'translate(0px, 0px)';
+    joyVector.style.opacity = '0';
+    joyVector.style.width = '0px';
+    dirUp.classList.remove('lit');
+    dirLeft.classList.remove('lit');
+    dirRight.classList.remove('lit');
+    dirDiagL.classList.remove('lit');
+    dirDiagR.classList.remove('lit');
+  }
 
-    var boxRect = semiPadBox.getBoundingClientRect();
-    var centerX = boxRect.left + boxRect.width * 0.5;
-    var midY = boxRect.top + boxRect.height * 0.56;
+  function updateJoypadFromClientXY(clientX, clientY) {
+    var rect = joyBase.getBoundingClientRect();
+    var cx = rect.left + rect.width * 0.5;
+    var cy = rect.top + rect.height * 0.5;
+    var dx = clientX - cx;
+    var dy = clientY - cy;
+    var dist = Math.hypot(dx, dy);
 
-    for (var i = 0; i < e.touches.length; i++) {
-      var tx = e.touches[i].clientX;
-      var ty = e.touches[i].clientY;
+    var clampedDist = Math.min(dist, JOY_MAX_RADIUS);
+    var angle = Math.atan2(dy, dx);
+    var stickX = dist > 0 ? Math.cos(angle) * clampedDist : 0;
+    var stickY = dist > 0 ? Math.sin(angle) * clampedDist : 0;
 
-      if (tx >= boxRect.left - 24 && tx <= boxRect.right + 24 && ty >= boxRect.top - 24 && ty <= boxRect.bottom + 20) {
-        // 상단 반원 구역 또는 점프 버튼 근처면 점프 활성화 (좌/우와 동시 적용 시 대각선 점프!)
-        if (ty < midY) {
-          jumpActive = true;
-        }
-        // 좌측/우측 구역 판정
-        if (tx < centerX - 10) {
-          leftActive = true;
-        } else if (tx > centerX + 10) {
-          rightActive = true;
-        }
-      }
+    joyBase.classList.add('dragging');
+    joyStick.style.transform = 'translate(' + stickX.toFixed(1) + 'px, ' + stickY.toFixed(1) + 'px)';
+
+    if (clampedDist > 6) {
+      var deg = angle * 180 / Math.PI;
+      joyVector.style.opacity = '1';
+      joyVector.style.width = clampedDist.toFixed(1) + 'px';
+      joyVector.style.transform = 'translateY(-50%) rotate(' + deg.toFixed(1) + 'deg)';
+    } else {
+      joyVector.style.opacity = '0';
+      joyVector.style.width = '0px';
     }
+
+    var leftActive = (dx < -14);
+    var rightActive = (dx > 14);
+    var jumpActive = (dy < -18);
 
     keys['ArrowLeft'] = leftActive;
     keys['ArrowRight'] = rightActive;
     keys['ArrowUp'] = jumpActive;
 
-    btnLeft.classList.toggle('active', leftActive);
-    btnRight.classList.toggle('active', rightActive);
-    btnJump.classList.toggle('active', jumpActive);
+    dirLeft.classList.toggle('lit', leftActive && !jumpActive);
+    dirRight.classList.toggle('lit', rightActive && !jumpActive);
+    dirUp.classList.toggle('lit', jumpActive && !leftActive && !rightActive);
+    dirDiagL.classList.toggle('lit', jumpActive && leftActive);
+    dirDiagR.classList.toggle('lit', jumpActive && rightActive);
   }
 
-  semiPadBox.addEventListener('touchstart', handleSemiPad, { passive: false });
-  semiPadBox.addEventListener('touchmove', handleSemiPad, { passive: false });
-  semiPadBox.addEventListener('touchend', handleSemiPad, { passive: false });
-  semiPadBox.addEventListener('touchcancel', handleSemiPad, { passive: false });
+  joypadZone.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    SoundEngine.unlockAndStart();
+    if (gameState !== 'playing' || netMode === 'spectator') return;
+    if (gameOver && (netMode === 'ai' || netMode === 'host')) { resetGame(); return; }
 
-  function bindMouseFallback(btn, code) {
-    var down = function(e) {
-      if (e.touches) return;
-      SoundEngine.unlockAndStart();
-      if (gameState !== 'playing' || netMode === 'spectator') return;
-      if (gameOver && (netMode === 'ai' || netMode === 'host')) { resetGame(); return; }
-      keys[code] = true;
-      btn.classList.add('active');
-    };
-    var up = function() {
-      keys[code] = false;
-      btn.classList.remove('active');
-    };
-    btn.addEventListener('mousedown', down);
-    btn.addEventListener('mouseup', up);
-    btn.addEventListener('mouseleave', up);
+    if (joyTouchId === null && e.changedTouches.length > 0) {
+      var t = e.changedTouches[0];
+      joyTouchId = t.identifier;
+      updateJoypadFromClientXY(t.clientX, t.clientY);
+    }
+  }, { passive: false });
+
+  joypadZone.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+    if (joyTouchId === null) return;
+    for (var i = 0; i < e.touches.length; i++) {
+      if (e.touches[i].identifier === joyTouchId) {
+        updateJoypadFromClientXY(e.touches[i].clientX, e.touches[i].clientY);
+        break;
+      }
+    }
+  }, { passive: false });
+
+  function onJoyTouchEnd(e) {
+    if (joyTouchId === null) return;
+    for (var i = 0; i < e.changedTouches.length; i++) {
+      if (e.changedTouches[i].identifier === joyTouchId) {
+        resetJoypadVisuals();
+        break;
+      }
+    }
   }
-  bindMouseFallback(btnLeft, 'ArrowLeft');
-  bindMouseFallback(btnRight, 'ArrowRight');
-  bindMouseFallback(btnJump, 'ArrowUp');
+  joypadZone.addEventListener('touchend', onJoyTouchEnd, { passive: false });
+  joypadZone.addEventListener('touchcancel', onJoyTouchEnd, { passive: false });
+
+  // PC 마우스 드래그 지원
+  joypadZone.addEventListener('mousedown', function(e) {
+    SoundEngine.unlockAndStart();
+    if (gameState !== 'playing' || netMode === 'spectator') return;
+    if (gameOver && (netMode === 'ai' || netMode === 'host')) { resetGame(); return; }
+    isMouseJoyDragging = true;
+    updateJoypadFromClientXY(e.clientX, e.clientY);
+  });
+  window.addEventListener('mousemove', function(e) {
+    if (isMouseJoyDragging) updateJoypadFromClientXY(e.clientX, e.clientY);
+  });
+  window.addEventListener('mouseup', function() {
+    if (isMouseJoyDragging) resetJoypadVisuals();
+  });
 
   var btnSpike = document.getElementById("btnSpike");
   var spikeDown = function(e) {
@@ -2130,11 +2220,11 @@ window.onload = function() {
     if (ball.y > 430) {
       if (ball.x < 400) {
         score2++; SoundEngine.playScore(false);
-        if (score2 >= 15) { gameOver = true; winnerText = T().winMsg(p2.name); if (!matchRecorded) { matchRecorded = true; recordMatchResult(false); } }
+        if (score2 >= WIN_SCORE) { gameOver = true; winnerText = T().winMsg(p2.name); if (!matchRecorded) { matchRecorded = true; recordMatchResult(false); } }
         else { ball.x = 580; ball.y = 140; ball.vx = -1.3; ball.vy = -1.8; ball.spikeType = 'none'; particles = []; }
       } else {
         score1++; SoundEngine.playScore(true);
-        if (score1 >= 15) { gameOver = true; winnerText = T().winMsg(p1.name); if (!matchRecorded) { matchRecorded = true; recordMatchResult(true); } }
+        if (score1 >= WIN_SCORE) { gameOver = true; winnerText = T().winMsg(p1.name); if (!matchRecorded) { matchRecorded = true; recordMatchResult(true); } }
         else { ball.x = 220; ball.y = 140; ball.vx = 1.3; ball.vy = -1.8; ball.spikeType = 'none'; particles = []; }
       }
     }
