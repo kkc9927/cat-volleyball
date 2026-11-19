@@ -1272,9 +1272,9 @@ window.onload = function() {
   // 내 랭크 레벨(0~4)에 따른 AI 난이도 프리셋 (속도, 점프 거리/타점, 스파이크 확률 & 이펙트)
   var AI_DIFFICULTIES = [
     { lv: 1, maxSpeed: 4.3, jumpHeightY: 270, jumpRangeX: 85,  predictLead: 10, spikeChance: 0.00, spikeSkin: 'wind',      skin: 'gray'    }, // 브론즈
-    { lv: 2, maxSpeed: 5.1, jumpHeightY: 285, jumpRangeX: 95,  predictLead: 18, spikeChance: 0.40, spikeSkin: 'wind',      skin: 'cheese'  }, // 실버
-    { lv: 3, maxSpeed: 5.9, jumpHeightY: 300, jumpRangeX: 105, predictLead: 25, spikeChance: 0.65, spikeSkin: 'lightning', skin: 'persian' }, // 골드
-    { lv: 4, maxSpeed: 6.7, jumpHeightY: 312, jumpRangeX: 115, predictLead: 32, spikeChance: 0.85, spikeSkin: 'ice',       skin: 'siamese' }, // 다이아
+    { lv: 2, maxSpeed: 5.1, jumpHeightY: 285, jumpRangeX: 95,  predictLead: 18, spikeChance: 0.55, spikeSkin: 'wind',      skin: 'cheese'  }, // 실버
+    { lv: 3, maxSpeed: 5.9, jumpHeightY: 300, jumpRangeX: 105, predictLead: 25, spikeChance: 0.85, spikeSkin: 'lightning', skin: 'persian' }, // 골드
+    { lv: 4, maxSpeed: 6.7, jumpHeightY: 312, jumpRangeX: 115, predictLead: 32, spikeChance: 0.95, spikeSkin: 'ice',       skin: 'siamese' }, // 다이아
     { lv: 5, maxSpeed: 7.4, jumpHeightY: 322, jumpRangeX: 125, predictLead: 38, spikeChance: 1.00, spikeSkin: 'meteor',    skin: 'gold'    }  // 챌린저냥
   ];
 
@@ -2215,11 +2215,10 @@ window.onload = function() {
       else { p2.vx = mul(p2.vx, Math.pow(0.76, dt)); if (Math.abs(p2.vx) < 0.15) p2.vx = 0; }
       if (remoteKeys.U && p2.y >= 340) { p2.vy = -10.8; p2.squash = 1.22; SoundEngine.playCatMeow(p2.skin, true); }
     } else {
-      // 내 랭크에 비례해 강해지는 AI 로직 (공격 포지셔닝 + 점프 강타 + 네트 앞 스파이크)
+      // 내 랭크에 비례해 강해지는 AI 로직
       var cfg = currentAiConfig;
       var aiMax = cfg.maxSpeed;
       var predictedBallX = ball.x + mul(ball.vx, cfg.predictLead * 0.25);
-      // 공보다 살짝 오른쪽(+24)에 자리를 잡아 왼쪽(상대 코트)으로 스파이크 각도를 만듦
       var targetX = ball.x > 370 ? (predictedBallX + 24) : 630;
       if (targetX < 442) targetX = 442;
       if (targetX > 765) targetX = 765;
@@ -2235,7 +2234,6 @@ window.onload = function() {
         p2.vx = mul(p2.vx, Math.pow(0.76, dt));
       }
 
-      // AI 점프 & 스파이크 예약
       if (ball.x > 390 && ball.y > 110 && ball.y < cfg.jumpHeightY && ball.vy > -1.2 && p2.y >= 340 && Math.abs(p2.x - (ball.x + 18)) < cfg.jumpRangeX) {
         p2.vy = -10.8;
         p2.squash = 1.22;
@@ -2265,13 +2263,12 @@ window.onload = function() {
 
     hitBall(p1, !!keys["Space"]);
 
-    // AI가 공을 치는 순간: 점프 예약 상태이거나, 네트 앞 공격 찬스일 때 확률적으로 스파이크 발동
+    // AI가 공을 치는 순간: 코트 위치(네트 앞/뒤) 상관없이 확률적으로 스파이크 발동
     var p2Spike = false;
     if (netMode === 'host') {
       p2Spike = !!remoteKeys.S;
-    } else {
-      var directSpike = (currentAiConfig.spikeChance > 0 && ball.x < 610 && ball.y < 325 && Math.random() < currentAiConfig.spikeChance);
-      p2Spike = aiWillSpike || directSpike;
+    } else if (Math.hypot(ball.x - p2.x, ball.y - p2.y) < ball.r + p2.r + 6) {
+      p2Spike = aiWillSpike || (currentAiConfig.spikeChance > 0 && Math.random() < currentAiConfig.spikeChance);
     }
     hitBall(p2, p2Spike);
 
@@ -2321,7 +2318,7 @@ window.onload = function() {
     }
   }
 
-function hitBall(p, isSpike) {
+  function hitBall(p, isSpike) {
     var dx = ball.x - p.x, dy = ball.y - p.y, dist = Math.hypot(dx, dy);
     if (dist < ball.r + p.r + 6 && dist > 0) {
       var overlap = (ball.r + p.r + 6) - dist;
@@ -2332,11 +2329,13 @@ function hitBall(p, isSpike) {
       if (isSpike) {
         ball.spikeType = p.spikeSkin || 'wind';
         if (p === p2 && netMode === 'ai') {
-          // AI 스파이크는 항상 왼쪽(플레이어 코트) 네트 너머를 향해 강타!
-          var targetCourtX = 110 + Math.random() * 210;
-          var aimAngle = Math.atan2(350 - ball.y, targetCourtX - ball.x);
-          ball.vx = mul(Math.cos(aimAngle), 10.5);
-          ball.vy = Math.min(-2.2, mul(Math.sin(aimAngle), 10.5) - 3.6);
+          // 네트(x=400, y=260)를 반드시 넘겨 플레이어 코트에 내리꽂는 포물선 물리 계산
+          var targetCourtX = 90 + Math.random() * 240;
+          var distToTarget = ball.x - targetCourtX;
+          var flightFrames = Math.max(36, distToTarget / 9.2);
+          ball.vx = -distToTarget / flightFrames;
+          var dyToFloor = 415 - ball.y;
+          ball.vy = (dyToFloor - 0.5 * 0.115 * flightFrames * flightFrames) / flightFrames;
           aiWillSpike = false;
         } else {
           ball.vx = mul(Math.cos(angle), 10.2) + mul(p.vx, 0.28);
