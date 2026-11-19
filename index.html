@@ -35,17 +35,17 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 8px 12px;
+  padding: 6px 10px;
   z-index: 10;
 }
-.lobby-header { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 410px; margin-bottom: 6px; gap: 6px; }
-.lobby-title { font-size: 1.05rem; font-weight: bold; color: #fde047; white-space: nowrap; }
+.lobby-header { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 410px; margin-bottom: 4px; gap: 6px; }
+.lobby-title { font-size: 0.98rem; font-weight: bold; color: #fde047; white-space: nowrap; }
 .rank-pill {
   background: rgba(30, 41, 59, 0.95);
   border: 1.5px solid #facc15;
   border-radius: 20px;
-  padding: 3px 9px;
-  font-size: 0.72rem;
+  padding: 2px 8px;
+  font-size: 0.7rem;
   font-weight: bold;
   color: #fef08a;
   white-space: nowrap;
@@ -53,20 +53,20 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 }
 .rank-pill:active { transform: scale(0.96); }
 
-.menu-box { width: 100%; max-width: 410px; display: flex; flex-direction: column; gap: 6px; }
+.menu-box { width: 100%; max-width: 410px; display: flex; flex-direction: column; gap: 5px; }
 
 /* 닉네임 + 스킨 + TOP10 랭킹 버튼 행 */
 .profile-row { display: flex; gap: 5px; width: 100%; }
-.nick-row { flex: 1.3; display: flex; align-items: center; gap: 4px; background: #1e293b; border: 1.5px solid #38bdf8; border-radius: 10px; padding: 3px 7px; }
-.nick-label { font-size: 0.74rem; color: #7dd3fc; font-weight: bold; white-space: nowrap; }
+.nick-row { flex: 1.3; display: flex; align-items: center; gap: 4px; background: #1e293b; border: 1.5px solid #38bdf8; border-radius: 10px; padding: 2px 7px; }
+.nick-label { font-size: 0.72rem; color: #7dd3fc; font-weight: bold; white-space: nowrap; }
 .nick-input {
   width: 100%;
   background: transparent;
   border: none;
   color: #fff;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: bold;
-  padding: 3px;
+  padding: 2px;
   outline: none;
   user-select: text;
   -webkit-user-select: text;
@@ -77,10 +77,10 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   border: 1.5px solid #d8b4fe;
   border-radius: 10px;
   color: #fff;
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   font-weight: bold;
   cursor: pointer;
-  padding: 5px 6px;
+  padding: 4px 6px;
   white-space: nowrap;
 }
 .btn-rank-open {
@@ -89,28 +89,47 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   border: 1.5px solid #fde047;
   border-radius: 10px;
   color: #fff;
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   font-weight: bold;
   cursor: pointer;
-  padding: 5px 6px;
+  padding: 4px 6px;
   white-space: nowrap;
 }
 
 .menu-btn {
   width: 100%;
-  padding: 8px 12px;
-  border-radius: 11px;
+  padding: 6px 10px;
+  border-radius: 10px;
   border: none;
-  font-size: 0.88rem;
+  font-size: 0.84rem;
   font-weight: bold;
   color: #fff;
   cursor: pointer;
   box-shadow: 0 3px 8px rgba(0,0,0,0.3);
 }
-.menu-btn:active { transform: scale(0.97); }
+.menu-btn:active:not(:disabled) { transform: scale(0.97); }
+.menu-btn:disabled { opacity: 0.65; cursor: default; }
 .btn-ai { background: linear-gradient(135deg, #0284c7, #0369a1); border: 1.5px solid #7dd3fc; }
 .btn-create { background: linear-gradient(135deg, #ea580c, #c2410c); border: 1.5px solid #fdba74; }
 .btn-list { background: linear-gradient(135deg, #16a34a, #15803d); border: 1.5px solid #86efac; }
+
+/* 대기화면 하단 배너 광고 슬롯 (320x50 규격) */
+.lobby-ad-slot {
+  width: 100%;
+  max-width: 320px;
+  min-height: 36px;
+  margin-top: 4px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px dashed rgba(148, 163, 184, 0.55);
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.64rem;
+  color: #94a3b8;
+  padding: 2px 6px;
+  overflow: hidden;
+}
 
 /* 스킨 & 이펙트 꾸미기 패널 */
 .skin-panel {
@@ -118,11 +137,11 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   flex-direction: column;
   width: 100%;
   max-width: 450px;
-  gap: 5px;
+  gap: 4px;
 }
 .skin-scroll {
   width: 100%;
-  max-height: 142px;
+  max-height: 124px;
   overflow-y: auto;
   background: rgba(30, 41, 59, 0.96);
   border: 1.5px solid #a855f7;
@@ -130,10 +149,10 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   padding: 6px;
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 6px;
   text-align: left;
 }
-.skin-cat-title { font-size: 0.72rem; font-weight: bold; color: #d8b4fe; margin-bottom: 3px; }
+.skin-cat-title { font-size: 0.7rem; font-weight: bold; color: #d8b4fe; margin-bottom: 2px; }
 .skin-grid { display: flex; flex-wrap: wrap; gap: 4px; }
 .skin-chip {
   flex: 1 1 30%;
@@ -143,14 +162,14 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   border-radius: 8px;
   padding: 4px 5px;
   color: #e2e8f0;
-  font-size: 0.7rem;
+  font-size: 0.69rem;
   text-align: center;
   cursor: pointer;
 }
 .skin-chip.equipped { border-color: #facc15; background: rgba(250, 204, 21, 0.16); color: #fef08a; font-weight: bold; }
 .skin-chip.ready-ad { border-color: #38bdf8; background: rgba(56, 189, 248, 0.12); color: #bae6fd; }
 .skin-chip.rank-locked { border-color: #475569; background: rgba(15, 23, 42, 0.65); color: #94a3b8; }
-.skin-sub { display: block; font-size: 0.61rem; opacity: 0.9; margin-top: 2px; line-height: 1.15; }
+.skin-sub { display: block; font-size: 0.6rem; opacity: 0.9; margin-top: 2px; line-height: 1.15; }
 
 /* 선택 스킨 상세 설명 카드 */
 .skin-detail-box {
@@ -158,13 +177,13 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   background: rgba(15, 23, 42, 0.95);
   border: 1.5px solid #38bdf8;
   border-radius: 9px;
-  padding: 6px 9px;
+  padding: 5px 8px;
   text-align: left;
-  font-size: 0.7rem;
-  line-height: 1.35;
+  font-size: 0.68rem;
+  line-height: 1.3;
 }
 .skin-detail-top { display: flex; justify-content: space-between; align-items: center; font-weight: bold; color: #fde047; margin-bottom: 2px; }
-.skin-detail-cond { font-size: 0.65rem; color: #7dd3fc; }
+.skin-detail-cond { font-size: 0.63rem; color: #7dd3fc; }
 .skin-detail-desc { color: #e2e8f0; }
 
 /* TOP 10 랭킹 패널 */
@@ -173,11 +192,11 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   flex-direction: column;
   width: 100%;
   max-width: 420px;
-  gap: 6px;
+  gap: 5px;
 }
 .rank-scroll {
   width: 100%;
-  max-height: 155px;
+  max-height: 145px;
   overflow-y: auto;
   background: rgba(30, 41, 59, 0.96);
   border: 1.5px solid #facc15;
@@ -195,7 +214,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   border: 1px solid #334155;
   border-radius: 7px;
   padding: 4px 8px;
-  font-size: 0.75rem;
+  font-size: 0.74rem;
 }
 .rank-row.me {
   border-color: #facc15;
@@ -203,13 +222,13 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 }
 .rank-left { display: flex; align-items: center; gap: 6px; font-weight: bold; }
 .rank-num { width: 24px; text-align: center; color: #fde047; }
-.rank-right { font-size: 0.7rem; color: #bae6fd; }
+.rank-right { font-size: 0.69rem; color: #bae6fd; }
 
 /* 방 리스트 패널 */
-.list-panel { display: none; flex-direction: column; align-items: center; gap: 6px; width: 100%; max-width: 390px; }
+.list-panel { display: none; flex-direction: column; align-items: center; gap: 5px; width: 100%; max-width: 390px; }
 .room-list-box {
   width: 100%;
-  max-height: 112px;
+  max-height: 106px;
   overflow-y: auto;
   background: rgba(30, 41, 59, 0.92);
   border: 1.5px solid #475569;
@@ -227,18 +246,18 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   border: 1px solid #38bdf8;
   border-radius: 8px;
   padding: 5px 9px;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
 }
 .room-item-info { text-align: left; }
 .room-item-title { font-weight: bold; color: #fde047; }
-.room-item-sub { font-size: 0.7rem; color: #94a3b8; }
+.room-item-sub { font-size: 0.68rem; color: #94a3b8; }
 .room-item-btn {
   background: #16a34a;
   color: #fff;
   border: none;
   border-radius: 6px;
   padding: 5px 9px;
-  font-size: 0.75rem;
+  font-size: 0.74rem;
   font-weight: bold;
   cursor: pointer;
 }
@@ -247,28 +266,28 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 .join-row { display: flex; gap: 5px; width: 100%; }
 .code-input {
   flex: 1.2;
-  padding: 6px;
+  padding: 5px;
   border-radius: 8px;
   border: 1.5px solid #64748b;
   background: #1e293b;
   color: #fff;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: bold;
   text-align: center;
   text-transform: uppercase;
   user-select: text;
   -webkit-user-select: text;
 }
-.btn-small { flex: 0.8; padding: 6px; border-radius: 8px; font-size: 0.78rem; }
+.btn-small { flex: 0.8; padding: 5px; border-radius: 8px; font-size: 0.76rem; }
 
 /* 방 생성 후 대기 패널 */
-.wait-panel { display: none; flex-direction: column; align-items: center; gap: 6px; width: 100%; max-width: 350px; }
+.wait-panel { display: none; flex-direction: column; align-items: center; gap: 5px; width: 100%; max-width: 350px; }
 .room-badge {
   background: #1e293b;
   border: 2px dashed #fde047;
   border-radius: 10px;
-  padding: 6px 14px;
-  font-size: 1.1rem;
+  padding: 5px 12px;
+  font-size: 1.05rem;
   font-weight: bold;
   color: #fde047;
   letter-spacing: 1px;
@@ -278,26 +297,37 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 .wait-actions { display: flex; gap: 8px; width: 100%; }
 .btn-copy { flex: 1.5; background: #16a34a; border: 1.5px solid #86efac; }
 .btn-cancel { flex: 1; background: #475569; border: 1.5px solid #94a3b8; }
-.lobby-status { font-size: 0.73rem; color: #bae6fd; margin-top: 3px; min-height: 14px; }
+.lobby-status { font-size: 0.7rem; color: #bae6fd; margin-top: 2px; min-height: 13px; }
 
-/* 보상 해금 확인 모달 */
+/* 5초 광고 해금 모달 */
 .reward-modal {
   display: none;
   position: absolute;
-  inset: 14px;
-  background: rgba(15, 23, 42, 0.97);
+  inset: 10px;
+  background: rgba(15, 23, 42, 0.98);
   border: 2px solid #facc15;
   border-radius: 12px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 14px;
+  padding: 12px;
   z-index: 20;
-  gap: 8px;
+  gap: 6px;
 }
-.reward-modal h3 { margin: 0; color: #fde047; font-size: 1rem; }
-.reward-modal p { margin: 0; font-size: 0.78rem; color: #e2e8f0; line-height: 1.4; max-width: 320px; }
-.reward-btns { display: flex; gap: 8px; width: 100%; max-width: 260px; margin-top: 4px; }
+.reward-modal h3 { margin: 0; color: #fde047; font-size: 0.98rem; }
+.reward-modal p { margin: 0; font-size: 0.75rem; color: #e2e8f0; line-height: 1.35; max-width: 320px; }
+.ad-5s-box {
+  width: 100%;
+  max-width: 300px;
+  background: #1e293b;
+  border: 1.5px solid #38bdf8;
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 0.78rem;
+  color: #bae6fd;
+  font-weight: bold;
+}
+.reward-btns { display: flex; gap: 8px; width: 100%; max-width: 280px; margin-top: 2px; }
 
 /* 모바일 터치 패드 */
 .controls { width: 100%; max-width: 800px; flex: 1; max-height: 155px; display: flex; justify-content: space-between; align-items: stretch; gap: 12px; padding: 6px 4px 8px; }
@@ -366,7 +396,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
       <button class="menu-btn btn-list" id="btnOpenRoomList">🔍 참여하기 (방 리스트 보기)</button>
     </div>
 
-    <!-- 2. 스킨 & 이펙트 선택 패널 (매주 시즌별 초기화) -->
+    <!-- 2. 스킨 & 이펙트 선택 패널 -->
     <div class="skin-panel" id="skinPanel">
       <div class="skin-scroll" id="skinScrollContainer"></div>
       <div class="skin-detail-box" id="skinDetailBox">
@@ -374,7 +404,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
           <span id="detailName">스킨을 선택하세요</span>
           <span class="skin-detail-cond" id="detailCond"></span>
         </div>
-        <div class="skin-detail-desc" id="detailDesc">매주 월요일 새 시즌이 시작되면 랭크와 스킨 해금이 초기화됩니다. 조건 달성 후 광고로 시즌 스킨을 열어보세요!</div>
+        <div class="skin-detail-desc" id="detailDesc">매주 월요일 새 시즌이 시작되면 랭크와 스킨 해금이 초기화됩니다. 조건 달성 후 5초 광고로 시즌 스킨을 열어보세요!</div>
       </div>
       <button class="menu-btn btn-ai btn-small" id="btnCloseSkins">선택 완료 (돌아가기)</button>
     </div>
@@ -403,7 +433,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 
     <!-- 5. 방 생성 후 대기 화면 -->
     <div class="wait-panel" id="waitPanel">
-      <div style="font-size:0.8rem; color:#e2e8f0;">공개 로비에 등록되었습니다! 친구가 방 리스트에서 바로 찾을 수 있어요.</div>
+      <div style="font-size:0.78rem; color:#e2e8f0;">공개 로비에 등록되었습니다! 친구가 방 리스트에서 바로 찾을 수 있어요.</div>
       <div class="room-badge" id="roomCodeDisplay">CAT-ROOM-1</div>
       <div class="wait-actions">
         <button class="menu-btn btn-copy" id="btnCopyCode">📋 방코드 복사</button>
@@ -411,17 +441,21 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
       </div>
     </div>
 
-    <!-- 보상 시즌 해금 확인 모달 -->
+    <!-- 5초 광고 해금 모달 -->
     <div class="reward-modal" id="rewardModal">
-      <h3 id="rewardModalTitle">🎁 시즌 스킨 해금</h3>
+      <h3 id="rewardModalTitle">🎁 시즌 스킨 5초 광고 해금</h3>
       <p id="rewardModalDesc"></p>
+      <div class="ad-5s-box" id="adCountdownBox">5초 광고 시청 시 이번 시즌 동안 해금됩니다.</div>
       <div class="reward-btns">
-        <button class="menu-btn btn-create btn-small" id="btnConfirmUnlock">🎬 광고 보고 시즌 해금</button>
+        <button class="menu-btn btn-create btn-small" id="btnConfirmUnlock">🎬 5초 광고 시작</button>
         <button class="menu-btn btn-cancel btn-small" id="btnCancelUnlock">닫기</button>
       </div>
     </div>
 
     <div class="lobby-status" id="lobbyStatus">닉네임과 스킨을 고르고 게임을 시작하세요!</div>
+
+    <!-- 대기화면 하단 배너 광고 슬롯 -->
+    <div class="lobby-ad-slot" id="lobbyAdSlot">📢 대기화면 배너 광고 영역 (320×50)</div>
   </div>
 </div>
 
@@ -446,6 +480,15 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 <script>
 window.onload = function() {
   var FIREBASE_DB_URL = "https://vollybal-rank-default-rtdb.firebaseio.com";
+
+  // ★ 광고 승인 후 실제 배너/보상 SDK 코드를 이 설정에 연결해 사용합니다.
+  var AD_CONFIG = {
+    lobbyBannerHtml: "" // 예: '<ins class="adsbygoogle" ...></ins>'
+  };
+
+  if (AD_CONFIG.lobbyBannerHtml) {
+    document.getElementById("lobbyAdSlot").innerHTML = AD_CONFIG.lobbyBannerHtml;
+  }
 
   var cvs = document.getElementById("cvs");
   var ctx = cvs.getContext("2d", { alpha: false });
@@ -712,8 +755,7 @@ window.onload = function() {
 
   function getCurrentSeasonInfo() {
     var now = new Date();
-    // 월요일 00:00:00 기준으로 주간 시즌 시작 시각 계산
-    var day = now.getDay(); // 0(일) ~ 6(토)
+    var day = now.getDay();
     var diffToMon = (day === 0) ? -6 : (1 - day);
     var monday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diffToMon, 0, 0, 0, 0);
     var mondayMs = monday.getTime();
@@ -752,7 +794,7 @@ window.onload = function() {
 
   var BALL_SKINS = {
     classic:    { id: 'classic',    name: '비치볼',     free: true,  reqLv: 0, desc: '여름 해변의 정석 노란 비치볼입니다.' },
-    watermelon: { id: 'watermelon', name: '수박공',     free: false, reqLv: 0, desc: '시원한 초록 줄무늬 수박 모양 배구공! 브론즈부터 시즌 해금 가능.' },
+    watermelon: { id: 'watermelon', name: '수박공',     free: false, reqLv: 0, desc: '시원한 초록 줄무늬 수박 모양 배구공! 브론즈부터 5초 광고 해금 가능.' },
     rainbow:    { id: 'rainbow',    name: '무지개공',   free: false, reqLv: 1, desc: '일곱 빛깔 그라데이션이 감도는 화려한 무지개 공입니다.' },
     soccer:     { id: 'soccer',     name: '축구공',     free: false, reqLv: 2, desc: '흑백 육각형 패턴의 클래식 스포츠 공입니다.' },
     paw:        { id: 'paw',        name: '냥발바닥공', free: false, reqLv: 3, desc: '분홍 젤리 발바닥이 새겨진 사랑스러운 냥이 전용 공입니다.' },
@@ -816,9 +858,7 @@ window.onload = function() {
       }
     } catch (e) {}
 
-    if (!userState.playerId) {
-      userState.playerId = generatePlayerId();
-    }
+    if (!userState.playerId) userState.playerId = generatePlayerId();
     applyWeeklySeasonResetIfNeeded();
     saveUserState();
     validateUnlocks();
@@ -831,34 +871,20 @@ window.onload = function() {
   function getRankInfo(wins, losses) {
     var total = wins + losses;
     var rate = total > 0 ? Math.round((wins / total) * 100) : 0;
-    var lv = 0;
-    var tier = "🥉 브론즈";
+    var lv = 0, tier = "🥉 브론즈";
 
-    if (wins >= 10 || (total >= 8 && rate >= 70)) {
-      lv = 4; tier = "👑 챌린저냥";
-    } else if (wins >= 6 || (total >= 5 && rate >= 60)) {
-      lv = 3; tier = "💎 다이아";
-    } else if (wins >= 3 || (total >= 2 && rate >= 50)) {
-      lv = 2; tier = "🥇 골드";
-    } else if (wins >= 1) {
-      lv = 1; tier = "🥈 실버";
-    }
+    if (wins >= 10 || (total >= 8 && rate >= 70)) { lv = 4; tier = "👑 챌린저냥"; }
+    else if (wins >= 6 || (total >= 5 && rate >= 60)) { lv = 3; tier = "💎 다이아"; }
+    else if (wins >= 3 || (total >= 2 && rate >= 50)) { lv = 2; tier = "🥇 골드"; }
+    else if (wins >= 1) { lv = 1; tier = "🥈 실버"; }
 
     var score = mul(wins, 30) + rate;
-    return {
-      lv: lv,
-      tier: tier,
-      rate: rate,
-      total: total,
-      score: score,
-      summary: tier + " · " + wins + "승 " + losses + "패 (" + rate + "%)"
-    };
+    return { lv: lv, tier: tier, rate: rate, total: total, score: score, summary: tier + " · " + wins + "승 " + losses + "패 (" + rate + "%)" };
   }
 
   function isRankMet(reqLv) {
     applyWeeklySeasonResetIfNeeded();
-    var myRank = getRankInfo(userState.wins, userState.losses);
-    return myRank.lv >= (reqLv || 0);
+    return getRankInfo(userState.wins, userState.losses).lv >= (reqLv || 0);
   }
 
   function isSeasonUnlocked(key, isFree) {
@@ -874,15 +900,9 @@ window.onload = function() {
   function validateUnlocks() {
     applyWeeklySeasonResetIfNeeded();
     var changed = false;
-    if (!canUseItem(CAT_SKINS[userState.equippedCat], 'cat_' + userState.equippedCat)) {
-      userState.equippedCat = 'cream'; changed = true;
-    }
-    if (!canUseItem(BALL_SKINS[userState.equippedBall], 'ball_' + userState.equippedBall)) {
-      userState.equippedBall = 'classic'; changed = true;
-    }
-    if (!canUseItem(SPIKE_SKINS[userState.equippedSpike], 'spike_' + userState.equippedSpike)) {
-      userState.equippedSpike = 'wind'; changed = true;
-    }
+    if (!canUseItem(CAT_SKINS[userState.equippedCat], 'cat_' + userState.equippedCat)) { userState.equippedCat = 'cream'; changed = true; }
+    if (!canUseItem(BALL_SKINS[userState.equippedBall], 'ball_' + userState.equippedBall)) { userState.equippedBall = 'classic'; changed = true; }
+    if (!canUseItem(SPIKE_SKINS[userState.equippedSpike], 'spike_' + userState.equippedSpike)) { userState.equippedSpike = 'wind'; changed = true; }
     if (changed) saveUserState();
   }
 
@@ -905,14 +925,9 @@ window.onload = function() {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        nick: myNick,
-        wins: userState.wins,
-        losses: userState.losses,
-        rate: info.rate,
-        score: info.score,
-        tier: info.tier,
-        season: currentSeason.key,
-        updatedAt: Date.now()
+        nick: myNick, wins: userState.wins, losses: userState.losses,
+        rate: info.rate, score: info.score, tier: info.tier,
+        season: currentSeason.key, updatedAt: Date.now()
       })
     }).catch(function() {});
   }
@@ -921,9 +936,7 @@ window.onload = function() {
     applyWeeklySeasonResetIfNeeded();
     if (isWin) userState.wins++;
     else userState.losses++;
-    saveUserState();
-    refreshRankUI();
-    syncMyRankToCloud();
+    saveUserState(); refreshRankUI(); syncMyRankToCloud();
   }
 
   function fetchGlobalTop10() {
@@ -944,24 +957,15 @@ window.onload = function() {
           Object.keys(data).forEach(function(pid) {
             var row = data[pid];
             if (row && typeof row.wins === 'number') {
-              list.push({
-                playerId: pid,
-                nick: row.nick || '이름없음',
-                wins: row.wins || 0,
-                losses: row.losses || 0,
-                isMe: (pid === userState.playerId)
-              });
+              list.push({ playerId: pid, nick: row.nick || '이름없음', wins: row.wins || 0, losses: row.losses || 0, isMe: (pid === userState.playerId) });
             }
           });
         }
-
         if (!list.some(function(x) { return x.isMe; })) {
           list.push({ playerId: userState.playerId, nick: myNick, wins: userState.wins, losses: userState.losses, isMe: true });
         }
-
         list.sort(function(a, b) {
-          var ra = getRankInfo(a.wins, a.losses);
-          var rb = getRankInfo(b.wins, b.losses);
+          var ra = getRankInfo(a.wins, a.losses), rb = getRankInfo(b.wins, b.losses);
           if (rb.score !== ra.score) return rb.score - ra.score;
           if (b.wins !== a.wins) return b.wins - a.wins;
           return rb.rate - ra.rate;
@@ -970,16 +974,12 @@ window.onload = function() {
         var top10 = list.slice(0, 10);
         box.innerHTML = "";
         for (var i = 0; i < top10.length; i++) {
-          var item = top10[i];
-          var info = getRankInfo(item.wins, item.losses);
+          var item = top10[i], info = getRankInfo(item.wins, item.losses);
           var medal = i === 0 ? "🥇" : (i === 1 ? "🥈" : (i === 2 ? "🥉" : (i + 1) + "위"));
           var rowEl = document.createElement("div");
           rowEl.className = "rank-row" + (item.isMe ? " me" : "");
           rowEl.innerHTML =
-            '<div class="rank-left">' +
-              '<span class="rank-num">' + medal + '</span>' +
-              '<span>' + info.tier + ' ' + item.nick + (item.isMe ? ' <span style="color:#fde047;">(나)</span>' : '') + '</span>' +
-            '</div>' +
+            '<div class="rank-left"><span class="rank-num">' + medal + '</span><span>' + info.tier + ' ' + item.nick + (item.isMe ? ' <span style="color:#fde047;">(나)</span>' : '') + '</span></div>' +
             '<div class="rank-right">' + item.wins + '승 ' + item.losses + '패 (' + info.rate + '%)</div>';
           box.appendChild(rowEl);
         }
@@ -994,10 +994,25 @@ window.onload = function() {
   refreshRankUI();
 
   // =========================================================================
-  // 3. 랭크 조건 + 설명 + 주간 시즌 스킨 해금 UI
+  // 3. 랭크 조건 + 설명 + 5초 광고 시즌 해금 UI
   // =========================================================================
   var pendingUnlock = null;
+  var adTimerInterval = null;
+  var isAdPlaying = false;
   var rewardModal = document.getElementById("rewardModal");
+  var btnConfirmUnlock = document.getElementById("btnConfirmUnlock");
+  var btnCancelUnlock = document.getElementById("btnCancelUnlock");
+  var adCountdownBox = document.getElementById("adCountdownBox");
+
+  function clearAdTimer() {
+    if (adTimerInterval) {
+      clearInterval(adTimerInterval);
+      adTimerInterval = null;
+    }
+    isAdPlaying = false;
+    btnConfirmUnlock.disabled = false;
+    btnConfirmUnlock.innerText = "🎬 5초 광고 시작";
+  }
 
   function getReqRankLabel(reqLv) {
     var t = RANK_TIERS[reqLv] || RANK_TIERS[0];
@@ -1009,38 +1024,53 @@ window.onload = function() {
     document.getElementById("detailDesc").innerText = item.desc;
 
     var condEl = document.getElementById("detailCond");
-    if (item.free) {
-      condEl.innerText = "✅ 기본 제공 (무료)";
-    } else if (!isRankMet(item.reqLv)) {
-      condEl.innerText = "🔒 필요: " + getReqRankLabel(item.reqLv);
-    } else if (isSeasonUnlocked(uKey, false)) {
-      condEl.innerText = "✨ 이번 시즌 보유중";
-    } else {
-      condEl.innerText = "🎬 랭크 달성! 광고 후 시즌 해금 가능";
-    }
+    if (item.free) condEl.innerText = "✅ 기본 제공 (무료)";
+    else if (!isRankMet(item.reqLv)) condEl.innerText = "🔒 필요: " + getReqRankLabel(item.reqLv);
+    else if (isSeasonUnlocked(uKey, false)) condEl.innerText = "✨ 이번 시즌 보유중";
+    else condEl.innerText = "🎬 5초 광고 후 시즌 해금 가능";
   }
 
   function openRewardModal(unlockKey, item, onSuccess) {
+    clearAdTimer();
     pendingUnlock = { key: unlockKey, item: item, cb: onSuccess };
-    document.getElementById("rewardModalTitle").innerText = "🎁 [" + item.name + "] 시즌 해금";
+    document.getElementById("rewardModalTitle").innerText = "🎁 [" + item.name + "] 5초 광고 해금";
     document.getElementById("rewardModalDesc").innerText =
-      "획득 조건(" + getReqRankLabel(item.reqLv) + ")을 달성했습니다! 광고 시청 후 이번 시즌 동안 사용할 수 있습니다. (매주 월요일 초기화)";
+      "조건(" + getReqRankLabel(item.reqLv) + ") 달성! 5초 광고가 끝나면 이번 시즌 동안 사용할 수 있습니다.";
+    adCountdownBox.innerText = "5초 광고 시청 시 이번 시즌 동안 해금됩니다.";
     rewardModal.style.display = "flex";
   }
 
-  document.getElementById("btnConfirmUnlock").onclick = function() {
-    if (!pendingUnlock) return;
-    userState.unlocks[pendingUnlock.key] = true;
-    if (pendingUnlock.cb) pendingUnlock.cb();
-    saveUserState();
-    SoundEngine.playUnlock();
-    rewardModal.style.display = "none";
-    renderSkinPanel(pendingUnlock.item, pendingUnlock.key);
-    lobbyStatus.innerText = "🎉 [" + pendingUnlock.item.name + "] 이번 시즌 해금 완료!";
-    pendingUnlock = null;
+  btnConfirmUnlock.onclick = function() {
+    if (!pendingUnlock || isAdPlaying) return;
+    isAdPlaying = true;
+    btnConfirmUnlock.disabled = true;
+
+    var secLeft = 5;
+    adCountdownBox.innerText = "📺 광고 재생 중... " + secLeft + "초 남음";
+    btnConfirmUnlock.innerText = "⏳ " + secLeft + "초...";
+
+    adTimerInterval = setInterval(function() {
+      secLeft--;
+      if (secLeft > 0) {
+        adCountdownBox.innerText = "📺 광고 재생 중... " + secLeft + "초 남음";
+        btnConfirmUnlock.innerText = "⏳ " + secLeft + "초...";
+      } else {
+        var doneUnlock = pendingUnlock;
+        clearAdTimer();
+        userState.unlocks[doneUnlock.key] = true;
+        if (doneUnlock.cb) doneUnlock.cb();
+        saveUserState();
+        SoundEngine.playUnlock();
+        rewardModal.style.display = "none";
+        renderSkinPanel(doneUnlock.item, doneUnlock.key);
+        lobbyStatus.innerText = "🎉 [" + doneUnlock.item.name + "] 5초 광고 시청 완료 · 이번 시즌 해금!";
+        pendingUnlock = null;
+      }
+    }, 1000);
   };
 
-  document.getElementById("btnCancelUnlock").onclick = function() {
+  btnCancelUnlock.onclick = function() {
+    clearAdTimer();
     rewardModal.style.display = "none";
     pendingUnlock = null;
   };
@@ -1057,12 +1087,9 @@ window.onload = function() {
       grid.className = "skin-grid";
 
       Object.keys(catalog).forEach(function(k) {
-        var sk = catalog[k];
-        var uKey = prefix + k;
-        var rankOk = isRankMet(sk.reqLv);
-        var seaOk = isSeasonUnlocked(uKey, sk.free);
-        var usable = sk.free || (rankOk && seaOk);
-        var equipped = (equippedVal === k && usable);
+        var sk = catalog[k], uKey = prefix + k;
+        var rankOk = isRankMet(sk.reqLv), seaOk = isSeasonUnlocked(uKey, sk.free);
+        var usable = sk.free || (rankOk && seaOk), equipped = (equippedVal === k && usable);
 
         var btn = document.createElement("button");
         var cls = "skin-chip";
@@ -1074,7 +1101,7 @@ window.onload = function() {
         var subText = "";
         if (sk.free) subText = "기본 무료";
         else if (!rankOk) subText = "🔒 " + RANK_TIERS[sk.reqLv].badge + " 필요";
-        else if (!seaOk) subText = "🎬 광고 해금";
+        else if (!seaOk) subText = "🎬 5초 광고";
         else subText = "✨ 시즌 보유";
 
         btn.innerHTML = (equipped ? "✅ " : "") + sk.name + '<span class="skin-sub">' + subText + '</span>';
@@ -1085,15 +1112,9 @@ window.onload = function() {
           else if (prefix === "spike_") SoundEngine.playSpikeSound(k);
           else SoundEngine.playBounce(false);
 
-          if (usable) {
-            onEquip(k);
-            saveUserState();
-            renderSkinPanel(sk, uKey);
-          } else if (!rankOk) {
-            lobbyStatus.innerText = "🔒 [" + sk.name + "]는 " + getReqRankLabel(sk.reqLv) + "에서 열립니다!";
-          } else {
-            openRewardModal(uKey, sk, function() { onEquip(k); });
-          }
+          if (usable) { onEquip(k); saveUserState(); renderSkinPanel(sk, uKey); }
+          else if (!rankOk) { lobbyStatus.innerText = "🔒 [" + sk.name + "]는 " + getReqRankLabel(sk.reqLv) + "에서 열립니다!"; }
+          else { openRewardModal(uKey, sk, function() { onEquip(k); }); }
         };
         grid.appendChild(btn);
       });
@@ -1106,9 +1127,7 @@ window.onload = function() {
     buildSection("🏐 배구공 스킨 (시즌별 랭크 해금)", BALL_SKINS, "ball_", userState.equippedBall, function(v) { userState.equippedBall = v; });
     buildSection("💥 스파이크 이펙트 (클릭 시 효과음·설명 확인)", SPIKE_SKINS, "spike_", userState.equippedSpike, function(v) { userState.equippedSpike = v; });
 
-    if (selectedItem && selectedKey) {
-      updateDetailCard(selectedItem, selectedKey);
-    }
+    if (selectedItem && selectedKey) updateDetailCard(selectedItem, selectedKey);
   }
 
   // --- 4. 공개 로비 슬롯 및 배경 애니메이션 ---
@@ -1135,9 +1154,7 @@ window.onload = function() {
 
   function lerp(a, b, t) { return a + mul(b - a, t); }
   function lerpColor(c1, c2, t) {
-    var r = Math.round(lerp(c1[0], c2[0], t));
-    var g = Math.round(lerp(c1[1], c2[1], t));
-    var b = Math.round(lerp(c1[2], c2[2], t));
+    var r = Math.round(lerp(c1[0], c2[0], t)), g = Math.round(lerp(c1[1], c2[1], t)), b = Math.round(lerp(c1[2], c2[2], t));
     return "rgb(" + r + "," + g + "," + b + ")";
   }
 
@@ -1152,46 +1169,30 @@ window.onload = function() {
 
     if (worldTime >= 0.50 && worldTime <= 0.82) {
       if (!shootingStar.active && Math.random() < mul(0.014, dt)) {
-        shootingStar.active = true;
-        shootingStar.x = 180 + Math.random() * 580;
-        shootingStar.y = 15 + Math.random() * 75;
-        shootingStar.vx = -9.5;
-        shootingStar.vy = 4.2;
-        shootingStar.life = 34;
+        shootingStar.active = true; shootingStar.x = 180 + Math.random() * 580; shootingStar.y = 15 + Math.random() * 75;
+        shootingStar.vx = -9.5; shootingStar.vy = 4.2; shootingStar.life = 34;
       }
     }
     if (shootingStar.active) {
-      shootingStar.x += mul(shootingStar.vx, dt);
-      shootingStar.y += mul(shootingStar.vy, dt);
-      shootingStar.life -= dt;
+      shootingStar.x += mul(shootingStar.vx, dt); shootingStar.y += mul(shootingStar.vy, dt); shootingStar.life -= dt;
       if (shootingStar.life <= 0) shootingStar.active = false;
     }
 
     var isMorning = (worldTime >= 0.82 || worldTime <= 0.08);
     for (var b = 0; b < birds.length; b++) {
       if (isMorning || birds[b].x > -40) {
-        birds[b].x += mul(birds[b].spd, dt);
-        birds[b].phase += mul(0.16, dt);
-        if (birds[b].x > 860) {
-          birds[b].x = isMorning ? -60 - mul(b, 32) : -120;
-          birds[b].y = 70 + Math.random() * 65;
-        }
+        birds[b].x += mul(birds[b].spd, dt); birds[b].phase += mul(0.16, dt);
+        if (birds[b].x > 860) { birds[b].x = isMorning ? -60 - mul(b, 32) : -120; birds[b].y = 70 + Math.random() * 65; }
       }
     }
 
     if (heroCat.cooldown > 0) heroCat.cooldown -= dt;
     if (worldTime >= 0.12 && worldTime <= 0.32 && heroCat.cooldown <= 0) {
       if (!heroCat.active && Math.random() < mul(0.0012, dt)) {
-        heroCat.active = true;
-        heroCat.x = -110;
-        heroCat.y = 65 + Math.random() * 55;
-        heroCat.cooldown = 2600;
+        heroCat.active = true; heroCat.x = -110; heroCat.y = 65 + Math.random() * 55; heroCat.cooldown = 2600;
       }
     }
-    if (heroCat.active) {
-      heroCat.x += mul(heroCat.spd, dt);
-      if (heroCat.x > 920) heroCat.active = false;
-    }
+    if (heroCat.active) { heroCat.x += mul(heroCat.spd, dt); if (heroCat.x > 920) heroCat.active = false; }
   }
 
   function getSkyPalette() {
@@ -1206,14 +1207,8 @@ window.onload = function() {
     ];
     for (var i = 0; i < keys.length - 1; i++) {
       if (worldTime >= keys[i].t && worldTime <= keys[i + 1].t) {
-        var span = keys[i + 1].t - keys[i].t;
-        var ratio = span > 0 ? (worldTime - keys[i].t) / span : 0;
-        return {
-          top: lerpColor(keys[i].top, keys[i + 1].top, ratio),
-          bot: lerpColor(keys[i].bot, keys[i + 1].bot, ratio),
-          sand: lerpColor(keys[i].sand, keys[i + 1].sand, ratio),
-          line: lerpColor(keys[i].line, keys[i + 1].line, ratio)
-        };
+        var span = keys[i + 1].t - keys[i].t, ratio = span > 0 ? (worldTime - keys[i].t) / span : 0;
+        return { top: lerpColor(keys[i].top, keys[i + 1].top, ratio), bot: lerpColor(keys[i].bot, keys[i + 1].bot, ratio), sand: lerpColor(keys[i].sand, keys[i + 1].sand, ratio), line: lerpColor(keys[i].line, keys[i + 1].line, ratio) };
       }
     }
     return { top: '#0284c7', bot: '#7dd3fc', sand: '#fde047', line: '#eab308' };
@@ -1229,69 +1224,31 @@ window.onload = function() {
   var prevHit1 = 0, prevHit2 = 0, prevScore1 = 0, prevScore2 = 0;
   var lastTime = performance.now();
 
-  var gameState = 'lobby';
-  var netMode = 'ai';
-  var peer = null;
-  var scanPeer = null;
-  var conn = null;
-  var player2Conn = null;
-  var spectatorConns = [];
-  var remoteKeys = {};
-  var myRoomId = "";
-  var isHostingRoom = false;
+  var gameState = 'lobby', netMode = 'ai', peer = null, scanPeer = null, conn = null, player2Conn = null, spectatorConns = [], remoteKeys = {}, myRoomId = "", isHostingRoom = false;
 
-  var lobbyOverlay = document.getElementById("lobbyOverlay");
-  var mainMenuBox = document.getElementById("mainMenuBox");
-  var skinPanel = document.getElementById("skinPanel");
-  var rankPanel = document.getElementById("rankPanel");
-  var listPanel = document.getElementById("listPanel");
-  var roomListBox = document.getElementById("roomListBox");
-  var waitPanel = document.getElementById("waitPanel");
-  var lobbyStatus = document.getElementById("lobbyStatus");
-  var btnHome = document.getElementById("btnHome");
-  var controlsArea = document.getElementById("controlsArea");
-  var spectatorBanner = document.getElementById("spectatorBanner");
-  var specBadge = document.getElementById("specBadge");
-  var nickInput = document.getElementById("nickInput");
+  var lobbyOverlay = document.getElementById("lobbyOverlay"), mainMenuBox = document.getElementById("mainMenuBox"), skinPanel = document.getElementById("skinPanel"), rankPanel = document.getElementById("rankPanel"), listPanel = document.getElementById("listPanel"), roomListBox = document.getElementById("roomListBox"), waitPanel = document.getElementById("waitPanel"), lobbyStatus = document.getElementById("lobbyStatus"), btnHome = document.getElementById("btnHome"), controlsArea = document.getElementById("controlsArea"), spectatorBanner = document.getElementById("spectatorBanner"), specBadge = document.getElementById("specBadge"), nickInput = document.getElementById("nickInput");
 
-  try {
-    var savedNick = sessionStorage.getItem('cat_nick');
-    if (savedNick) nickInput.value = savedNick;
-  } catch (e) {}
+  try { var savedNick = sessionStorage.getItem('cat_nick'); if (savedNick) nickInput.value = savedNick; } catch (e) {}
 
   function getMyNick(fallback) {
-    var val = nickInput.value.trim();
-    var finalNick = val ? val.slice(0, 8) : fallback;
+    var val = nickInput.value.trim(), finalNick = val ? val.slice(0, 8) : fallback;
     try { sessionStorage.setItem('cat_nick', finalNick); } catch (e) {}
     return finalNick;
   }
 
   function copyTextSafe(text) {
     var textArea = document.createElement("textarea");
-    textArea.value = text;
-    textArea.style.position = "fixed";
-    textArea.style.left = "-9999px";
-    textArea.style.top = "0";
-    textArea.setAttribute("readonly", "");
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-    textArea.setSelectionRange(0, 99999);
+    textArea.value = text; textArea.style.position = "fixed"; textArea.style.left = "-9999px"; textArea.style.top = "0"; textArea.setAttribute("readonly", "");
+    document.body.appendChild(textArea); textArea.focus(); textArea.select(); textArea.setSelectionRange(0, 99999);
     var success = false;
     try { success = document.execCommand("copy"); } catch (err) { success = false; }
     document.body.removeChild(textArea);
-    lobbyStatus.innerText = success
-      ? "✅ 복사 완료! [" + text + "] 친구에게 보내거나 방 리스트에서 입장하세요."
-      : "방 코드 [" + text + "] 를 길게 눌러 복사해 주세요.";
+    lobbyStatus.innerText = success ? "✅ 복사 완료! [" + text + "] 친구에게 보내거나 방 리스트에서 입장하세요." : "방 코드 [" + text + "] 를 길게 눌러 복사해 주세요.";
   }
 
   function updateSpecBadge(count) {
-    if (count > 0) {
-      specBadge.style.display = 'inline-block';
-      specBadge.innerText = "👀 관전 " + count + "명";
-    } else {
-      specBadge.style.display = 'none';
-    }
+    if (count > 0) { specBadge.style.display = 'inline-block'; specBadge.innerText = "👀 관전 " + count + "명"; }
+    else { specBadge.style.display = 'none'; }
   }
 
   function resetPositions() {
@@ -1303,81 +1260,54 @@ window.onload = function() {
 
   function broadcastToAll(payload) {
     if (player2Conn && player2Conn.open) player2Conn.send(payload);
-    for (var i = 0; i < spectatorConns.length; i++) {
-      if (spectatorConns[i].open) spectatorConns[i].send(payload);
-    }
+    for (var i = 0; i < spectatorConns.length; i++) { if (spectatorConns[i].open) spectatorConns[i].send(payload); }
   }
 
   function resetGame() {
-    score1 = 0; score2 = 0; prevScore1 = 0; prevScore2 = 0;
-    gameOver = false; matchRecorded = false;
+    score1 = 0; score2 = 0; prevScore1 = 0; prevScore2 = 0; gameOver = false; matchRecorded = false;
     resetPositions();
     if (netMode === 'host') broadcastToAll({ type: 'reset' });
   }
 
   function startMatch(mode) {
-    netMode = mode;
-    gameState = 'playing';
-    lobbyOverlay.style.display = 'none';
-    btnHome.style.display = 'inline-block';
-
-    if (mode === 'spectator') {
-      controlsArea.style.display = 'none';
-      spectatorBanner.style.display = 'flex';
-    } else {
-      controlsArea.style.display = 'flex';
-      spectatorBanner.style.display = 'none';
-    }
+    clearAdTimer();
+    netMode = mode; gameState = 'playing';
+    lobbyOverlay.style.display = 'none'; btnHome.style.display = 'inline-block';
+    if (mode === 'spectator') { controlsArea.style.display = 'none'; spectatorBanner.style.display = 'flex'; }
+    else { controlsArea.style.display = 'flex'; spectatorBanner.style.display = 'none'; }
     resetGame();
   }
 
   function returnToLobby(msg) {
+    clearAdTimer();
     isHostingRoom = false;
     try { sessionStorage.removeItem('cat_host_room'); } catch (e) {}
 
     if (player2Conn) { player2Conn.close(); player2Conn = null; }
     for (var i = 0; i < spectatorConns.length; i++) spectatorConns[i].close();
-    spectatorConns = [];
-    updateSpecBadge(0);
+    spectatorConns = []; updateSpecBadge(0);
 
     if (peer) { try { peer.destroy(); } catch (e) {} peer = null; }
     if (scanPeer) { try { scanPeer.destroy(); } catch (e) {} scanPeer = null; }
 
-    netMode = 'ai';
-    gameState = 'lobby';
-    gameOver = false;
-    matchRecorded = false;
+    netMode = 'ai'; gameState = 'lobby'; gameOver = false; matchRecorded = false;
     validateUnlocks();
-    p1.skin = userState.equippedCat;
-    p2.skin = 'gray';
-    ball.skin = userState.equippedBall;
+    p1.skin = userState.equippedCat; p2.skin = 'gray'; ball.skin = userState.equippedBall;
     resetPositions();
 
-    lobbyOverlay.style.display = 'flex';
-    mainMenuBox.style.display = 'flex';
-    skinPanel.style.display = 'none';
-    rankPanel.style.display = 'none';
-    listPanel.style.display = 'none';
-    waitPanel.style.display = 'none';
-    rewardModal.style.display = 'none';
-    btnHome.style.display = 'none';
-    controlsArea.style.display = 'flex';
-    spectatorBanner.style.display = 'none';
+    lobbyOverlay.style.display = 'flex'; mainMenuBox.style.display = 'flex';
+    skinPanel.style.display = 'none'; rankPanel.style.display = 'none'; listPanel.style.display = 'none'; waitPanel.style.display = 'none'; rewardModal.style.display = 'none';
+    btnHome.style.display = 'none'; controlsArea.style.display = 'flex'; spectatorBanner.style.display = 'none';
     refreshRankUI();
     lobbyStatus.innerText = msg || "닉네임과 스킨을 고르고 게임을 시작하세요!";
   }
 
   // --- 6. 방 생성 & 공개 방 리스트 스캔 ---
   function tryCreateHostSlot(slotIndex, fixedCode) {
-    if (typeof Peer === 'undefined') {
-      lobbyStatus.innerText = "인터넷 연결이 필요합니다.";
-      return;
-    }
+    if (typeof Peer === 'undefined') { lobbyStatus.innerText = "인터넷 연결이 필요합니다."; return; }
     if (!fixedCode && slotIndex >= LOBBY_SLOTS.length) {
       lobbyStatus.innerText = "현재 공개방 10개가 모두 가득 찼습니다.";
-      mainMenuBox.style.display = 'flex';
-      waitPanel.style.display = 'none';
-      return;
+      mainMenuBox.style.display = 'flex'; waitPanel.style.display = 'none'; return;
     }
 
     validateUnlocks();
@@ -1387,17 +1317,10 @@ window.onload = function() {
     isHostingRoom = true;
     var rInfo = getRankInfo(userState.wins, userState.losses);
     p1.name = getMyNick(CAT_SKINS[userState.equippedCat].name);
-    p1.tier = rInfo.tier;
-    p1.skin = userState.equippedCat;
-    p1.spikeSkin = userState.equippedSpike;
-    ball.skin = userState.equippedBall;
+    p1.tier = rInfo.tier; p1.skin = userState.equippedCat; p1.spikeSkin = userState.equippedSpike; ball.skin = userState.equippedBall;
     myRoomId = targetId;
 
-    mainMenuBox.style.display = 'none';
-    skinPanel.style.display = 'none';
-    rankPanel.style.display = 'none';
-    listPanel.style.display = 'none';
-    waitPanel.style.display = 'flex';
+    mainMenuBox.style.display = 'none'; skinPanel.style.display = 'none'; rankPanel.style.display = 'none'; listPanel.style.display = 'none'; waitPanel.style.display = 'flex';
     document.getElementById("roomCodeDisplay").innerText = targetId;
     lobbyStatus.innerText = "공개 방 슬롯(" + (slotIndex + 1) + "번) 연결 중...";
 
@@ -1415,31 +1338,20 @@ window.onload = function() {
       c.on('data', function(data) {
         if (data && data.type === 'probe') {
           var isPlaying = (player2Conn && player2Conn.open);
-          c.send({
-            type: 'roomInfo',
-            roomId: myRoomId,
-            hostName: p1.name,
-            hostTier: p1.tier,
-            p2Name: isPlaying ? p2.name : "",
-            status: isPlaying ? 'playing' : 'waiting',
-            specCount: spectatorConns.length
-          });
+          c.send({ type: 'roomInfo', roomId: myRoomId, hostName: p1.name, hostTier: p1.tier, p2Name: isPlaying ? p2.name : "", status: isPlaying ? 'playing' : 'waiting', specCount: spectatorConns.length });
           setTimeout(function() { try { c.close(); } catch (e) {} }, 300);
           return;
         }
-
         if (data && data.type === 'hello') {
           if (!player2Conn || !player2Conn.open) {
             player2Conn = c;
-            p2.name = data.nick || '그레이냥';
-            p2.tier = data.tier || '🥉 브론즈';
+            p2.name = data.nick || '그레이냥'; p2.tier = data.tier || '🥉 브론즈';
             p2.skin = (data.catSkin && CAT_SKINS[data.catSkin]) ? data.catSkin : 'gray';
             p2.spikeSkin = (data.spikeSkin && SPIKE_SKINS[data.spikeSkin]) ? data.spikeSkin : 'wind';
             c.send({ type: 'role', role: 'guest', p1Name: p1.name, p1Tier: p1.tier, p1Skin: p1.skin, ballSkin: ball.skin });
             if (gameState !== 'playing') startMatch('host');
           } else {
-            spectatorConns.push(c);
-            updateSpecBadge(spectatorConns.length);
+            spectatorConns.push(c); updateSpecBadge(spectatorConns.length);
             c.send({ type: 'role', role: 'spectator', p1Name: p1.name, p2Name: p2.name, specCount: spectatorConns.length });
           }
         } else if (data && data.type === 'keys' && c === player2Conn) {
@@ -1448,27 +1360,17 @@ window.onload = function() {
       });
 
       c.on('close', function() {
-        if (c === player2Conn) {
-          player2Conn = null;
-          returnToLobby("상대 플레이어(2P)가 퇴장하여 대기화면으로 돌아왔습니다.");
-        } else {
-          var idx = spectatorConns.indexOf(c);
-          if (idx !== -1) { spectatorConns.splice(idx, 1); updateSpecBadge(spectatorConns.length); }
-        }
+        if (c === player2Conn) { player2Conn = null; returnToLobby("상대 플레이어(2P)가 퇴장하여 대기화면으로 돌아왔습니다."); }
+        else { var idx = spectatorConns.indexOf(c); if (idx !== -1) { spectatorConns.splice(idx, 1); updateSpecBadge(spectatorConns.length); } }
       });
     });
 
-    tempPeer.on('disconnected', function() {
-      if (isHostingRoom && peer && !peer.destroyed) peer.reconnect();
-    });
-
+    tempPeer.on('disconnected', function() { if (isHostingRoom && peer && !peer.destroyed) peer.reconnect(); });
     tempPeer.on('error', function(err) {
       if (err && err.type === 'unavailable-id') {
         if (fixedCode) setTimeout(function() { if (isHostingRoom) tryCreateHostSlot(0, fixedCode); }, 1200);
         else tryCreateHostSlot(slotIndex + 1, null);
-      } else {
-        lobbyStatus.innerText = "연결 대기 중...";
-      }
+      } else { lobbyStatus.innerText = "연결 대기 중..."; }
     });
   }
 
@@ -1486,11 +1388,7 @@ window.onload = function() {
       for (var i = 0; i < LOBBY_SLOTS.length; i++) {
         (function(slotId) {
           var c = sp.connect(slotId, { reliable: true }), done = false;
-          var finishOne = function() {
-            if (done) return;
-            done = true; checkedCount++;
-            renderRoomList(foundRooms, checkedCount >= LOBBY_SLOTS.length);
-          };
+          var finishOne = function() { if (done) return; done = true; checkedCount++; renderRoomList(foundRooms, checkedCount >= LOBBY_SLOTS.length); };
           c.on('open', function() { c.send({ type: 'probe' }); });
           c.on('data', function(data) { if (data && data.type === 'roomInfo') { foundRooms.push(data); finishOne(); } });
           c.on('error', finishOne);
@@ -1515,17 +1413,12 @@ window.onload = function() {
       item.className = "room-item";
       var isWaiting = (r.status === 'waiting');
       var statusBadge = isWaiting ? "대기중 (1/2명) · 바로 대전 가능" : "대전중 (" + r.hostName + " vs " + r.p2Name + ") · 관전 " + r.specCount + "명";
-      item.innerHTML =
-        '<div class="room-item-info">' +
-          '<div class="room-item-title">[' + (r.hostTier || '🥉 브론즈') + '] ' + r.hostName + '의 방</div>' +
-          '<div class="room-item-sub">' + statusBadge + '</div>' +
-        '</div>';
+      item.innerHTML = '<div class="room-item-info"><div class="room-item-title">[' + (r.hostTier || '🥉 브론즈') + '] ' + r.hostName + '의 방</div><div class="room-item-sub">' + statusBadge + '</div></div>';
       var btn = document.createElement("button");
       btn.className = isWaiting ? "room-item-btn" : "room-item-btn spec";
       btn.innerText = isWaiting ? "대전 입장" : "👀 관람";
       (function(targetRoomId) { btn.onclick = function() { joinRoomById(targetRoomId); }; })(r.roomId);
-      item.appendChild(btn);
-      roomListBox.appendChild(item);
+      item.appendChild(btn); roomListBox.appendChild(item);
     }
     lobbyStatus.innerText = "총 " + rooms.length + "개의 방이 열려 있습니다! 터치해서 입장하세요.";
   }
@@ -1538,8 +1431,7 @@ window.onload = function() {
     if (scanPeer) { try { scanPeer.destroy(); } catch (e) {} scanPeer = null; }
     if (peer) { try { peer.destroy(); } catch (e) {} }
 
-    var rInfo = getRankInfo(userState.wins, userState.losses);
-    var myNick = getMyNick(CAT_SKINS[userState.equippedCat].name);
+    var rInfo = getRankInfo(userState.wins, userState.losses), myNick = getMyNick(CAT_SKINS[userState.equippedCat].name);
     lobbyStatus.innerText = "[" + code + "] 방에 접속 중...";
     peer = new Peer();
 
@@ -1550,25 +1442,13 @@ window.onload = function() {
         conn.on('data', function(data) {
           if (data.type === 'role') {
             p1.name = data.p1Name || '크림냥'; p1.tier = data.p1Tier || '🥉 브론즈'; p1.skin = data.p1Skin || 'cream'; ball.skin = data.ballSkin || 'classic';
-            if (data.role === 'guest') {
-              p2.name = myNick; p2.tier = rInfo.tier; p2.skin = userState.equippedCat; startMatch('guest');
-            } else {
-              p2.name = data.p2Name || '그레이냥'; updateSpecBadge(data.specCount || 1);
-              document.getElementById("spectatorInfo").innerText = "[" + p1.name + "] vs [" + p2.name + "] 실시간 대전을 관람 중입니다!";
-              startMatch('spectator');
-            }
+            if (data.role === 'guest') { p2.name = myNick; p2.tier = rInfo.tier; p2.skin = userState.equippedCat; startMatch('guest'); }
+            else { p2.name = data.p2Name || '그레이냥'; updateSpecBadge(data.specCount || 1); document.getElementById("spectatorInfo").innerText = "[" + p1.name + "] vs [" + p2.name + "] 실시간 대전을 관람 중입니다!"; startMatch('spectator'); }
           } else if (data.type === 'state') {
-            if (data.p1.ht > 14 && prevHit1 <= 14) {
-              SoundEngine.playCatMeow(data.p1.sk, false);
-              if (data.b.st !== 'none') SoundEngine.playSpikeSound(data.b.st);
-            }
-            if (data.p2.ht > 14 && prevHit2 <= 14) {
-              SoundEngine.playCatMeow(data.p2.sk, false);
-              if (data.b.st !== 'none') SoundEngine.playSpikeSound(data.b.st);
-            }
+            if (data.p1.ht > 14 && prevHit1 <= 14) { SoundEngine.playCatMeow(data.p1.sk, false); if (data.b.st !== 'none') SoundEngine.playSpikeSound(data.b.st); }
+            if (data.p2.ht > 14 && prevHit2 <= 14) { SoundEngine.playCatMeow(data.p2.sk, false); if (data.b.st !== 'none') SoundEngine.playSpikeSound(data.b.st); }
             if (data.s1 !== prevScore1) SoundEngine.playScore(netMode !== 'guest');
             if (data.s2 !== prevScore2) SoundEngine.playScore(netMode === 'guest');
-
             prevHit1 = data.p1.ht; prevHit2 = data.p2.ht; prevScore1 = data.s1; prevScore2 = data.s2;
 
             p1.x = data.p1.x; p1.y = data.p1.y; p1.vx = data.p1.vx; p1.hitTimer = data.p1.ht; p1.squash = data.p1.sq; p1.name = data.p1.nm; p1.tier = data.p1.tr; p1.skin = data.p1.sk;
@@ -1590,57 +1470,38 @@ window.onload = function() {
 
   document.addEventListener("visibilitychange", function() {
     if (document.visibilityState === "visible") {
-      applyWeeklySeasonResetIfNeeded();
-      refreshRankUI();
-      if (isHostingRoom) {
-        if (!peer || peer.destroyed) tryCreateHostSlot(0, myRoomId);
-        else if (peer.disconnected) peer.reconnect();
-      }
+      applyWeeklySeasonResetIfNeeded(); refreshRankUI();
+      if (isHostingRoom) { if (!peer || peer.destroyed) tryCreateHostSlot(0, myRoomId); else if (peer.disconnected) peer.reconnect(); }
     }
   });
 
-  try {
-    var pendingRoom = sessionStorage.getItem('cat_host_room');
-    if (pendingRoom) tryCreateHostSlot(0, pendingRoom);
-  } catch (e) {}
+  try { var pendingRoom = sessionStorage.getItem('cat_host_room'); if (pendingRoom) tryCreateHostSlot(0, pendingRoom); } catch (e) {}
 
   // --- 7. 로비 버튼 이벤트 ---
   document.getElementById("btnOpenSkins").onclick = function() {
     renderSkinPanel(CAT_SKINS[userState.equippedCat], "cat_" + userState.equippedCat);
-    mainMenuBox.style.display = 'none';
-    skinPanel.style.display = 'flex';
+    mainMenuBox.style.display = 'none'; skinPanel.style.display = 'flex';
     lobbyStatus.innerText = currentSeason.label + " · 매주 월요일 시즌 스킨이 초기화됩니다!";
   };
 
   document.getElementById("btnCloseSkins").onclick = function() {
     validateUnlocks();
-    p1.skin = userState.equippedCat;
-    ball.skin = userState.equippedBall;
-    skinPanel.style.display = 'none';
-    mainMenuBox.style.display = 'flex';
+    p1.skin = userState.equippedCat; ball.skin = userState.equippedBall;
+    skinPanel.style.display = 'none'; mainMenuBox.style.display = 'flex';
     lobbyStatus.innerText = "스킨 장착 완료! 게임을 시작하세요.";
   };
 
-  function openRankBoard() {
-    mainMenuBox.style.display = 'none'; skinPanel.style.display = 'none'; listPanel.style.display = 'none';
-    rankPanel.style.display = 'flex';
-    fetchGlobalTop10();
-  }
+  function openRankBoard() { mainMenuBox.style.display = 'none'; skinPanel.style.display = 'none'; listPanel.style.display = 'none'; rankPanel.style.display = 'flex'; fetchGlobalTop10(); }
   document.getElementById("btnOpenRank").onclick = openRankBoard;
   document.getElementById("rankSummaryBadge").onclick = openRankBoard;
   document.getElementById("btnRefreshRank").onclick = fetchGlobalTop10;
-  document.getElementById("btnCloseRank").onclick = function() {
-    rankPanel.style.display = 'none'; mainMenuBox.style.display = 'flex';
-    lobbyStatus.innerText = "닉네임과 스킨을 고르고 게임을 시작하세요!";
-  };
+  document.getElementById("btnCloseRank").onclick = function() { rankPanel.style.display = 'none'; mainMenuBox.style.display = 'flex'; lobbyStatus.innerText = "닉네임과 스킨을 고르고 게임을 시작하세요!"; };
 
   document.getElementById("btnStartAI").onclick = function() {
-    validateUnlocks();
-    isHostingRoom = false;
+    validateUnlocks(); isHostingRoom = false;
     try { sessionStorage.removeItem('cat_host_room'); } catch (e) {}
     var rInfo = getRankInfo(userState.wins, userState.losses);
-    p1.name = getMyNick(CAT_SKINS[userState.equippedCat].name);
-    p1.tier = rInfo.tier; p1.skin = userState.equippedCat; p1.spikeSkin = userState.equippedSpike;
+    p1.name = getMyNick(CAT_SKINS[userState.equippedCat].name); p1.tier = rInfo.tier; p1.skin = userState.equippedCat; p1.spikeSkin = userState.equippedSpike;
     p2.name = '그레이냥(AI)'; p2.tier = '🤖 AI'; p2.skin = (userState.equippedCat === 'gray') ? 'cream' : 'gray'; p2.spikeSkin = 'wind';
     ball.skin = userState.equippedBall;
     SoundEngine.playCatMeow(p1.skin, false);
@@ -1650,37 +1511,20 @@ window.onload = function() {
   document.getElementById("btnCreateRoom").onclick = function() { tryCreateHostSlot(0, null); };
   document.getElementById("btnOpenRoomList").onclick = function() { mainMenuBox.style.display = 'none'; listPanel.style.display = 'flex'; scanOpenRooms(); };
   document.getElementById("btnRefreshList").onclick = function() { scanOpenRooms(); };
-  document.getElementById("btnBackMain").onclick = function() {
-    if (scanPeer) { try { scanPeer.destroy(); } catch (e) {} scanPeer = null; }
-    listPanel.style.display = 'none'; mainMenuBox.style.display = 'flex';
-    lobbyStatus.innerText = "닉네임과 스킨을 고르고 게임을 시작하세요!";
-  };
-  document.getElementById("btnJoinDirect").onclick = function() {
-    var code = document.getElementById("roomCodeInput").value.trim().toUpperCase();
-    if (/^[1-9]$|^10$/.test(code)) code = "CAT-ROOM-" + code;
-    joinRoomById(code);
-  };
+  document.getElementById("btnBackMain").onclick = function() { if (scanPeer) { try { scanPeer.destroy(); } catch (e) {} scanPeer = null; } listPanel.style.display = 'none'; mainMenuBox.style.display = 'flex'; lobbyStatus.innerText = "닉네임과 스킨을 고르고 게임을 시작하세요!"; };
+  document.getElementById("btnJoinDirect").onclick = function() { var code = document.getElementById("roomCodeInput").value.trim().toUpperCase(); if (/^[1-9]$|^10$/.test(code)) code = "CAT-ROOM-" + code; joinRoomById(code); };
   document.getElementById("btnCopyCode").onclick = function() { copyTextSafe(myRoomId); };
   document.getElementById("roomCodeDisplay").onclick = function() { copyTextSafe(myRoomId); };
   document.getElementById("btnCancelRoom").onclick = function() { returnToLobby("방 만들기를 취소했습니다."); };
   btnHome.onclick = function() { returnToLobby(); };
 
   // --- 8. 터치 및 키보드 조작 ---
-  window.onkeydown = function(e) {
-    keys[e.code] = true;
-    if (gameState === 'playing' && gameOver && e.code === 'Space' && (netMode === 'ai' || netMode === 'host')) resetGame();
-  };
+  window.onkeydown = function(e) { keys[e.code] = true; if (gameState === 'playing' && gameOver && e.code === 'Space' && (netMode === 'ai' || netMode === 'host')) resetGame(); };
   window.onkeyup = function(e) { keys[e.code] = false; };
-
-  cvs.addEventListener('touchstart', function(e) {
-    if (gameState === 'playing' && gameOver && (netMode === 'ai' || netMode === 'host')) { e.preventDefault(); resetGame(); }
-  });
-  cvs.addEventListener('click', function() {
-    if (gameState === 'playing' && gameOver && (netMode === 'ai' || netMode === 'host')) resetGame();
-  });
+  cvs.addEventListener('touchstart', function(e) { if (gameState === 'playing' && gameOver && (netMode === 'ai' || netMode === 'host')) { e.preventDefault(); resetGame(); } });
+  cvs.addEventListener('click', function() { if (gameState === 'playing' && gameOver && (netMode === 'ai' || netMode === 'host')) resetGame(); });
 
   var dpadArea = document.getElementById("dpadArea"), btnLeft = document.getElementById("btnLeft"), btnRight = document.getElementById("btnRight");
-
   function handleDpad(e) {
     e.preventDefault(); SoundEngine.unlockAndStart();
     if (gameState !== 'playing' || netMode === 'spectator') return;
@@ -1695,11 +1539,8 @@ window.onload = function() {
     keys['ArrowLeft'] = leftActive; keys['ArrowRight'] = rightActive;
     btnLeft.classList.toggle('active', leftActive); btnRight.classList.toggle('active', rightActive);
   }
-
-  dpadArea.addEventListener('touchstart', handleDpad, { passive: false });
-  dpadArea.addEventListener('touchmove', handleDpad, { passive: false });
-  dpadArea.addEventListener('touchend', handleDpad, { passive: false });
-  dpadArea.addEventListener('touchcancel', handleDpad, { passive: false });
+  dpadArea.addEventListener('touchstart', handleDpad, { passive: false }); dpadArea.addEventListener('touchmove', handleDpad, { passive: false });
+  dpadArea.addEventListener('touchend', handleDpad, { passive: false }); dpadArea.addEventListener('touchcancel', handleDpad, { passive: false });
 
   function bindBtn(id, code) {
     var btn = document.getElementById(id);
@@ -1719,87 +1560,53 @@ window.onload = function() {
   // --- 9. 게임 물리 및 스파이크 이펙트 업데이트 ---
   function update(dt) {
     updateEnvironment(dt);
-
-    if (gameState !== 'playing') {
-      p1.skin = userState.equippedCat; ball.skin = userState.equippedBall;
-      return;
-    }
+    if (gameState !== 'playing') { p1.skin = userState.equippedCat; ball.skin = userState.equippedBall; return; }
 
     if (netMode === 'guest' || netMode === 'spectator') {
       if (netMode === 'guest' && conn && conn.open) {
         if ((keys["ArrowUp"] || keys["KeyW"]) && p2.y >= 338) SoundEngine.playCatMeow(p2.skin, true);
         conn.send({ type: 'keys', keys: { L: !!(keys["ArrowLeft"] || keys["KeyA"]), R: !!(keys["ArrowRight"] || keys["KeyD"]), U: !!(keys["ArrowUp"] || keys["KeyW"]), S: !!keys["Space"] } });
       }
-      updateParticles(dt);
-      return;
+      updateParticles(dt); return;
     }
 
     if (gameOver) return;
-    if (p1.hitTimer > 0) p1.hitTimer -= dt;
-    if (p2.hitTimer > 0) p2.hitTimer -= dt;
+    if (p1.hitTimer > 0) p1.hitTimer -= dt; if (p2.hitTimer > 0) p2.hitTimer -= dt;
 
     var moveDir = 0;
-    if (keys["ArrowLeft"] || keys["KeyA"]) moveDir -= 1;
-    if (keys["ArrowRight"] || keys["KeyD"]) moveDir += 1;
+    if (keys["ArrowLeft"] || keys["KeyA"]) moveDir -= 1; if (keys["ArrowRight"] || keys["KeyD"]) moveDir += 1;
 
-    if (moveDir !== 0) {
-      p1.vx += mul(moveDir, 1.4) * dt;
-      if (p1.vx > p1.maxSpeed) p1.vx = p1.maxSpeed;
-      if (p1.vx < -p1.maxSpeed) p1.vx = -p1.maxSpeed;
-    } else {
-      p1.vx = mul(p1.vx, Math.pow(0.76, dt));
-      if (Math.abs(p1.vx) < 0.15) p1.vx = 0;
-    }
+    if (moveDir !== 0) { p1.vx += mul(moveDir, 1.4) * dt; if (p1.vx > p1.maxSpeed) p1.vx = p1.maxSpeed; if (p1.vx < -p1.maxSpeed) p1.vx = -p1.maxSpeed; }
+    else { p1.vx = mul(p1.vx, Math.pow(0.76, dt)); if (Math.abs(p1.vx) < 0.15) p1.vx = 0; }
 
-    if ((keys["ArrowUp"] || keys["KeyW"]) && p1.y >= 340) {
-      p1.vy = -10.8; p1.squash = 1.22; SoundEngine.playCatMeow(p1.skin, true);
-    }
+    if ((keys["ArrowUp"] || keys["KeyW"]) && p1.y >= 340) { p1.vy = -10.8; p1.squash = 1.22; SoundEngine.playCatMeow(p1.skin, true); }
 
     var wasAir1 = p1.y < 340;
     p1.vy += mul(0.36, dt); p1.x += mul(p1.vx, dt); p1.y += mul(p1.vy, dt);
     if (p1.y >= 340) { p1.y = 340; if (wasAir1) p1.squash = 0.82; p1.vy = 0; }
     p1.squash += mul(1 - p1.squash, 0.2) * dt;
-    if (p1.x < p1.r + 6) { p1.x = p1.r + 6; p1.vx = 0; }
-    if (p1.x > 390 - p1.r) { p1.x = 390 - p1.r; p1.vx = 0; }
+    if (p1.x < p1.r + 6) { p1.x = p1.r + 6; p1.vx = 0; } if (p1.x > 390 - p1.r) { p1.x = 390 - p1.r; p1.vx = 0; }
 
     if (netMode === 'host') {
       var p2Dir = 0;
       if (remoteKeys.L) p2Dir -= 1; if (remoteKeys.R) p2Dir += 1;
-      if (p2Dir !== 0) {
-        p2.vx += mul(p2Dir, 1.4) * dt;
-        if (p2.vx > p2.maxSpeed) p2.vx = p2.maxSpeed;
-        if (p2.vx < -p2.maxSpeed) p2.vx = -p2.maxSpeed;
-      } else {
-        p2.vx = mul(p2.vx, Math.pow(0.76, dt));
-        if (Math.abs(p2.vx) < 0.15) p2.vx = 0;
-      }
+      if (p2Dir !== 0) { p2.vx += mul(p2Dir, 1.4) * dt; if (p2.vx > p2.maxSpeed) p2.vx = p2.maxSpeed; if (p2.vx < -p2.maxSpeed) p2.vx = -p2.maxSpeed; }
+      else { p2.vx = mul(p2.vx, Math.pow(0.76, dt)); if (Math.abs(p2.vx) < 0.15) p2.vx = 0; }
       if (remoteKeys.U && p2.y >= 340) { p2.vy = -10.8; p2.squash = 1.22; SoundEngine.playCatMeow(p2.skin, true); }
     } else {
       var aiMax = 4.2, targetX = ball.x > 400 ? ball.x + 10 : 650, diffX = targetX - p2.x;
-      if (Math.abs(diffX) > 6) {
-        var aiDir = diffX > 0 ? 1 : -1;
-        p2.vx += mul(aiDir, 1.0) * dt;
-        if (p2.vx > aiMax) p2.vx = aiMax;
-        if (p2.vx < -aiMax) p2.vx = -aiMax;
-      } else {
-        p2.vx = mul(p2.vx, Math.pow(0.78, dt));
-      }
-      if (ball.x > 400 && ball.y < 250 && ball.vy > 0 && p2.y >= 340 && Math.abs(p2.x - ball.x) < 70) {
-        p2.vy = -10.5; p2.squash = 1.22; SoundEngine.playCatMeow(p2.skin, true);
-      }
+      if (Math.abs(diffX) > 6) { var aiDir = diffX > 0 ? 1 : -1; p2.vx += mul(aiDir, 1.0) * dt; if (p2.vx > aiMax) p2.vx = aiMax; if (p2.vx < -aiMax) p2.vx = -aiMax; }
+      else { p2.vx = mul(p2.vx, Math.pow(0.78, dt)); }
+      if (ball.x > 400 && ball.y < 250 && ball.vy > 0 && p2.y >= 340 && Math.abs(p2.x - ball.x) < 70) { p2.vy = -10.5; p2.squash = 1.22; SoundEngine.playCatMeow(p2.skin, true); }
     }
 
     var wasAir2 = p2.y < 340;
     p2.vy += mul(0.36, dt); p2.x += mul(p2.vx, dt); p2.y += mul(p2.vy, dt);
     if (p2.y >= 340) { p2.y = 340; if (wasAir2) p2.squash = 0.82; p2.vy = 0; }
     p2.squash += mul(1 - p2.squash, 0.2) * dt;
-    if (p2.x < 410 + p2.r) { p2.x = 410 + p2.r; p2.vx = 0; }
-    if (p2.x > 800 - p2.r - 6) { p2.x = 800 - p2.r - 6; p2.vx = 0; }
+    if (p2.x < 410 + p2.r) { p2.x = 410 + p2.r; p2.vx = 0; } if (p2.x > 800 - p2.r - 6) { p2.x = 800 - p2.r - 6; p2.vx = 0; }
 
-    ball.vy += mul(0.115, dt);
-    ball.x += mul(ball.vx, dt);
-    ball.y += mul(ball.vy, dt);
-
+    ball.vy += mul(0.115, dt); ball.x += mul(ball.vx, dt); ball.y += mul(ball.vy, dt);
     updateParticles(dt);
 
     if (ball.x < ball.r) { ball.x = ball.r; ball.vx = -ball.vx; SoundEngine.playBounce(false); }
@@ -1812,22 +1619,17 @@ window.onload = function() {
       SoundEngine.playBounce(true);
     }
 
-    hitBall(p1, !!keys["Space"]);
-    hitBall(p2, netMode === 'host' ? !!remoteKeys.S : false);
+    hitBall(p1, !!keys["Space"]); hitBall(p2, netMode === 'host' ? !!remoteKeys.S : false);
 
     if (ball.y > 430) {
       if (ball.x < 400) {
         score2++; SoundEngine.playScore(false);
-        if (score2 >= 15) {
-          gameOver = true; winnerText = "🎉 " + p2.name + " 승리! (터치해 재시작)";
-          if (!matchRecorded) { matchRecorded = true; recordMatchResult(false); }
-        } else { ball.x = 580; ball.y = 140; ball.vx = -1.3; ball.vy = -1.8; ball.spikeType = 'none'; particles = []; }
+        if (score2 >= 15) { gameOver = true; winnerText = "🎉 " + p2.name + " 승리! (터치해 재시작)"; if (!matchRecorded) { matchRecorded = true; recordMatchResult(false); } }
+        else { ball.x = 580; ball.y = 140; ball.vx = -1.3; ball.vy = -1.8; ball.spikeType = 'none'; particles = []; }
       } else {
         score1++; SoundEngine.playScore(true);
-        if (score1 >= 15) {
-          gameOver = true; winnerText = "🎉 " + p1.name + " 승리! (터치해 재시작)";
-          if (!matchRecorded) { matchRecorded = true; recordMatchResult(true); }
-        } else { ball.x = 220; ball.y = 140; ball.vx = 1.3; ball.vy = -1.8; ball.spikeType = 'none'; particles = []; }
+        if (score1 >= 15) { gameOver = true; winnerText = "🎉 " + p1.name + " 승리! (터치해 재시작)"; if (!matchRecorded) { matchRecorded = true; recordMatchResult(true); } }
+        else { ball.x = 220; ball.y = 140; ball.vx = 1.3; ball.vy = -1.8; ball.spikeType = 'none'; particles = []; }
       }
     }
 
@@ -1860,8 +1662,7 @@ window.onload = function() {
       });
     }
     for (var i = particles.length - 1; i >= 0; i--) {
-      var pt = particles[i];
-      pt.x += mul(pt.vx, dt); pt.y += mul(pt.vy, dt); pt.life -= dt;
+      var pt = particles[i]; pt.x += mul(pt.vx, dt); pt.y += mul(pt.vy, dt); pt.life -= dt;
       if (pt.life <= 0) particles.splice(i, 1);
     }
   }
@@ -1891,50 +1692,31 @@ window.onload = function() {
   // 10. 캐릭터 / 공 / 오로라 & 반짝임 이펙트 그리기
   // =========================================================================
   function drawStarSparkle(x, y, outerR, color) {
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.fillStyle = color || '#ffffff';
+    ctx.save(); ctx.translate(x, y); ctx.fillStyle = color || '#ffffff';
     var innerR = outerR * 0.28;
     ctx.beginPath();
     for (var i = 0; i < 8; i++) {
-      var r = (i % 2 === 0) ? outerR : innerR;
-      var a = mul(i, Math.PI / 4);
-      var px = Math.cos(a) * r;
-      var py = Math.sin(a) * r;
-      if (i === 0) ctx.moveTo(px, py);
-      else ctx.lineTo(px, py);
+      var r = (i % 2 === 0) ? outerR : innerR, a = mul(i, Math.PI / 4), px = Math.cos(a) * r, py = Math.sin(a) * r;
+      if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
     }
-    ctx.closePath();
-    ctx.fill();
-    ctx.restore();
+    ctx.closePath(); ctx.fill(); ctx.restore();
   }
 
   function drawGoldCatAurora(x, y, time) {
-    ctx.save();
-    ctx.translate(x, y - 4);
-    var shift = Math.sin(mul(time, 0.004));
-    var shift2 = Math.cos(mul(time, 0.0032));
+    ctx.save(); ctx.translate(x, y - 4);
+    var shift = Math.sin(mul(time, 0.004)), shift2 = Math.cos(mul(time, 0.0032));
 
     var auraGrad = ctx.createRadialGradient(0, 0, 12, 0, 0, 56 + shift * 5);
     auraGrad.addColorStop(0.0, 'rgba(254, 240, 138, 0.42)');
     auraGrad.addColorStop(0.45, 'rgba(52, 211, 153, 0.28)');
     auraGrad.addColorStop(0.75, 'rgba(192, 132, 252, 0.22)');
     auraGrad.addColorStop(1.0, 'rgba(250, 204, 21, 0)');
-
     ctx.fillStyle = auraGrad;
-    ctx.beginPath();
-    ctx.ellipse(shift * 5, shift2 * 4, 52, 46, shift * 0.2, 0, TAU);
-    ctx.fill();
+    ctx.beginPath(); ctx.ellipse(shift * 5, shift2 * 4, 52, 46, shift * 0.2, 0, TAU); ctx.fill();
 
-    ctx.save();
-    ctx.rotate(shift * 0.25);
-    ctx.strokeStyle = 'rgba(110, 231, 183, 0.55)';
-    ctx.lineWidth = 4;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.moveTo(-36, -18 + shift * 6);
-    ctx.bezierCurveTo(-14, -34 - shift2 * 8, 16, -24 + shift * 8, 36, -14 - shift2 * 6);
-    ctx.stroke();
+    ctx.save(); ctx.rotate(shift * 0.25);
+    ctx.strokeStyle = 'rgba(110, 231, 183, 0.55)'; ctx.lineWidth = 4; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(-36, -18 + shift * 6); ctx.bezierCurveTo(-14, -34 - shift2 * 8, 16, -24 + shift * 8, 36, -14 - shift2 * 6); ctx.stroke();
     ctx.restore();
 
     var sparkles = [
@@ -1944,38 +1726,24 @@ window.onload = function() {
       { ox: 32,  oy: 20,  ph: 4.5, sz: 7.0, col: '#fde047' }
     ];
     for (var i = 0; i < sparkles.length; i++) {
-      var sp = sparkles[i];
-      var tw = Math.sin(mul(time, 0.008) + sp.ph);
-      if (tw > -0.15) {
-        var scale = 0.55 + Math.max(0, tw) * 0.65;
-        drawStarSparkle(sp.ox, sp.oy, sp.sz * scale, sp.col);
-      }
+      var sp = sparkles[i], tw = Math.sin(mul(time, 0.008) + sp.ph);
+      if (tw > -0.15) drawStarSparkle(sp.ox, sp.oy, sp.sz * (0.55 + Math.max(0, tw) * 0.65), sp.col);
     }
-
     ctx.restore();
   }
 
   function traceCatHeadPath(isSimple) {
     ctx.beginPath();
-    if (isSimple) {
-      ctx.arc(0, -2, 26, 0, TAU);
-    } else {
-      ctx.moveTo(0, -25);
-      ctx.bezierCurveTo(18, -25, 29, -15, 29, 2);
-      ctx.bezierCurveTo(29, 16, 17, 22, 0, 22);
-      ctx.bezierCurveTo(-17, 22, -29, 16, -29, 2);
-      ctx.bezierCurveTo(-29, -15, -18, -25, 0, -25);
-      ctx.closePath();
+    if (isSimple) { ctx.arc(0, -2, 26, 0, TAU); }
+    else {
+      ctx.moveTo(0, -25); ctx.bezierCurveTo(18, -25, 29, -15, 29, 2); ctx.bezierCurveTo(29, 16, 17, 22, 0, 22);
+      ctx.bezierCurveTo(-17, 22, -29, 16, -29, 2); ctx.bezierCurveTo(-29, -15, -18, -25, 0, -25); ctx.closePath();
     }
   }
 
   function drawChar(p) {
-    var sk = CAT_SKINS[p.skin] || CAT_SKINS.cream, isSimple = sk.simple;
-    var time = performance.now();
-
-    if (sk.id === 'gold') {
-      drawGoldCatAurora(p.x, p.y, time);
-    }
+    var sk = CAT_SKINS[p.skin] || CAT_SKINS.cream, isSimple = sk.simple, time = performance.now();
+    if (sk.id === 'gold') drawGoldCatAurora(p.x, p.y, time);
 
     ctx.save();
     var labelStr = p.tier ? (p.tier + " " + p.name) : p.name;
@@ -1987,11 +1755,9 @@ window.onload = function() {
     ctx.textAlign = 'center'; ctx.fillText(labelStr, p.x, p.y - 57);
     ctx.restore();
 
-    ctx.save();
-    ctx.translate(p.x, p.y + 32); ctx.scale(2 - p.squash, p.squash); ctx.translate(0, -32);
+    ctx.save(); ctx.translate(p.x, p.y + 32); ctx.scale(2 - p.squash, p.squash); ctx.translate(0, -32);
 
     var dir = p.side === 1 ? 1 : -1, speedRatio = Math.abs(p.vx) / p.maxSpeed;
-
     var tailWag = mul(Math.sin(mul(time, 0.008)), 6);
     ctx.lineCap = 'round'; ctx.strokeStyle = '#0f172a'; ctx.lineWidth = isSimple ? 8 : 10;
     ctx.beginPath(); ctx.moveTo(mul(-dir, 12), 17); ctx.quadraticCurveTo(mul(-dir, 36), 2 + tailWag, mul(-dir, 28), -18 + tailWag); ctx.stroke();
@@ -2004,8 +1770,7 @@ window.onload = function() {
       ctx.beginPath(); ctx.arc(mul(-dir, 28), -18 + tailWag, 4.5, 0, TAU); ctx.fill();
     }
 
-    ctx.fillStyle = sk.color;
-    ctx.beginPath(); ctx.ellipse(0, 17, 16, 13, 0, 0, TAU); ctx.fill();
+    ctx.fillStyle = sk.color; ctx.beginPath(); ctx.ellipse(0, 17, 16, 13, 0, 0, TAU); ctx.fill();
     ctx.lineWidth = 2.5; ctx.strokeStyle = '#0f172a'; ctx.stroke();
 
     if (!isSimple) {
@@ -2034,8 +1799,7 @@ window.onload = function() {
       ctx.fillStyle = sk.earInner;
       ctx.beginPath(); ctx.moveTo(-20, -14); ctx.quadraticCurveTo(-22, -29, -18.5, -31); ctx.quadraticCurveTo(-15, -31, -11, -20); ctx.closePath(); ctx.fill();
 
-      ctx.fillStyle = rightEarColor;
-      ctx.beginPath(); ctx.moveTo(23, -10); ctx.quadraticCurveTo(26, -34, 20, -36); ctx.quadraticCurveTo(13, -37, 7, -21); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = rightEarColor; ctx.beginPath(); ctx.moveTo(23, -10); ctx.quadraticCurveTo(26, -34, 20, -36); ctx.quadraticCurveTo(13, -37, 7, -21); ctx.closePath(); ctx.fill(); ctx.stroke();
       ctx.fillStyle = sk.earInner;
       ctx.beginPath(); ctx.moveTo(20, -14); ctx.quadraticCurveTo(22, -29, 18.5, -31); ctx.quadraticCurveTo(15, -31, 11, -20); ctx.closePath(); ctx.fill();
     }
@@ -2070,10 +1834,7 @@ window.onload = function() {
 
     if (sk.id === 'gold') {
       ctx.fillStyle = '#fef08a'; ctx.strokeStyle = '#854d0e'; ctx.lineWidth = 1.6;
-      ctx.beginPath();
-      ctx.moveTo(-9, -24); ctx.lineTo(-11, -35); ctx.lineTo(-4, -29); ctx.lineTo(0, -37);
-      ctx.lineTo(4, -29); ctx.lineTo(11, -35); ctx.lineTo(9, -24);
-      ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-9, -24); ctx.lineTo(-11, -35); ctx.lineTo(-4, -29); ctx.lineTo(0, -37); ctx.lineTo(4, -29); ctx.lineTo(11, -35); ctx.lineTo(9, -24); ctx.closePath(); ctx.fill(); ctx.stroke();
     }
 
     ctx.fillStyle = 'rgba(244, 63, 94, 0.35)';
@@ -2082,10 +1843,7 @@ window.onload = function() {
     var isBlackCat = (sk.id === 'black'), isSiamese = (sk.id === 'siamese');
     if (p.hitTimer > 0) {
       ctx.strokeStyle = (isBlackCat || isSiamese) ? '#fde047' : '#0f172a'; ctx.lineWidth = 2.6; ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.moveTo(-12, -4); ctx.lineTo(-8, -7.5); ctx.lineTo(-4, -4);
-      ctx.moveTo(4, -4); ctx.lineTo(8, -7.5); ctx.lineTo(12, -4);
-      ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-12, -4); ctx.lineTo(-8, -7.5); ctx.lineTo(-4, -4); ctx.moveTo(4, -4); ctx.lineTo(8, -7.5); ctx.lineTo(12, -4); ctx.stroke();
     } else {
       var eyeX1 = -8.5 + dir, eyeX2 = 8.5 + dir;
       ctx.fillStyle = isBlackCat ? '#facc15' : (isSiamese ? '#38bdf8' : '#0f172a');
@@ -2100,12 +1858,10 @@ window.onload = function() {
     }
 
     var noseX = dir;
-    ctx.fillStyle = '#fb7185';
-    ctx.beginPath(); ctx.ellipse(noseX, 2.5, 2.5, 1.8, 0, 0, TAU); ctx.fill();
+    ctx.fillStyle = '#fb7185'; ctx.beginPath(); ctx.ellipse(noseX, 2.5, 2.5, 1.8, 0, 0, TAU); ctx.fill();
 
     ctx.strokeStyle = (isBlackCat || isSiamese) ? '#f8fafc' : '#0f172a'; ctx.lineWidth = 1.6; ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.arc(noseX - 2.6, 5.2, 2.5, 0.15, 2.9); ctx.stroke();
-    ctx.beginPath(); ctx.arc(noseX + 2.6, 5.2, 2.5, 0.25, 3.0); ctx.stroke();
+    ctx.beginPath(); ctx.arc(noseX - 2.6, 5.2, 2.5, 0.15, 2.9); ctx.stroke(); ctx.beginPath(); ctx.arc(noseX + 2.6, 5.2, 2.5, 0.25, 3.0); ctx.stroke();
 
     ctx.restore();
   }
@@ -2124,10 +1880,8 @@ window.onload = function() {
       ctx.fillStyle = goldAurora;
       ctx.beginPath(); ctx.arc(0, 0, ball.r + 17, 0, TAU); ctx.fill();
 
-      ctx.save();
-      ctx.rotate(mul(time, 0.0025));
-      ctx.strokeStyle = 'rgba(167, 243, 208, 0.75)';
-      ctx.lineWidth = 2;
+      ctx.save(); ctx.rotate(mul(time, 0.0025));
+      ctx.strokeStyle = 'rgba(167, 243, 208, 0.75)'; ctx.lineWidth = 2;
       ctx.beginPath(); ctx.ellipse(0, 0, ball.r + 8, ball.r * 0.45, 0, 0, TAU); ctx.stroke();
       ctx.restore();
 
@@ -2166,15 +1920,12 @@ window.onload = function() {
       var gGrad = ctx.createRadialGradient(-5, -5, 2, 0, 0, ball.r);
       gGrad.addColorStop(0, '#ffffff'); gGrad.addColorStop(0.35, '#fef08a'); gGrad.addColorStop(0.75, '#facc15'); gGrad.addColorStop(1, '#b45309');
       ctx.fillStyle = gGrad; ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
-      var shineX = Math.cos(mul(time, 0.005)) * 8;
-      var shineY = Math.sin(mul(time, 0.005)) * 8;
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
-      ctx.beginPath(); ctx.arc(shineX, shineY, 4, 0, TAU); ctx.fill();
+      var shineX = Math.cos(mul(time, 0.005)) * 8, shineY = Math.sin(mul(time, 0.005)) * 8;
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.85)'; ctx.beginPath(); ctx.arc(shineX, shineY, 4, 0, TAU); ctx.fill();
     } else {
       ctx.fillStyle = '#facc15'; ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
       ctx.strokeStyle = '#ca8a04'; ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.arc(-7, 0, 15, -1.1, 1.1); ctx.stroke();
-      ctx.beginPath(); ctx.arc(7, 0, 15, 2.0, 4.2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(-7, 0, 15, -1.1, 1.1); ctx.stroke(); ctx.beginPath(); ctx.arc(7, 0, 15, 2.0, 4.2); ctx.stroke();
     }
 
     if (ball.spikeType === 'meteor') { ctx.fillStyle = 'rgba(239, 68, 68, 0.58)'; ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2); }
