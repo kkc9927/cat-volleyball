@@ -27,7 +27,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 .lobby-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(15, 23, 42, 0.91);
+  background: rgba(15, 23, 42, 0.92);
   backdrop-filter: blur(4px);
   border-radius: 10px;
   border: 3px solid #38bdf8;
@@ -38,7 +38,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   padding: 8px 12px;
   z-index: 10;
 }
-.lobby-header { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 390px; margin-bottom: 6px; gap: 6px; }
+.lobby-header { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 410px; margin-bottom: 6px; gap: 6px; }
 .lobby-title { font-size: 1.05rem; font-weight: bold; color: #fde047; white-space: nowrap; }
 .rank-pill {
   background: rgba(30, 41, 59, 0.95);
@@ -53,7 +53,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 }
 .rank-pill:active { transform: scale(0.96); }
 
-.menu-box { width: 100%; max-width: 390px; display: flex; flex-direction: column; gap: 6px; }
+.menu-box { width: 100%; max-width: 410px; display: flex; flex-direction: column; gap: 6px; }
 
 /* 닉네임 + 스킨 + TOP10 랭킹 버튼 행 */
 .profile-row { display: flex; gap: 5px; width: 100%; }
@@ -117,39 +117,55 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   display: none;
   flex-direction: column;
   width: 100%;
-  max-width: 440px;
-  gap: 6px;
+  max-width: 450px;
+  gap: 5px;
 }
 .skin-scroll {
   width: 100%;
-  max-height: 158px;
+  max-height: 142px;
   overflow-y: auto;
   background: rgba(30, 41, 59, 0.96);
   border: 1.5px solid #a855f7;
   border-radius: 10px;
-  padding: 7px;
+  padding: 6px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 7px;
   text-align: left;
 }
-.skin-cat-title { font-size: 0.74rem; font-weight: bold; color: #d8b4fe; margin-bottom: 3px; }
-.skin-grid { display: flex; flex-wrap: wrap; gap: 5px; }
+.skin-cat-title { font-size: 0.72rem; font-weight: bold; color: #d8b4fe; margin-bottom: 3px; }
+.skin-grid { display: flex; flex-wrap: wrap; gap: 4px; }
 .skin-chip {
   flex: 1 1 30%;
   min-width: 96px;
   background: #0f172a;
   border: 1.5px solid #475569;
   border-radius: 8px;
-  padding: 5px 5px;
+  padding: 4px 5px;
   color: #e2e8f0;
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   text-align: center;
   cursor: pointer;
 }
 .skin-chip.equipped { border-color: #facc15; background: rgba(250, 204, 21, 0.16); color: #fef08a; font-weight: bold; }
-.skin-chip.locked { border-color: #9333ea; color: #c084fc; }
-.skin-sub { display: block; font-size: 0.64rem; opacity: 0.85; margin-top: 2px; }
+.skin-chip.ready-ad { border-color: #38bdf8; background: rgba(56, 189, 248, 0.12); color: #bae6fd; }
+.skin-chip.rank-locked { border-color: #475569; background: rgba(15, 23, 42, 0.65); color: #94a3b8; }
+.skin-sub { display: block; font-size: 0.61rem; opacity: 0.9; margin-top: 2px; line-height: 1.15; }
+
+/* 선택 스킨 상세 설명 카드 */
+.skin-detail-box {
+  width: 100%;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1.5px solid #38bdf8;
+  border-radius: 9px;
+  padding: 6px 9px;
+  text-align: left;
+  font-size: 0.7rem;
+  line-height: 1.35;
+}
+.skin-detail-top { display: flex; justify-content: space-between; align-items: center; font-weight: bold; color: #fde047; margin-bottom: 2px; }
+.skin-detail-cond { font-size: 0.65rem; color: #7dd3fc; }
+.skin-detail-desc { color: #e2e8f0; }
 
 /* TOP 10 랭킹 패널 */
 .rank-panel {
@@ -262,7 +278,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 .wait-actions { display: flex; gap: 8px; width: 100%; }
 .btn-copy { flex: 1.5; background: #16a34a; border: 1.5px solid #86efac; }
 .btn-cancel { flex: 1; background: #475569; border: 1.5px solid #94a3b8; }
-.lobby-status { font-size: 0.75rem; color: #bae6fd; margin-top: 4px; min-height: 15px; }
+.lobby-status { font-size: 0.74rem; color: #bae6fd; margin-top: 3px; min-height: 14px; }
 
 /* 보상 해금 확인 모달 */
 .reward-modal {
@@ -280,7 +296,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   gap: 8px;
 }
 .reward-modal h3 { margin: 0; color: #fde047; font-size: 1rem; }
-.reward-modal p { margin: 0; font-size: 0.8rem; color: #e2e8f0; line-height: 1.4; }
+.reward-modal p { margin: 0; font-size: 0.78rem; color: #e2e8f0; line-height: 1.4; max-width: 320px; }
 .reward-btns { display: flex; gap: 8px; width: 100%; max-width: 260px; margin-top: 4px; }
 
 /* 모바일 터치 패드 */
@@ -350,9 +366,16 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
       <button class="menu-btn btn-list" id="btnOpenRoomList">🔍 참여하기 (방 리스트 보기)</button>
     </div>
 
-    <!-- 2. 스킨 & 이펙트 선택 패널 -->
+    <!-- 2. 스킨 & 이펙트 선택 패널 (랭크 조건 + 설명 + 24시간 광고 해금) -->
     <div class="skin-panel" id="skinPanel">
       <div class="skin-scroll" id="skinScrollContainer"></div>
+      <div class="skin-detail-box" id="skinDetailBox">
+        <div class="skin-detail-top">
+          <span id="detailName">스킨을 선택하세요</span>
+          <span class="skin-detail-cond" id="detailCond"></span>
+        </div>
+        <div class="skin-detail-desc" id="detailDesc">각 아이템을 터치하면 설명과 획득 조건을 볼 수 있고, 조건 달성 시 24시간 해금할 수 있습니다.</div>
+      </div>
       <button class="menu-btn btn-ai btn-small" id="btnCloseSkins">선택 완료 (돌아가기)</button>
     </div>
 
@@ -390,10 +413,10 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 
     <!-- 보상형 24시간 해금 팝업 -->
     <div class="reward-modal" id="rewardModal">
-      <h3 id="rewardModalTitle">🎁 스킨 24시간 무료 체험</h3>
-      <p id="rewardModalDesc">짧은 광고(또는 이벤트 응원) 후 선택한 아이템을 24시간 동안 자유롭게 사용할 수 있습니다!</p>
+      <h3 id="rewardModalTitle">🎁 스킨 24시간 해금</h3>
+      <p id="rewardModalDesc"></p>
       <div class="reward-btns">
-        <button class="menu-btn btn-create btn-small" id="btnConfirmUnlock">🎬 24시간 열기</button>
+        <button class="menu-btn btn-create btn-small" id="btnConfirmUnlock">🎬 광고 보고 24시간 열기</button>
         <button class="menu-btn btn-cancel btn-small" id="btnCancelUnlock">닫기</button>
       </div>
     </div>
@@ -456,12 +479,8 @@ window.onload = function() {
 
     function ensureContext() {
       if (!AudioCtx) return null;
-      if (!actx) {
-        actx = new AudioCtx();
-      }
-      if (actx.state === 'suspended') {
-        actx.resume();
-      }
+      if (!actx) actx = new AudioCtx();
+      if (actx.state === 'suspended') actx.resume();
       return actx;
     }
 
@@ -481,10 +500,8 @@ window.onload = function() {
           gain.gain.setValueAtTime(0.001, now);
           gain.gain.linearRampToValueAtTime(0.016, now + 0.03);
           gain.gain.exponentialRampToValueAtTime(0.0005, now + 0.24);
-          osc.connect(gain);
-          gain.connect(actx.destination);
-          osc.start(now);
-          osc.stop(now + 0.25);
+          osc.connect(gain); gain.connect(actx.destination);
+          osc.start(now); osc.stop(now + 0.25);
         }
 
         if (bFreq > 0) {
@@ -495,10 +512,8 @@ window.onload = function() {
           bGain.gain.setValueAtTime(0.001, now);
           bGain.gain.linearRampToValueAtTime(0.014, now + 0.02);
           bGain.gain.exponentialRampToValueAtTime(0.0005, now + 0.26);
-          bOsc.connect(bGain);
-          bGain.connect(actx.destination);
-          bOsc.start(now);
-          bOsc.stop(now + 0.27);
+          bOsc.connect(bGain); bGain.connect(actx.destination);
+          bOsc.start(now); bOsc.stop(now + 0.27);
         }
         bgmStep++;
       }, 240);
@@ -543,9 +558,7 @@ window.onload = function() {
       gain.gain.setValueAtTime(vol, c.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + duration);
 
-      src.connect(filter);
-      filter.connect(gain);
-      gain.connect(c.destination);
+      src.connect(filter); filter.connect(gain); gain.connect(c.destination);
       src.start();
     }
 
@@ -573,11 +586,8 @@ window.onload = function() {
         var lfoGain = c.createGain();
         lfo.frequency.setValueAtTime(opt.vibFreq, startTime);
         lfoGain.gain.setValueAtTime(opt.vibDepth, startTime);
-        lfo.connect(lfoGain);
-        lfoGain.connect(osc1.frequency);
-        lfoGain.connect(osc2.frequency);
-        lfo.start(startTime);
-        lfo.stop(startTime + dur + 0.02);
+        lfo.connect(lfoGain); lfoGain.connect(osc1.frequency); lfoGain.connect(osc2.frequency);
+        lfo.start(startTime); lfo.stop(startTime + dur + 0.02);
       }
 
       filter.type = 'bandpass';
@@ -593,16 +603,11 @@ window.onload = function() {
       gain.gain.linearRampToValueAtTime(vol, startTime + 0.025);
       gain.gain.exponentialRampToValueAtTime(0.001, startTime + dur);
 
-      osc1.connect(filter);
-      osc2.connect(osc2Gain);
-      osc2Gain.connect(filter);
-      filter.connect(gain);
-      gain.connect(c.destination);
+      osc1.connect(filter); osc2.connect(osc2Gain); osc2Gain.connect(filter);
+      filter.connect(gain); gain.connect(c.destination);
 
-      osc1.start(startTime);
-      osc2.start(startTime);
-      osc1.stop(startTime + dur + 0.02);
-      osc2.stop(startTime + dur + 0.02);
+      osc1.start(startTime); osc2.start(startTime);
+      osc1.stop(startTime + dur + 0.02); osc2.stop(startTime + dur + 0.02);
     }
 
     function playCatMeow(skinId, isJump) {
@@ -611,70 +616,27 @@ window.onload = function() {
 
       var runMeow = function() {
         var now = c.currentTime;
-
         if (skinId === 'cream') {
-          synthSyllable(c, now, {
-            fStart: 500, fPeak: 820, fEnd: 460,
-            dur: isJump ? 0.13 : 0.25,
-            wave1: 'triangle', wave2: 'sine', mix2: 0.4, vol: isJump ? 0.11 : 0.15
-          });
+          synthSyllable(c, now, { fStart: 500, fPeak: 820, fEnd: 460, dur: isJump ? 0.13 : 0.25, wave1: 'triangle', wave2: 'sine', mix2: 0.4, vol: isJump ? 0.11 : 0.15 });
         } else if (skinId === 'gray') {
-          synthSyllable(c, now, {
-            fStart: 410, fPeak: 640, fEnd: 350,
-            dur: isJump ? 0.13 : 0.26,
-            wave1: 'sine', wave2: 'triangle', mix2: 0.35, filtPeak: 1250, vol: isJump ? 0.11 : 0.15
-          });
+          synthSyllable(c, now, { fStart: 410, fPeak: 640, fEnd: 350, dur: isJump ? 0.13 : 0.26, wave1: 'sine', wave2: 'triangle', mix2: 0.35, filtPeak: 1250, vol: isJump ? 0.11 : 0.15 });
         } else if (skinId === 'cheese') {
-          synthSyllable(c, now, {
-            fStart: 540, fPeak: 680, fEnd: 1120, peakRatio: 0.45,
-            dur: isJump ? 0.14 : 0.27,
-            wave1: 'triangle', wave2: 'sawtooth', mix2: 0.38, filtPeak: 1850, vol: isJump ? 0.11 : 0.15
-          });
+          synthSyllable(c, now, { fStart: 540, fPeak: 680, fEnd: 1120, peakRatio: 0.45, dur: isJump ? 0.14 : 0.27, wave1: 'triangle', wave2: 'sawtooth', mix2: 0.38, filtPeak: 1850, vol: isJump ? 0.11 : 0.15 });
         } else if (skinId === 'persian') {
-          synthSyllable(c, now, {
-            fStart: 760, fPeak: 1220, fEnd: 720,
-            dur: isJump ? 0.15 : 0.34,
-            wave1: 'sine', wave2: 'triangle', harmonic: 1.5, mix2: 0.3,
-            vibFreq: 16, vibDepth: 45, filtStart: 1200, filtPeak: 2100, vol: isJump ? 0.11 : 0.14
-          });
+          synthSyllable(c, now, { fStart: 760, fPeak: 1220, fEnd: 720, dur: isJump ? 0.15 : 0.34, wave1: 'sine', wave2: 'triangle', harmonic: 1.5, mix2: 0.3, vibFreq: 16, vibDepth: 45, filtStart: 1200, filtPeak: 2100, vol: isJump ? 0.11 : 0.14 });
         } else if (skinId === 'black') {
-          synthSyllable(c, now, {
-            fStart: 240, fPeak: 430, fEnd: 210,
-            dur: isJump ? 0.14 : 0.30,
-            wave1: 'sawtooth', wave2: 'square', mix2: 0.3,
-            vibFreq: 28, vibDepth: 35, q: 3.0, filtStart: 550, filtPeak: 950, filtEnd: 500,
-            vol: isJump ? 0.09 : 0.12
-          });
+          synthSyllable(c, now, { fStart: 240, fPeak: 430, fEnd: 210, dur: isJump ? 0.14 : 0.30, wave1: 'sawtooth', wave2: 'square', mix2: 0.3, vibFreq: 28, vibDepth: 35, q: 3.0, filtStart: 550, filtPeak: 950, filtEnd: 500, vol: isJump ? 0.09 : 0.12 });
         } else if (skinId === 'calico') {
           if (isJump) {
-            synthSyllable(c, now, {
-              fStart: 640, fPeak: 1020, fEnd: 780, dur: 0.12,
-              wave1: 'triangle', wave2: 'sawtooth', mix2: 0.35, vol: 0.11
-            });
+            synthSyllable(c, now, { fStart: 640, fPeak: 1020, fEnd: 780, dur: 0.12, wave1: 'triangle', wave2: 'sawtooth', mix2: 0.35, vol: 0.11 });
           } else {
-            synthSyllable(c, now, {
-              fStart: 620, fPeak: 960, fEnd: 740, dur: 0.11,
-              wave1: 'triangle', wave2: 'sawtooth', mix2: 0.35, vol: 0.13
-            });
-            synthSyllable(c, now + 0.13, {
-              fStart: 680, fPeak: 1120, fEnd: 580, dur: 0.21,
-              wave1: 'triangle', wave2: 'sawtooth', mix2: 0.35, vol: 0.14
-            });
+            synthSyllable(c, now, { fStart: 620, fPeak: 960, fEnd: 740, dur: 0.11, wave1: 'triangle', wave2: 'sawtooth', mix2: 0.35, vol: 0.13 });
+            synthSyllable(c, now + 0.13, { fStart: 680, fPeak: 1120, fEnd: 580, dur: 0.21, wave1: 'triangle', wave2: 'sawtooth', mix2: 0.35, vol: 0.14 });
           }
         } else if (skinId === 'siamese') {
-          synthSyllable(c, now, {
-            fStart: 640, fPeak: 1160, fEnd: 520, peakRatio: 0.25,
-            dur: isJump ? 0.15 : 0.33,
-            wave1: 'sawtooth', wave2: 'triangle', mix2: 0.45,
-            q: 3.5, filtStart: 1100, filtPeak: 2200, filtEnd: 950,
-            vol: isJump ? 0.10 : 0.13
-          });
+          synthSyllable(c, now, { fStart: 640, fPeak: 1160, fEnd: 520, peakRatio: 0.25, dur: isJump ? 0.15 : 0.33, wave1: 'sawtooth', wave2: 'triangle', mix2: 0.45, q: 3.5, filtStart: 1100, filtPeak: 2200, filtEnd: 950, vol: isJump ? 0.10 : 0.13 });
         } else if (skinId === 'gold') {
-          synthSyllable(c, now, {
-            fStart: 780, fPeak: 1260, fEnd: 980,
-            dur: isJump ? 0.14 : 0.30,
-            wave1: 'sine', wave2: 'triangle', harmonic: 1.5, mix2: 0.45, vol: isJump ? 0.11 : 0.14
-          });
+          synthSyllable(c, now, { fStart: 780, fPeak: 1260, fEnd: 980, dur: isJump ? 0.14 : 0.30, wave1: 'sine', wave2: 'triangle', harmonic: 1.5, mix2: 0.45, vol: isJump ? 0.11 : 0.14 });
           var bellNotes = isJump ? [1567.98] : [1318.5, 1567.98, 2093.0];
           for (var b = 0; b < bellNotes.length; b++) {
             var bell = c.createOscillator();
@@ -684,19 +646,14 @@ window.onload = function() {
             bell.frequency.setValueAtTime(bellNotes[b], t0);
             bGain.gain.setValueAtTime(0.055, t0);
             bGain.gain.exponentialRampToValueAtTime(0.0005, t0 + 0.32);
-            bell.connect(bGain);
-            bGain.connect(c.destination);
-            bell.start(t0);
-            bell.stop(t0 + 0.33);
+            bell.connect(bGain); bGain.connect(c.destination);
+            bell.start(t0); bell.stop(t0 + 0.33);
           }
         }
       };
 
-      if (c.state === 'suspended') {
-        c.resume().then(runMeow);
-      } else {
-        runMeow();
-      }
+      if (c.state === 'suspended') c.resume().then(runMeow);
+      else runMeow();
     }
 
     function playSpikeSound(spikeType) {
@@ -706,130 +663,76 @@ window.onload = function() {
 
       if (spikeType === 'wind') {
         playNoise(0.24, 1200, 'bandpass', 0.12);
-        var wOsc = c.createOscillator();
-        var wGain = c.createGain();
-        wOsc.type = 'sine';
-        wOsc.frequency.setValueAtTime(420, now);
-        wOsc.frequency.exponentialRampToValueAtTime(880, now + 0.18);
-        wGain.gain.setValueAtTime(0.08, now);
-        wGain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-        wOsc.connect(wGain); wGain.connect(c.destination);
-        wOsc.start(now); wOsc.stop(now + 0.21);
-
+        var wOsc = c.createOscillator(), wGain = c.createGain();
+        wOsc.type = 'sine'; wOsc.frequency.setValueAtTime(420, now); wOsc.frequency.exponentialRampToValueAtTime(880, now + 0.18);
+        wGain.gain.setValueAtTime(0.08, now); wGain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+        wOsc.connect(wGain); wGain.connect(c.destination); wOsc.start(now); wOsc.stop(now + 0.21);
       } else if (spikeType === 'meteor') {
         playNoise(0.38, 280, 'lowpass', 0.18);
-        var mOsc = c.createOscillator();
-        var mGain = c.createGain();
-        mOsc.type = 'sawtooth';
-        mOsc.frequency.setValueAtTime(190, now);
-        mOsc.frequency.exponentialRampToValueAtTime(42, now + 0.36);
-        mGain.gain.setValueAtTime(0.11, now);
-        mGain.gain.exponentialRampToValueAtTime(0.001, now + 0.37);
-        mOsc.connect(mGain); mGain.connect(c.destination);
-        mOsc.start(now); mOsc.stop(now + 0.38);
-
+        var mOsc = c.createOscillator(), mGain = c.createGain();
+        mOsc.type = 'sawtooth'; mOsc.frequency.setValueAtTime(190, now); mOsc.frequency.exponentialRampToValueAtTime(42, now + 0.36);
+        mGain.gain.setValueAtTime(0.11, now); mGain.gain.exponentialRampToValueAtTime(0.001, now + 0.37);
+        mOsc.connect(mGain); mGain.connect(c.destination); mOsc.start(now); mOsc.stop(now + 0.38);
       } else if (spikeType === 'lightning') {
         playNoise(0.22, 3400, 'highpass', 0.13);
-        var lOsc = c.createOscillator();
-        var lGain = c.createGain();
-        lOsc.type = 'square';
-        lOsc.frequency.setValueAtTime(1450, now);
-        lOsc.frequency.exponentialRampToValueAtTime(220, now + 0.19);
-        lGain.gain.setValueAtTime(0.07, now);
-        lGain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-        lOsc.connect(lGain); lGain.connect(c.destination);
-        lOsc.start(now); lOsc.stop(now + 0.21);
-
+        var lOsc = c.createOscillator(), lGain = c.createGain();
+        lOsc.type = 'square'; lOsc.frequency.setValueAtTime(1450, now); lOsc.frequency.exponentialRampToValueAtTime(220, now + 0.19);
+        lGain.gain.setValueAtTime(0.07, now); lGain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+        lOsc.connect(lGain); lGain.connect(c.destination); lOsc.start(now); lOsc.stop(now + 0.21);
       } else if (spikeType === 'ice') {
         var freqs = [1318.5, 1760.0, 2349.3];
         for (var i = 0; i < freqs.length; i++) {
-          var iOsc = c.createOscillator();
-          var iGain = c.createGain();
-          iOsc.type = 'sine';
-          var st = now + i * 0.035;
-          iOsc.frequency.setValueAtTime(freqs[i], st);
-          iGain.gain.setValueAtTime(0.07, st);
-          iGain.gain.exponentialRampToValueAtTime(0.0005, st + 0.26);
-          iOsc.connect(iGain); iGain.connect(c.destination);
-          iOsc.start(st); iOsc.stop(st + 0.27);
+          var iOsc = c.createOscillator(), iGain = c.createGain(), st = now + i * 0.035;
+          iOsc.type = 'sine'; iOsc.frequency.setValueAtTime(freqs[i], st);
+          iGain.gain.setValueAtTime(0.07, st); iGain.gain.exponentialRampToValueAtTime(0.0005, st + 0.26);
+          iOsc.connect(iGain); iGain.connect(c.destination); iOsc.start(st); iOsc.stop(st + 0.27);
         }
-
       } else if (spikeType === 'sakura') {
         var sFreqs = [523.25, 659.25, 783.99, 1046.5];
         for (var j = 0; j < sFreqs.length; j++) {
-          var sOsc = c.createOscillator();
-          var sGain = c.createGain();
-          sOsc.type = 'triangle';
-          var t0 = now + j * 0.04;
-          sOsc.frequency.setValueAtTime(sFreqs[j], t0);
-          sGain.gain.setValueAtTime(0.07, t0);
-          sGain.gain.exponentialRampToValueAtTime(0.0005, t0 + 0.25);
-          sOsc.connect(sGain); sGain.connect(c.destination);
-          sOsc.start(t0); sOsc.stop(t0 + 0.26);
+          var sOsc = c.createOscillator(), sGain = c.createGain(), t0 = now + j * 0.04;
+          sOsc.type = 'triangle'; sOsc.frequency.setValueAtTime(sFreqs[j], t0);
+          sGain.gain.setValueAtTime(0.07, t0); sGain.gain.exponentialRampToValueAtTime(0.0005, t0 + 0.25);
+          sOsc.connect(sGain); sGain.connect(c.destination); sOsc.start(t0); sOsc.stop(t0 + 0.26);
         }
-
       } else if (spikeType === 'blackhole') {
-        var bOsc = c.createOscillator();
-        var bGain = c.createGain();
-        bOsc.type = 'sine';
-        bOsc.frequency.setValueAtTime(95, now);
-        bOsc.frequency.exponentialRampToValueAtTime(680, now + 0.26);
-        bOsc.frequency.exponentialRampToValueAtTime(110, now + 0.34);
-        bGain.gain.setValueAtTime(0.11, now);
-        bGain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-        bOsc.connect(bGain); bGain.connect(c.destination);
-        bOsc.start(now); bOsc.stop(now + 0.36);
+        var bOsc = c.createOscillator(), bGain = c.createGain();
+        bOsc.type = 'sine'; bOsc.frequency.setValueAtTime(95, now); bOsc.frequency.exponentialRampToValueAtTime(680, now + 0.26); bOsc.frequency.exponentialRampToValueAtTime(110, now + 0.34);
+        bGain.gain.setValueAtTime(0.11, now); bGain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        bOsc.connect(bGain); bGain.connect(c.destination); bOsc.start(now); bOsc.stop(now + 0.36);
       }
     }
 
     function playBounce(isNet) {
       var c = unlockAndStart();
       if (!c || isMuted) return;
-      var now = c.currentTime;
-      var osc = c.createOscillator();
-      var gain = c.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(isNet ? 180 : 290, now);
-      osc.frequency.exponentialRampToValueAtTime(isNet ? 110 : 410, now + 0.08);
-      gain.gain.setValueAtTime(0.06, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
-      osc.connect(gain); gain.connect(c.destination);
-      osc.start(now); osc.stop(now + 0.1);
+      var now = c.currentTime, osc = c.createOscillator(), gain = c.createGain();
+      osc.type = 'sine'; osc.frequency.setValueAtTime(isNet ? 180 : 290, now); osc.frequency.exponentialRampToValueAtTime(isNet ? 110 : 410, now + 0.08);
+      gain.gain.setValueAtTime(0.06, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+      osc.connect(gain); gain.connect(c.destination); osc.start(now); osc.stop(now + 0.1);
     }
 
     function playScore(isMyPoint) {
       var c = unlockAndStart();
       if (!c || isMuted) return;
-      var now = c.currentTime;
-      var notes = isMyPoint ? [523.25, 659.25, 783.99] : [392.00, 349.23, 311.13];
+      var now = c.currentTime, notes = isMyPoint ? [523.25, 659.25, 783.99] : [392.00, 349.23, 311.13];
       for (var i = 0; i < notes.length; i++) {
-        var osc = c.createOscillator();
-        var gain = c.createGain();
-        osc.type = 'triangle';
-        var st = now + i * 0.08;
-        osc.frequency.setValueAtTime(notes[i], st);
-        gain.gain.setValueAtTime(0.075, st);
-        gain.gain.exponentialRampToValueAtTime(0.001, st + 0.2);
-        osc.connect(gain); gain.connect(c.destination);
-        osc.start(st); osc.stop(st + 0.21);
+        var osc = c.createOscillator(), gain = c.createGain(), st = now + i * 0.08;
+        osc.type = 'triangle'; osc.frequency.setValueAtTime(notes[i], st);
+        gain.gain.setValueAtTime(0.075, st); gain.gain.exponentialRampToValueAtTime(0.001, st + 0.2);
+        osc.connect(gain); gain.connect(c.destination); osc.start(st); osc.stop(st + 0.21);
       }
     }
 
     function playUnlock() {
       var c = unlockAndStart();
       if (!c || isMuted) return;
-      var now = c.currentTime;
-      var notes = [587.33, 739.99, 880.00, 1174.66];
+      var now = c.currentTime, notes = [587.33, 739.99, 880.00, 1174.66];
       for (var i = 0; i < notes.length; i++) {
-        var osc = c.createOscillator();
-        var gain = c.createGain();
-        osc.type = 'sine';
-        var st = now + i * 0.06;
-        osc.frequency.setValueAtTime(notes[i], st);
-        gain.gain.setValueAtTime(0.08, st);
-        gain.gain.exponentialRampToValueAtTime(0.001, st + 0.25);
-        osc.connect(gain); gain.connect(c.destination);
-        osc.start(st); osc.stop(st + 0.26);
+        var osc = c.createOscillator(), gain = c.createGain(), st = now + i * 0.06;
+        osc.type = 'sine'; osc.frequency.setValueAtTime(notes[i], st);
+        gain.gain.setValueAtTime(0.08, st); gain.gain.exponentialRampToValueAtTime(0.001, st + 0.25);
+        osc.connect(gain); gain.connect(c.destination); osc.start(st); osc.stop(st + 0.26);
       }
     }
 
@@ -845,43 +748,49 @@ window.onload = function() {
   })();
 
   ['touchstart', 'mousedown', 'keydown'].forEach(function(evtName) {
-    window.addEventListener(evtName, function() {
-      SoundEngine.unlockAndStart();
-    }, { passive: true });
+    window.addEventListener(evtName, function() { SoundEngine.unlockAndStart(); }, { passive: true });
   });
+  document.getElementById("btnSoundToggle").onclick = function() { SoundEngine.toggleMute(); };
 
-  document.getElementById("btnSoundToggle").onclick = function() {
-    SoundEngine.toggleMute();
-  };
+  // =========================================================================
+  // 1. 랭크 등급 시스템 (초보자 친화적 진입 난이도) & 스킨 카탈로그
+  // =========================================================================
+  // rankLv: 0(🥉브론즈), 1(🥈실버: 1승), 2(🥇골드: 3승 또는 승률50%), 3(💎다이아: 6승 또는 승률60%), 4(👑챌린저냥: 10승 또는 승률70%)
+  var RANK_TIERS = [
+    { lv: 0, badge: "🥉 브론즈",   condText: "기본 시작 등급" },
+    { lv: 1, badge: "🥈 실버",     condText: "1승 달성 시 해금" },
+    { lv: 2, badge: "🥇 골드",     condText: "3승 달성 또는 승률 50%(2전↑)" },
+    { lv: 3, badge: "💎 다이아",   condText: "6승 달성 또는 승률 60%(5전↑)" },
+    { lv: 4, badge: "👑 챌린저냥", condText: "10승 달성 또는 승률 70%(8전↑)" }
+  ];
 
-  // --- 1. 스킨 & 스파이크 카탈로그 ---
   var CAT_SKINS = {
-    cream:   { id: 'cream',   name: '크림냥(기본)',   free: true,  simple: true,  color: '#fef3c7', shadow: '#78350f', light: '#ffffff', stripe: '#d97706', earInner: '#fda4af' },
-    gray:    { id: 'gray',    name: '그레이냥(기본)', free: true,  simple: true,  color: '#cbd5e1', shadow: '#1e293b', light: '#f1f5f9', stripe: '#64748b', earInner: '#fda4af' },
-    cheese:  { id: 'cheese',  name: '치즈냥',         free: false, simple: false, color: '#f59e0b', shadow: '#78350f', light: '#fde68a', stripe: '#92400e', earInner: '#fda4af' },
-    persian: { id: 'persian', name: '페르시안냥',     free: false, simple: false, color: '#ffffff', shadow: '#0f172a', light: '#bae6fd', stripe: '#1e293b', earInner: '#fda4af' },
-    black:   { id: 'black',   name: '검둥이냥',       free: false, simple: false, color: '#1e293b', shadow: '#020617', light: '#475569', stripe: '#0f172a', earInner: '#fb7185' },
-    calico:  { id: 'calico',  name: '삼색냥',         free: false, simple: false, color: '#ffffff', shadow: '#1e293b', light: '#fef3c7', stripe: '#ea580c', earInner: '#fda4af' },
-    siamese: { id: 'siamese', name: '샴냥',           free: false, simple: false, color: '#f5ebe0', shadow: '#3e2723', light: '#ffffff', stripe: '#4e342e', earInner: '#d7ccc8' },
-    gold:    { id: 'gold',    name: '황금냥',         free: false, simple: false, color: '#facc15', shadow: '#854d0e', light: '#fef9c3', stripe: '#ca8a04', earInner: '#fde047' }
+    cream:   { id: 'cream',   name: '크림냥',     free: true,  reqLv: 0, simple: true,  color: '#fef3c7', shadow: '#78350f', light: '#ffffff', stripe: '#d97706', earInner: '#fda4af', desc: '포근하고 담백한 기본 크림 고양이. 깔끔한 "냐옹~" 목소리를 냅니다.' },
+    gray:    { id: 'gray',    name: '그레이냥',   free: true,  reqLv: 0, simple: true,  color: '#cbd5e1', shadow: '#1e293b', light: '#f1f5f9', stripe: '#64748b', earInner: '#fda4af', desc: '차분하고 둥글둥글한 기본 회색 고양이. 부드러운 "야옹~" 소리를 냅니다.' },
+    cheese:  { id: 'cheese',  name: '치즈냥',     free: false, reqLv: 0, simple: false, color: '#f59e0b', shadow: '#78350f', light: '#fde68a', stripe: '#92400e', earInner: '#fda4af', desc: '통통한 볼살과 치즈 줄무늬! 끝이 톡 튀어 오르는 장난꾸러기 목소리입니다.' },
+    persian: { id: 'persian', name: '페르시안냥', free: false, reqLv: 1, simple: false, color: '#ffffff', shadow: '#0f172a', light: '#bae6fd', stripe: '#1e293b', earInner: '#fda4af', desc: '하늘빛 포인트와 우아한 비브라토가 매력적인 고급 페르시안 고양이입니다.' },
+    black:   { id: 'black',   name: '검둥이냥',   free: false, reqLv: 1, simple: false, color: '#1e293b', shadow: '#020617', light: '#475569', stripe: '#0f172a', earInner: '#fb7185', desc: '황금빛 눈동자와 가르랑 진동이 섞인 시크한 올블랙 고양이입니다.' },
+    calico:  { id: 'calico',  name: '삼색냥',     free: false, reqLv: 2, simple: false, color: '#ffffff', shadow: '#1e293b', light: '#fef3c7', stripe: '#ea580c', earInner: '#fda4af', desc: '알록달록 삼색 무늬의 발랄한 고양이! "냐! 냐옹~" 두 번 끊어 웁니다.' },
+    siamese: { id: 'siamese', name: '샴냥',       free: false, reqLv: 3, simple: false, color: '#f5ebe0', shadow: '#3e2723', light: '#ffffff', stripe: '#4e342e', earInner: '#d7ccc8', desc: '초코 포인트 마스크와 도도한 억양을 가진 샴 고양이입니다.' },
+    gold:    { id: 'gold',    name: '황금냥',     free: false, reqLv: 4, simple: false, color: '#facc15', shadow: '#854d0e', light: '#fef9c3', stripe: '#ca8a04', earInner: '#fde047', desc: '작은 왕관과 반짝이는 차임벨 소리까지 갖춘 전설의 황금 고양이입니다.' }
   };
 
   var BALL_SKINS = {
-    classic:    { id: 'classic',    name: '비치볼(기본)', free: true },
-    watermelon: { id: 'watermelon', name: '수박공',       free: false },
-    rainbow:    { id: 'rainbow',    name: '무지개공',     free: false },
-    soccer:     { id: 'soccer',     name: '축구공',       free: false },
-    paw:        { id: 'paw',        name: '냥발바닥공',   free: false },
-    golden:     { id: 'golden',     name: '황금공',       free: false }
+    classic:    { id: 'classic',    name: '비치볼',     free: true,  reqLv: 0, desc: '여름 해변의 정석 노란 비치볼입니다.' },
+    watermelon: { id: 'watermelon', name: '수박공',     free: false, reqLv: 0, desc: '시원한 초록 줄무늬 수박 모양 배구공! 브론즈부터 광고 해금 가능.' },
+    rainbow:    { id: 'rainbow',    name: '무지개공',   free: false, reqLv: 1, desc: '일곱 빛깔 그라데이션이 감도는 화려한 무지개 공입니다.' },
+    soccer:     { id: 'soccer',     name: '축구공',     free: false, reqLv: 2, desc: '흑백 육각형 패턴의 클래식 스포츠 공입니다.' },
+    paw:        { id: 'paw',        name: '냥발바닥공', free: false, reqLv: 3, desc: '분홍 젤리 발바닥이 새겨진 사랑스러운 냥이 전용 공입니다.' },
+    golden:     { id: 'golden',     name: '황금공',     free: false, reqLv: 4, desc: '빛나는 황금빛 광택이 감도는 최고 등급 배구공입니다.' }
   };
 
   var SPIKE_SKINS = {
-    wind:      { id: 'wind',      name: '💨 바람슛(기본)', free: true },
-    meteor:    { id: 'meteor',    name: '☄️ 메테오',       free: false },
-    lightning: { id: 'lightning', name: '⚡ 번개슛',       free: false },
-    ice:       { id: 'ice',       name: '❄️ 얼음슛',       free: false },
-    sakura:    { id: 'sakura',    name: '🌸 벚꽃슛',       free: false },
-    blackhole: { id: 'blackhole', name: '🌌 블랙홀슛',     free: false }
+    wind:      { id: 'wind',      name: '💨 바람슛',   free: true,  reqLv: 0, desc: '깔끔하고 가벼운 기본 바람 궤적과 "휘익~" 바람 소리를 냅니다.' },
+    meteor:    { id: 'meteor',    name: '☄️ 메테오',   free: false, reqLv: 0, desc: '붉은 운석 잔상과 묵직한 "콰광!" 폭발음이 터지는 강타 이펙트입니다.' },
+    lightning: { id: 'lightning', name: '⚡ 번개슛',   free: false, reqLv: 1, desc: '푸른 전기 스파크와 "파지직!" 전격음이 날아갑니다.' },
+    ice:       { id: 'ice',       name: '❄️ 얼음슛',   free: false, reqLv: 2, desc: '서리 결정 파티클과 맑은 "챙그랑~" 얼음 소리가 울립니다.' },
+    sakura:    { id: 'sakura',    name: '🌸 벚꽃슛',   free: false, reqLv: 3, desc: '분홍 꽃잎이 흩날리며 포근한 아르페지오 소리가 납니다.' },
+    blackhole: { id: 'blackhole', name: '🌌 블랙홀슛', free: false, reqLv: 4, desc: '보라색 중력 고리와 공간 왜곡 사운드가 펼쳐지는 최상위 강타입니다.' }
   };
 
   // --- 2. 로컬 저장소 & Firebase 클라우드 누적 랭킹 관리 ---
@@ -901,7 +810,7 @@ window.onload = function() {
 
   function loadUserState() {
     try {
-      var raw = localStorage.getItem('cat_volley_save_v3');
+      var raw = localStorage.getItem('cat_volley_save_v4');
       if (raw) {
         var parsed = JSON.parse(raw);
         if (parsed.playerId) userState.playerId = parsed.playerId;
@@ -918,19 +827,54 @@ window.onload = function() {
       userState.playerId = generatePlayerId();
       saveUserState();
     }
-    validateExpiredUnlocks();
+    validateUnlocks();
   }
 
   function saveUserState() {
-    try {
-      localStorage.setItem('cat_volley_save_v3', JSON.stringify(userState));
-    } catch (e) {}
+    try { localStorage.setItem('cat_volley_save_v4', JSON.stringify(userState)); } catch (e) {}
   }
 
-  function isItemUnlocked(key, isFree) {
+  function getRankInfo(wins, losses) {
+    var total = wins + losses;
+    var rate = total > 0 ? Math.round((wins / total) * 100) : 0;
+    var lv = 0;
+    var tier = "🥉 브론즈";
+
+    if (wins >= 10 || (total >= 8 && rate >= 70)) {
+      lv = 4; tier = "👑 챌린저냥";
+    } else if (wins >= 6 || (total >= 5 && rate >= 60)) {
+      lv = 3; tier = "💎 다이아";
+    } else if (wins >= 3 || (total >= 2 && rate >= 50)) {
+      lv = 2; tier = "🥇 골드";
+    } else if (wins >= 1) {
+      lv = 1; tier = "🥈 실버";
+    }
+
+    var score = mul(wins, 30) + rate;
+    return {
+      lv: lv,
+      tier: tier,
+      rate: rate,
+      total: total,
+      score: score,
+      summary: tier + " · " + wins + "승 " + losses + "패 (" + rate + "%)"
+    };
+  }
+
+  function isRankMet(reqLv) {
+    var myRank = getRankInfo(userState.wins, userState.losses);
+    return myRank.lv >= (reqLv || 0);
+  }
+
+  function isTimeUnlocked(key, isFree) {
     if (isFree) return true;
     var exp = userState.unlocks[key];
     return !!(exp && exp > Date.now());
+  }
+
+  function canUseItem(item, key) {
+    if (item.free) return true;
+    return isRankMet(item.reqLv) && isTimeUnlocked(key, false);
   }
 
   function getRemainingHoursText(key) {
@@ -941,39 +885,18 @@ window.onload = function() {
     return hrs + "시간 남음";
   }
 
-  function validateExpiredUnlocks() {
+  function validateUnlocks() {
     var changed = false;
-    if (!isItemUnlocked('cat_' + userState.equippedCat, CAT_SKINS[userState.equippedCat].free)) {
-      userState.equippedCat = 'cream';
-      changed = true;
+    if (!canUseItem(CAT_SKINS[userState.equippedCat], 'cat_' + userState.equippedCat)) {
+      userState.equippedCat = 'cream'; changed = true;
     }
-    if (!isItemUnlocked('ball_' + userState.equippedBall, BALL_SKINS[userState.equippedBall].free)) {
-      userState.equippedBall = 'classic';
-      changed = true;
+    if (!canUseItem(BALL_SKINS[userState.equippedBall], 'ball_' + userState.equippedBall)) {
+      userState.equippedBall = 'classic'; changed = true;
     }
-    if (!isItemUnlocked('spike_' + userState.equippedSpike, SPIKE_SKINS[userState.equippedSpike].free)) {
-      userState.equippedSpike = 'wind';
-      changed = true;
+    if (!canUseItem(SPIKE_SKINS[userState.equippedSpike], 'spike_' + userState.equippedSpike)) {
+      userState.equippedSpike = 'wind'; changed = true;
     }
     if (changed) saveUserState();
-  }
-
-  function getRankInfo(wins, losses) {
-    var total = wins + losses;
-    var rate = total > 0 ? Math.round((wins / total) * 100) : 0;
-    var tier = "🥉 브론즈";
-    if (total >= 15 && rate >= 75) tier = "👑 챌린저냥";
-    else if (total >= 10 && rate >= 65) tier = "💎 다이아";
-    else if (total >= 5 && rate >= 55) tier = "🥇 골드";
-    else if (total >= 2 && rate >= 40) tier = "🥈 실버";
-    var score = mul(wins, 30) + rate;
-    return {
-      tier: tier,
-      rate: rate,
-      total: total,
-      score: score,
-      summary: tier + " · " + wins + "승 " + losses + "패 (" + rate + "%)"
-    };
   }
 
   function refreshRankUI() {
@@ -986,23 +909,21 @@ window.onload = function() {
     var cleanUrl = (FIREBASE_DB_URL || "").trim().replace(/\/+$/, "");
     if (!cleanUrl || typeof fetch !== 'function') return;
 
-    var myNick = getMyNick(CAT_SKINS[userState.equippedCat].name.replace('(기본)', ''));
+    var myNick = getMyNick(CAT_SKINS[userState.equippedCat].name);
     var info = getRankInfo(userState.wins, userState.losses);
-
-    var payload = {
-      nick: myNick,
-      wins: userState.wins,
-      losses: userState.losses,
-      rate: info.rate,
-      score: info.score,
-      tier: info.tier,
-      updatedAt: Date.now()
-    };
 
     fetch(cleanUrl + "/leaderboard/" + encodeURIComponent(userState.playerId) + ".json", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({
+        nick: myNick,
+        wins: userState.wins,
+        losses: userState.losses,
+        rate: info.rate,
+        score: info.score,
+        tier: info.tier,
+        updatedAt: Date.now()
+      })
     }).catch(function() {});
   }
 
@@ -1017,11 +938,10 @@ window.onload = function() {
   function fetchGlobalTop10() {
     var box = document.getElementById("rankListContainer");
     var cleanUrl = (FIREBASE_DB_URL || "").trim().replace(/\/+$/, "");
-    var myNick = getMyNick(CAT_SKINS[userState.equippedCat].name.replace('(기본)', ''));
+    var myNick = getMyNick(CAT_SKINS[userState.equippedCat].name);
 
     box.innerHTML = '<div style="padding:18px; color:#bae6fd; font-size:0.8rem;">🌐 실시간 통합 랭킹을 불러오는 중...</div>';
     lobbyStatus.innerText = "클라우드 서버에서 실시간 TOP 10 랭킹을 조회 중...";
-
     syncMyRankToCloud();
 
     fetch(cleanUrl + "/leaderboard.json")
@@ -1044,13 +964,7 @@ window.onload = function() {
         }
 
         if (!list.some(function(x) { return x.isMe; })) {
-          list.push({
-            playerId: userState.playerId,
-            nick: myNick,
-            wins: userState.wins,
-            losses: userState.losses,
-            isMe: true
-          });
+          list.push({ playerId: userState.playerId, nick: myNick, wins: userState.wins, losses: userState.losses, isMe: true });
         }
 
         list.sort(function(a, b) {
@@ -1063,12 +977,6 @@ window.onload = function() {
 
         var top10 = list.slice(0, 10);
         box.innerHTML = "";
-
-        if (top10.length === 0) {
-          box.innerHTML = '<div style="padding:18px; color:#94a3b8; font-size:0.8rem;">아직 등록된 랭킹 기록이 없습니다. 첫 승리를 기록해 보세요!</div>';
-          return;
-        }
-
         for (var i = 0; i < top10.length; i++) {
           var item = top10[i];
           var info = getRankInfo(item.wins, item.losses);
@@ -1083,39 +991,61 @@ window.onload = function() {
             '<div class="rank-right">' + item.wins + '승 ' + item.losses + '패 (' + info.rate + '%)</div>';
           box.appendChild(rowEl);
         }
-
         lobbyStatus.innerText = "총 " + list.length + "명의 실제 플레이어 중 TOP " + top10.length + " 표시 중!";
       })
       .catch(function() {
-        box.innerHTML = '<div style="padding:16px; color:#fca5a5; font-size:0.78rem;">랭킹 서버 연결에 실패했습니다. 네트워크 상태나 Firebase 규칙(Publish)을 확인해 주세요.</div>';
-        lobbyStatus.innerText = "랭킹 조회 실패 (새로고침을 눌러 다시 시도하세요)";
+        box.innerHTML = '<div style="padding:16px; color:#fca5a5; font-size:0.78rem;">랭킹 서버 연결에 실패했습니다.</div>';
       });
   }
 
   loadUserState();
   refreshRankUI();
 
-  // --- 3. 스킨 선택 UI & 24시간 해금 모달 ---
+  // =========================================================================
+  // 3. 랭크 조건 + 설명 + 24시간 광고 해금 UI
+  // =========================================================================
   var pendingUnlock = null;
   var rewardModal = document.getElementById("rewardModal");
 
-  function openRewardModal(unlockKey, displayName, onSuccess) {
-    pendingUnlock = { key: unlockKey, name: displayName, cb: onSuccess };
-    document.getElementById("rewardModalTitle").innerText = "🎁 [" + displayName + "] 24시간 열기";
+  function getReqRankLabel(reqLv) {
+    var t = RANK_TIERS[reqLv] || RANK_TIERS[0];
+    return t.badge + " (" + t.condText + ")";
+  }
+
+  function updateDetailCard(item, uKey, equipKey) {
+    document.getElementById("detailName").innerText = item.name;
+    document.getElementById("detailDesc").innerText = item.desc;
+
+    var condEl = document.getElementById("detailCond");
+    if (item.free) {
+      condEl.innerText = "✅ 기본 제공 (무료)";
+    } else if (!isRankMet(item.reqLv)) {
+      condEl.innerText = "🔒 필요: " + getReqRankLabel(item.reqLv);
+    } else if (isTimeUnlocked(uKey, false)) {
+      condEl.innerText = "⏳ 해금됨 (" + getRemainingHoursText(uKey) + ")";
+    } else {
+      condEl.innerText = "🎬 랭크 달성! 광고 후 24시간 해금 가능";
+    }
+  }
+
+  function openRewardModal(unlockKey, item, onSuccess) {
+    pendingUnlock = { key: unlockKey, item: item, cb: onSuccess };
+    document.getElementById("rewardModalTitle").innerText = "🎁 [" + item.name + "] 24시간 해금";
     document.getElementById("rewardModalDesc").innerText =
-      "지금 해금하면 24시간 동안 [" + displayName + "] 아이템을 무제한 장착할 수 있습니다!";
+      "획득 조건(" + getReqRankLabel(item.reqLv) + ")을 달성했습니다! 광고 시청 후 24시간 동안 사용할 수 있습니다.";
     rewardModal.style.display = "flex";
   }
 
   document.getElementById("btnConfirmUnlock").onclick = function() {
     if (!pendingUnlock) return;
+    // 추후 보상형 광고 SDK 연동 시 광고 완료 콜백 안에서 아래 해금 처리를 실행합니다.
     userState.unlocks[pendingUnlock.key] = Date.now() + HOURS_24_MS;
     if (pendingUnlock.cb) pendingUnlock.cb();
     saveUserState();
     SoundEngine.playUnlock();
     rewardModal.style.display = "none";
-    renderSkinPanel();
-    lobbyStatus.innerText = "🎉 [" + pendingUnlock.name + "] 24시간 사용이 활성화되었습니다!";
+    renderSkinPanel(pendingUnlock.item, pendingUnlock.key);
+    lobbyStatus.innerText = "🎉 [" + pendingUnlock.item.name + "] 24시간 해금 완료!";
     pendingUnlock = null;
   };
 
@@ -1124,94 +1054,70 @@ window.onload = function() {
     pendingUnlock = null;
   };
 
-  function renderSkinPanel() {
-    validateExpiredUnlocks();
+  function renderSkinPanel(selectedItem, selectedKey) {
+    validateUnlocks();
     var box = document.getElementById("skinScrollContainer");
     box.innerHTML = "";
 
-    var catSec = document.createElement("div");
-    catSec.innerHTML = '<div class="skin-cat-title">🐱 고양이 캐릭터 스킨 (터치 시 고유 울음소리 재생)</div>';
-    var catGrid = document.createElement("div");
-    catGrid.className = "skin-grid";
-    Object.keys(CAT_SKINS).forEach(function(k) {
-      var sk = CAT_SKINS[k];
-      var uKey = "cat_" + k;
-      var unlocked = isItemUnlocked(uKey, sk.free);
-      var equipped = (userState.equippedCat === k);
-      var btn = document.createElement("button");
-      btn.className = "skin-chip" + (equipped ? " equipped" : (!unlocked ? " locked" : ""));
-      var sub = sk.free ? "무료 기본" : (unlocked ? getRemainingHoursText(uKey) : "🔒 24시간 열기");
-      btn.innerHTML = (equipped ? "✅ " : "") + sk.name + '<span class="skin-sub">' + sub + '</span>';
-      btn.onclick = function() {
-        SoundEngine.playCatMeow(k, false);
-        if (unlocked) {
-          userState.equippedCat = k;
-          saveUserState();
-          renderSkinPanel();
-        } else {
-          openRewardModal(uKey, sk.name, function() { userState.equippedCat = k; });
-        }
-      };
-      catGrid.appendChild(btn);
-    });
-    catSec.appendChild(catGrid);
-    box.appendChild(catSec);
+    function buildSection(title, catalog, prefix, equippedVal, onEquip) {
+      var sec = document.createElement("div");
+      sec.innerHTML = '<div class="skin-cat-title">' + title + '</div>';
+      var grid = document.createElement("div");
+      grid.className = "skin-grid";
 
-    var ballSec = document.createElement("div");
-    ballSec.innerHTML = '<div class="skin-cat-title">🏐 배구공 스킨 (6종)</div>';
-    var ballGrid = document.createElement("div");
-    ballGrid.className = "skin-grid";
-    Object.keys(BALL_SKINS).forEach(function(k) {
-      var sk = BALL_SKINS[k];
-      var uKey = "ball_" + k;
-      var unlocked = isItemUnlocked(uKey, sk.free);
-      var equipped = (userState.equippedBall === k);
-      var btn = document.createElement("button");
-      btn.className = "skin-chip" + (equipped ? " equipped" : (!unlocked ? " locked" : ""));
-      var sub = sk.free ? "무료 기본" : (unlocked ? getRemainingHoursText(uKey) : "🔒 24시간 열기");
-      btn.innerHTML = (equipped ? "✅ " : "") + sk.name + '<span class="skin-sub">' + sub + '</span>';
-      btn.onclick = function() {
-        SoundEngine.playBounce(false);
-        if (unlocked) {
-          userState.equippedBall = k;
-          saveUserState();
-          renderSkinPanel();
-        } else {
-          openRewardModal(uKey, sk.name, function() { userState.equippedBall = k; });
-        }
-      };
-      ballGrid.appendChild(btn);
-    });
-    ballSec.appendChild(ballGrid);
-    box.appendChild(ballSec);
+      Object.keys(catalog).forEach(function(k) {
+        var sk = catalog[k];
+        var uKey = prefix + k;
+        var rankOk = isRankMet(sk.reqLv);
+        var timeOk = isTimeUnlocked(uKey, sk.free);
+        var usable = sk.free || (rankOk && timeOk);
+        var equipped = (equippedVal === k && usable);
 
-    var spkSec = document.createElement("div");
-    spkSec.innerHTML = '<div class="skin-cat-title">💥 스파이크 이펙트 (터치 시 효과음 재생)</div>';
-    var spkGrid = document.createElement("div");
-    spkGrid.className = "skin-grid";
-    Object.keys(SPIKE_SKINS).forEach(function(k) {
-      var sk = SPIKE_SKINS[k];
-      var uKey = "spike_" + k;
-      var unlocked = isItemUnlocked(uKey, sk.free);
-      var equipped = (userState.equippedSpike === k);
-      var btn = document.createElement("button");
-      btn.className = "skin-chip" + (equipped ? " equipped" : (!unlocked ? " locked" : ""));
-      var sub = sk.free ? "무료 기본" : (unlocked ? getRemainingHoursText(uKey) : "🔒 24시간 열기");
-      btn.innerHTML = (equipped ? "✅ " : "") + sk.name + '<span class="skin-sub">' + sub + '</span>';
-      btn.onclick = function() {
-        SoundEngine.playSpikeSound(k);
-        if (unlocked) {
-          userState.equippedSpike = k;
-          saveUserState();
-          renderSkinPanel();
-        } else {
-          openRewardModal(uKey, sk.name, function() { userState.equippedSpike = k; });
-        }
-      };
-      spkGrid.appendChild(btn);
-    });
-    spkSec.appendChild(spkGrid);
-    box.appendChild(spkSec);
+        var btn = document.createElement("button");
+        var cls = "skin-chip";
+        if (equipped) cls += " equipped";
+        else if (!rankOk) cls += " rank-locked";
+        else if (!usable) cls += " ready-ad";
+        btn.className = cls;
+
+        var subText = "";
+        if (sk.free) subText = "기본 무료";
+        else if (!rankOk) subText = "🔒 " + RANK_TIERS[sk.reqLv].badge + " 필요";
+        else if (!timeOk) subText = "🎬 광고(24h)";
+        else subText = "⏳ " + getRemainingHoursText(uKey);
+
+        btn.innerHTML = (equipped ? "✅ " : "") + sk.name + '<span class="skin-sub">' + subText + '</span>';
+
+        btn.onclick = function() {
+          updateDetailCard(sk, uKey, k);
+          if (prefix === "cat_") SoundEngine.playCatMeow(k, false);
+          else if (prefix === "spike_") SoundEngine.playSpikeSound(k);
+          else SoundEngine.playBounce(false);
+
+          if (usable) {
+            onEquip(k);
+            saveUserState();
+            renderSkinPanel(sk, uKey);
+          } else if (!rankOk) {
+            lobbyStatus.innerText = "🔒 [" + sk.name + "]는 " + getReqRankLabel(sk.reqLv) + "에서 열립니다!";
+          } else {
+            openRewardModal(uKey, sk, function() { onEquip(k); });
+          }
+        };
+        grid.appendChild(btn);
+      });
+
+      sec.appendChild(grid);
+      box.appendChild(sec);
+    }
+
+    buildSection("🐱 고양이 스킨 (클릭 시 소리·설명 확인)", CAT_SKINS, "cat_", userState.equippedCat, function(v) { userState.equippedCat = v; });
+    buildSection("🏐 배구공 스킨 (랭크별 해금)", BALL_SKINS, "ball_", userState.equippedBall, function(v) { userState.equippedBall = v; });
+    buildSection("💥 스파이크 이펙트 (클릭 시 효과음·설명 확인)", SPIKE_SKINS, "spike_", userState.equippedSpike, function(v) { userState.equippedSpike = v; });
+
+    if (selectedItem && selectedKey) {
+      updateDetailCard(selectedItem, selectedKey);
+    }
   }
 
   // --- 4. 공개 로비 슬롯 및 배경 애니메이션 ---
@@ -1415,9 +1321,7 @@ window.onload = function() {
     score1 = 0; score2 = 0; prevScore1 = 0; prevScore2 = 0;
     gameOver = false; matchRecorded = false;
     resetPositions();
-    if (netMode === 'host') {
-      broadcastToAll({ type: 'reset' });
-    }
+    if (netMode === 'host') broadcastToAll({ type: 'reset' });
   }
 
   function startMatch(mode) {
@@ -1452,7 +1356,7 @@ window.onload = function() {
     gameState = 'lobby';
     gameOver = false;
     matchRecorded = false;
-    validateExpiredUnlocks();
+    validateUnlocks();
     p1.skin = userState.equippedCat;
     p2.skin = 'gray';
     ball.skin = userState.equippedBall;
@@ -1485,13 +1389,13 @@ window.onload = function() {
       return;
     }
 
-    validateExpiredUnlocks();
+    validateUnlocks();
     var targetId = fixedCode || LOBBY_SLOTS[slotIndex];
     if (peer) { try { peer.destroy(); } catch (e) {} }
 
     isHostingRoom = true;
     var rInfo = getRankInfo(userState.wins, userState.losses);
-    p1.name = getMyNick(CAT_SKINS[userState.equippedCat].name.replace('(기본)', ''));
+    p1.name = getMyNick(CAT_SKINS[userState.equippedCat].name);
     p1.tier = rInfo.tier;
     p1.skin = userState.equippedCat;
     p1.spikeSkin = userState.equippedSpike;
@@ -1545,13 +1449,7 @@ window.onload = function() {
           } else {
             spectatorConns.push(c);
             updateSpecBadge(spectatorConns.length);
-            c.send({
-              type: 'role',
-              role: 'spectator',
-              p1Name: p1.name,
-              p2Name: p2.name,
-              specCount: spectatorConns.length
-            });
+            c.send({ type: 'role', role: 'spectator', p1Name: p1.name, p2Name: p2.name, specCount: spectatorConns.length });
           }
         } else if (data && data.type === 'keys' && c === player2Conn) {
           remoteKeys = data.keys;
@@ -1564,10 +1462,7 @@ window.onload = function() {
           returnToLobby("상대 플레이어(2P)가 퇴장하여 대기화면으로 돌아왔습니다.");
         } else {
           var idx = spectatorConns.indexOf(c);
-          if (idx !== -1) {
-            spectatorConns.splice(idx, 1);
-            updateSpecBadge(spectatorConns.length);
-          }
+          if (idx !== -1) { spectatorConns.splice(idx, 1); updateSpecBadge(spectatorConns.length); }
         }
       });
     });
@@ -1578,11 +1473,8 @@ window.onload = function() {
 
     tempPeer.on('error', function(err) {
       if (err && err.type === 'unavailable-id') {
-        if (fixedCode) {
-          setTimeout(function() { if (isHostingRoom) tryCreateHostSlot(0, fixedCode); }, 1200);
-        } else {
-          tryCreateHostSlot(slotIndex + 1, null);
-        }
+        if (fixedCode) setTimeout(function() { if (isHostingRoom) tryCreateHostSlot(0, fixedCode); }, 1200);
+        else tryCreateHostSlot(slotIndex + 1, null);
       } else {
         lobbyStatus.innerText = "연결 대기 중...";
       }
@@ -1590,44 +1482,31 @@ window.onload = function() {
   }
 
   function scanOpenRooms() {
-    if (typeof Peer === 'undefined') {
-      lobbyStatus.innerText = "인터넷 연결이 필요합니다.";
-      return;
-    }
+    if (typeof Peer === 'undefined') { lobbyStatus.innerText = "인터넷 연결이 필요합니다."; return; }
     if (scanPeer) { try { scanPeer.destroy(); } catch (e) {} }
 
     roomListBox.innerHTML = '<div style="padding:16px; color:#bae6fd; font-size:0.8rem;">🔍 열려 있는 방을 찾는 중...</div>';
     lobbyStatus.innerText = "공개 방 목록을 조회하고 있습니다...";
 
-    var foundRooms = [];
-    var checkedCount = 0;
-    var sp = new Peer();
+    var foundRooms = [], checkedCount = 0, sp = new Peer();
     scanPeer = sp;
 
     sp.on('open', function() {
       for (var i = 0; i < LOBBY_SLOTS.length; i++) {
         (function(slotId) {
-          var c = sp.connect(slotId, { reliable: true });
-          var done = false;
+          var c = sp.connect(slotId, { reliable: true }), done = false;
           var finishOne = function() {
             if (done) return;
-            done = true;
-            checkedCount++;
+            done = true; checkedCount++;
             renderRoomList(foundRooms, checkedCount >= LOBBY_SLOTS.length);
           };
           c.on('open', function() { c.send({ type: 'probe' }); });
-          c.on('data', function(data) {
-            if (data && data.type === 'roomInfo') {
-              foundRooms.push(data);
-              finishOne();
-            }
-          });
+          c.on('data', function(data) { if (data && data.type === 'roomInfo') { foundRooms.push(data); finishOne(); } });
           c.on('error', finishOne);
           setTimeout(function() { try { c.close(); } catch (e) {} finishOne(); }, 1600);
         })(LOBBY_SLOTS[i]);
       }
     });
-
     sp.on('error', function() { renderRoomList(foundRooms, true); });
   }
 
@@ -1639,30 +1518,21 @@ window.onload = function() {
       }
       return;
     }
-
     roomListBox.innerHTML = "";
     for (var i = 0; i < rooms.length; i++) {
-      var r = rooms[i];
-      var item = document.createElement("div");
+      var r = rooms[i], item = document.createElement("div");
       item.className = "room-item";
       var isWaiting = (r.status === 'waiting');
-      var statusBadge = isWaiting
-        ? "대기중 (1/2명) · 바로 대전 가능"
-        : "대전중 (" + r.hostName + " vs " + r.p2Name + ") · 관전 " + r.specCount + "명";
-
+      var statusBadge = isWaiting ? "대기중 (1/2명) · 바로 대전 가능" : "대전중 (" + r.hostName + " vs " + r.p2Name + ") · 관전 " + r.specCount + "명";
       item.innerHTML =
         '<div class="room-item-info">' +
           '<div class="room-item-title">[' + (r.hostTier || '🥉 브론즈') + '] ' + r.hostName + '의 방</div>' +
           '<div class="room-item-sub">' + statusBadge + '</div>' +
         '</div>';
-
       var btn = document.createElement("button");
       btn.className = isWaiting ? "room-item-btn" : "room-item-btn spec";
       btn.innerText = isWaiting ? "대전 입장" : "👀 관람";
-      (function(targetRoomId) {
-        btn.onclick = function() { joinRoomById(targetRoomId); };
-      })(r.roomId);
-
+      (function(targetRoomId) { btn.onclick = function() { joinRoomById(targetRoomId); }; })(r.roomId);
       item.appendChild(btn);
       roomListBox.appendChild(item);
     }
@@ -1670,48 +1540,30 @@ window.onload = function() {
   }
 
   function joinRoomById(code) {
-    if (!code) {
-      lobbyStatus.innerText = "입장할 방을 선택하거나 코드를 입력하세요!";
-      return;
-    }
-    validateExpiredUnlocks();
+    if (!code) { lobbyStatus.innerText = "입장할 방을 선택하거나 코드를 입력하세요!"; return; }
+    validateUnlocks();
     isHostingRoom = false;
     try { sessionStorage.removeItem('cat_host_room'); } catch (e) {}
     if (scanPeer) { try { scanPeer.destroy(); } catch (e) {} scanPeer = null; }
     if (peer) { try { peer.destroy(); } catch (e) {} }
 
     var rInfo = getRankInfo(userState.wins, userState.losses);
-    var myNick = getMyNick(CAT_SKINS[userState.equippedCat].name.replace('(기본)', ''));
+    var myNick = getMyNick(CAT_SKINS[userState.equippedCat].name);
     lobbyStatus.innerText = "[" + code + "] 방에 접속 중...";
     peer = new Peer();
 
     peer.on('open', function() {
       conn = peer.connect(code);
       conn.on('open', function() {
-        conn.send({
-          type: 'hello',
-          nick: myNick,
-          tier: rInfo.tier,
-          catSkin: userState.equippedCat,
-          spikeSkin: userState.equippedSpike
-        });
-
+        conn.send({ type: 'hello', nick: myNick, tier: rInfo.tier, catSkin: userState.equippedCat, spikeSkin: userState.equippedSpike });
         conn.on('data', function(data) {
           if (data.type === 'role') {
-            p1.name = data.p1Name || '크림냥';
-            p1.tier = data.p1Tier || '🥉 브론즈';
-            p1.skin = data.p1Skin || 'cream';
-            ball.skin = data.ballSkin || 'classic';
+            p1.name = data.p1Name || '크림냥'; p1.tier = data.p1Tier || '🥉 브론즈'; p1.skin = data.p1Skin || 'cream'; ball.skin = data.ballSkin || 'classic';
             if (data.role === 'guest') {
-              p2.name = myNick;
-              p2.tier = rInfo.tier;
-              p2.skin = userState.equippedCat;
-              startMatch('guest');
+              p2.name = myNick; p2.tier = rInfo.tier; p2.skin = userState.equippedCat; startMatch('guest');
             } else {
-              p2.name = data.p2Name || '그레이냥';
-              updateSpecBadge(data.specCount || 1);
-              document.getElementById("spectatorInfo").innerText =
-                "[" + p1.name + "] vs [" + p2.name + "] 실시간 대전을 관람 중입니다!";
+              p2.name = data.p2Name || '그레이냥'; updateSpecBadge(data.specCount || 1);
+              document.getElementById("spectatorInfo").innerText = "[" + p1.name + "] vs [" + p2.name + "] 실시간 대전을 관람 중입니다!";
               startMatch('spectator');
             }
           } else if (data.type === 'state') {
@@ -1726,37 +1578,23 @@ window.onload = function() {
             if (data.s1 !== prevScore1) SoundEngine.playScore(netMode !== 'guest');
             if (data.s2 !== prevScore2) SoundEngine.playScore(netMode === 'guest');
 
-            prevHit1 = data.p1.ht;
-            prevHit2 = data.p2.ht;
-            prevScore1 = data.s1;
-            prevScore2 = data.s2;
+            prevHit1 = data.p1.ht; prevHit2 = data.p2.ht; prevScore1 = data.s1; prevScore2 = data.s2;
 
             p1.x = data.p1.x; p1.y = data.p1.y; p1.vx = data.p1.vx; p1.hitTimer = data.p1.ht; p1.squash = data.p1.sq; p1.name = data.p1.nm; p1.tier = data.p1.tr; p1.skin = data.p1.sk;
             p2.x = data.p2.x; p2.y = data.p2.y; p2.vx = data.p2.vx; p2.hitTimer = data.p2.ht; p2.squash = data.p2.sq; p2.name = data.p2.nm; p2.tier = data.p2.tr; p2.skin = data.p2.sk;
             ball.x = data.b.x; ball.y = data.b.y; ball.spikeType = data.b.st; ball.skin = data.b.sk;
-            score1 = data.s1; score2 = data.s2;
-            gameOver = data.go; winnerText = data.wt;
-            if (gameOver && !matchRecorded && netMode === 'guest') {
-              matchRecorded = true;
-              recordMatchResult(score2 >= 15);
-            }
+            score1 = data.s1; score2 = data.s2; gameOver = data.go; winnerText = data.wt;
+            if (gameOver && !matchRecorded && netMode === 'guest') { matchRecorded = true; recordMatchResult(score2 >= 15); }
             if (typeof data.wtm === 'number') worldTime = data.wtm;
             updateSpecBadge(data.sc || 0);
           } else if (data.type === 'reset') {
-            gameOver = false; matchRecorded = false; particles = [];
-            prevScore1 = 0; prevScore2 = 0;
+            gameOver = false; matchRecorded = false; particles = []; prevScore1 = 0; prevScore2 = 0;
           }
         });
       });
-
-      conn.on('close', function() {
-        returnToLobby("방장과의 연결이 종료되었습니다.");
-      });
+      conn.on('close', function() { returnToLobby("방장과의 연결이 종료되었습니다."); });
     });
-
-    peer.on('error', function() {
-      lobbyStatus.innerText = "방을 찾을 수 없습니다. 새로고침 후 다시 시도해 주세요.";
-    });
+    peer.on('error', function() { lobbyStatus.innerText = "방을 찾을 수 없습니다. 새로고침 후 다시 시도해 주세요."; });
   }
 
   document.addEventListener("visibilitychange", function() {
@@ -1773,14 +1611,14 @@ window.onload = function() {
 
   // --- 7. 로비 버튼 이벤트 ---
   document.getElementById("btnOpenSkins").onclick = function() {
-    renderSkinPanel();
+    renderSkinPanel(CAT_SKINS[userState.equippedCat], "cat_" + userState.equippedCat);
     mainMenuBox.style.display = 'none';
     skinPanel.style.display = 'flex';
-    lobbyStatus.innerText = "고양이 버튼을 터치해 각 고양이의 개성 있는 울음소리를 비교해 보세요!";
+    lobbyStatus.innerText = "랭크를 올리고 광고로 24시간 스킨을 해금해 보세요!";
   };
 
   document.getElementById("btnCloseSkins").onclick = function() {
-    validateExpiredUnlocks();
+    validateUnlocks();
     p1.skin = userState.equippedCat;
     ball.skin = userState.equippedBall;
     skinPanel.style.display = 'none';
@@ -1789,9 +1627,7 @@ window.onload = function() {
   };
 
   function openRankBoard() {
-    mainMenuBox.style.display = 'none';
-    skinPanel.style.display = 'none';
-    listPanel.style.display = 'none';
+    mainMenuBox.style.display = 'none'; skinPanel.style.display = 'none'; listPanel.style.display = 'none';
     rankPanel.style.display = 'flex';
     fetchGlobalTop10();
   }
@@ -1799,54 +1635,36 @@ window.onload = function() {
   document.getElementById("rankSummaryBadge").onclick = openRankBoard;
   document.getElementById("btnRefreshRank").onclick = fetchGlobalTop10;
   document.getElementById("btnCloseRank").onclick = function() {
-    rankPanel.style.display = 'none';
-    mainMenuBox.style.display = 'flex';
+    rankPanel.style.display = 'none'; mainMenuBox.style.display = 'flex';
     lobbyStatus.innerText = "닉네임과 스킨을 고르고 게임을 시작하세요!";
   };
 
   document.getElementById("btnStartAI").onclick = function() {
-    validateExpiredUnlocks();
+    validateUnlocks();
     isHostingRoom = false;
     try { sessionStorage.removeItem('cat_host_room'); } catch (e) {}
     var rInfo = getRankInfo(userState.wins, userState.losses);
-    p1.name = getMyNick(CAT_SKINS[userState.equippedCat].name.replace('(기본)', ''));
-    p1.tier = rInfo.tier;
-    p1.skin = userState.equippedCat;
-    p1.spikeSkin = userState.equippedSpike;
-
-    p2.name = '그레이냥(AI)';
-    p2.tier = '🤖 AI';
-    p2.skin = (userState.equippedCat === 'gray') ? 'cream' : 'gray';
-    p2.spikeSkin = 'wind';
-
+    p1.name = getMyNick(CAT_SKINS[userState.equippedCat].name);
+    p1.tier = rInfo.tier; p1.skin = userState.equippedCat; p1.spikeSkin = userState.equippedSpike;
+    p2.name = '그레이냥(AI)'; p2.tier = '🤖 AI'; p2.skin = (userState.equippedCat === 'gray') ? 'cream' : 'gray'; p2.spikeSkin = 'wind';
     ball.skin = userState.equippedBall;
     SoundEngine.playCatMeow(p1.skin, false);
     startMatch('ai');
   };
 
   document.getElementById("btnCreateRoom").onclick = function() { tryCreateHostSlot(0, null); };
-
-  document.getElementById("btnOpenRoomList").onclick = function() {
-    mainMenuBox.style.display = 'none';
-    listPanel.style.display = 'flex';
-    scanOpenRooms();
-  };
-
+  document.getElementById("btnOpenRoomList").onclick = function() { mainMenuBox.style.display = 'none'; listPanel.style.display = 'flex'; scanOpenRooms(); };
   document.getElementById("btnRefreshList").onclick = function() { scanOpenRooms(); };
-
   document.getElementById("btnBackMain").onclick = function() {
     if (scanPeer) { try { scanPeer.destroy(); } catch (e) {} scanPeer = null; }
-    listPanel.style.display = 'none';
-    mainMenuBox.style.display = 'flex';
+    listPanel.style.display = 'none'; mainMenuBox.style.display = 'flex';
     lobbyStatus.innerText = "닉네임과 스킨을 고르고 게임을 시작하세요!";
   };
-
   document.getElementById("btnJoinDirect").onclick = function() {
     var code = document.getElementById("roomCodeInput").value.trim().toUpperCase();
     if (/^[1-9]$|^10$/.test(code)) code = "CAT-ROOM-" + code;
     joinRoomById(code);
   };
-
   document.getElementById("btnCopyCode").onclick = function() { copyTextSafe(myRoomId); };
   document.getElementById("roomCodeDisplay").onclick = function() { copyTextSafe(myRoomId); };
   document.getElementById("btnCancelRoom").onclick = function() { returnToLobby("방 만들기를 취소했습니다."); };
@@ -1866,32 +1684,21 @@ window.onload = function() {
     if (gameState === 'playing' && gameOver && (netMode === 'ai' || netMode === 'host')) resetGame();
   });
 
-  var dpadArea = document.getElementById("dpadArea");
-  var btnLeft = document.getElementById("btnLeft");
-  var btnRight = document.getElementById("btnRight");
+  var dpadArea = document.getElementById("dpadArea"), btnLeft = document.getElementById("btnLeft"), btnRight = document.getElementById("btnRight");
 
   function handleDpad(e) {
-    e.preventDefault();
-    SoundEngine.unlockAndStart();
+    e.preventDefault(); SoundEngine.unlockAndStart();
     if (gameState !== 'playing' || netMode === 'spectator') return;
     if (gameOver && (netMode === 'ai' || netMode === 'host')) { resetGame(); return; }
-    var rect = dpadArea.getBoundingClientRect();
-    var midX = rect.left + rect.width / 2;
-    var leftActive = false;
-    var rightActive = false;
-
+    var rect = dpadArea.getBoundingClientRect(), midX = rect.left + rect.width / 2, leftActive = false, rightActive = false;
     for (var i = 0; i < e.touches.length; i++) {
-      var tx = e.touches[i].clientX;
-      var ty = e.touches[i].clientY;
+      var tx = e.touches[i].clientX, ty = e.touches[i].clientY;
       if (tx >= rect.left - 20 && tx <= rect.right + 20 && ty >= rect.top - 20 && ty <= rect.bottom + 20) {
-        if (tx < midX) leftActive = true;
-        else rightActive = true;
+        if (tx < midX) leftActive = true; else rightActive = true;
       }
     }
-    keys['ArrowLeft'] = leftActive;
-    keys['ArrowRight'] = rightActive;
-    btnLeft.classList.toggle('active', leftActive);
-    btnRight.classList.toggle('active', rightActive);
+    keys['ArrowLeft'] = leftActive; keys['ArrowRight'] = rightActive;
+    btnLeft.classList.toggle('active', leftActive); btnRight.classList.toggle('active', rightActive);
   }
 
   dpadArea.addEventListener('touchstart', handleDpad, { passive: false });
@@ -1902,50 +1709,31 @@ window.onload = function() {
   function bindBtn(id, code) {
     var btn = document.getElementById(id);
     var down = function(e) {
-      e.preventDefault();
-      SoundEngine.unlockAndStart();
+      e.preventDefault(); SoundEngine.unlockAndStart();
       if (gameState !== 'playing' || netMode === 'spectator') return;
       if (gameOver && (netMode === 'ai' || netMode === 'host')) { resetGame(); return; }
-      keys[code] = true;
-      btn.classList.add('active');
+      keys[code] = true; btn.classList.add('active');
     };
     var up = function(e) { e.preventDefault(); keys[code] = false; btn.classList.remove('active'); };
-    btn.addEventListener('touchstart', down, {passive: false});
-    btn.addEventListener('touchend', up, {passive: false});
-    btn.addEventListener('touchcancel', up, {passive: false});
-    btn.addEventListener('mousedown', down);
-    btn.addEventListener('mouseup', up);
-    btn.addEventListener('mouseleave', up);
+    btn.addEventListener('touchstart', down, {passive: false}); btn.addEventListener('touchend', up, {passive: false});
+    btn.addEventListener('touchcancel', up, {passive: false}); btn.addEventListener('mousedown', down);
+    btn.addEventListener('mouseup', up); btn.addEventListener('mouseleave', up);
   }
-  bindBtn('btnLeft', 'ArrowLeft');
-  bindBtn('btnRight', 'ArrowRight');
-  bindBtn('btnJump', 'ArrowUp');
-  bindBtn('btnSpike', 'Space');
+  bindBtn('btnLeft', 'ArrowLeft'); bindBtn('btnRight', 'ArrowRight'); bindBtn('btnJump', 'ArrowUp'); bindBtn('btnSpike', 'Space');
 
-  // --- 9. 게임 물리 및 스파이크 이펙트 업데이트 (초보자용 체공 시간 증가) ---
+  // --- 9. 게임 물리 및 스파이크 이펙트 업데이트 ---
   function update(dt) {
     updateEnvironment(dt);
 
     if (gameState !== 'playing') {
-      p1.skin = userState.equippedCat;
-      ball.skin = userState.equippedBall;
+      p1.skin = userState.equippedCat; ball.skin = userState.equippedBall;
       return;
     }
 
     if (netMode === 'guest' || netMode === 'spectator') {
       if (netMode === 'guest' && conn && conn.open) {
-        if ((keys["ArrowUp"] || keys["KeyW"]) && p2.y >= 338) {
-          SoundEngine.playCatMeow(p2.skin, true);
-        }
-        conn.send({
-          type: 'keys',
-          keys: {
-            L: !!(keys["ArrowLeft"] || keys["KeyA"]),
-            R: !!(keys["ArrowRight"] || keys["KeyD"]),
-            U: !!(keys["ArrowUp"] || keys["KeyW"]),
-            S: !!keys["Space"]
-          }
-        });
+        if ((keys["ArrowUp"] || keys["KeyW"]) && p2.y >= 338) SoundEngine.playCatMeow(p2.skin, true);
+        conn.send({ type: 'keys', keys: { L: !!(keys["ArrowLeft"] || keys["KeyA"]), R: !!(keys["ArrowRight"] || keys["KeyD"]), U: !!(keys["ArrowUp"] || keys["KeyW"]), S: !!keys["Space"] } });
       }
       updateParticles(dt);
       return;
@@ -1969,16 +1757,11 @@ window.onload = function() {
     }
 
     if ((keys["ArrowUp"] || keys["KeyW"]) && p1.y >= 340) {
-      p1.vy = -10.8;
-      p1.squash = 1.22;
-      SoundEngine.playCatMeow(p1.skin, true);
+      p1.vy = -10.8; p1.squash = 1.22; SoundEngine.playCatMeow(p1.skin, true);
     }
 
     var wasAir1 = p1.y < 340;
-    p1.vy += mul(0.36, dt);
-    p1.x += mul(p1.vx, dt);
-    p1.y += mul(p1.vy, dt);
-
+    p1.vy += mul(0.36, dt); p1.x += mul(p1.vx, dt); p1.y += mul(p1.vy, dt);
     if (p1.y >= 340) { p1.y = 340; if (wasAir1) p1.squash = 0.82; p1.vy = 0; }
     p1.squash += mul(1 - p1.squash, 0.2) * dt;
     if (p1.x < p1.r + 6) { p1.x = p1.r + 6; p1.vx = 0; }
@@ -1986,8 +1769,7 @@ window.onload = function() {
 
     if (netMode === 'host') {
       var p2Dir = 0;
-      if (remoteKeys.L) p2Dir -= 1;
-      if (remoteKeys.R) p2Dir += 1;
+      if (remoteKeys.L) p2Dir -= 1; if (remoteKeys.R) p2Dir += 1;
       if (p2Dir !== 0) {
         p2.vx += mul(p2Dir, 1.4) * dt;
         if (p2.vx > p2.maxSpeed) p2.vx = p2.maxSpeed;
@@ -1996,15 +1778,9 @@ window.onload = function() {
         p2.vx = mul(p2.vx, Math.pow(0.76, dt));
         if (Math.abs(p2.vx) < 0.15) p2.vx = 0;
       }
-      if (remoteKeys.U && p2.y >= 340) {
-        p2.vy = -10.8;
-        p2.squash = 1.22;
-        SoundEngine.playCatMeow(p2.skin, true);
-      }
+      if (remoteKeys.U && p2.y >= 340) { p2.vy = -10.8; p2.squash = 1.22; SoundEngine.playCatMeow(p2.skin, true); }
     } else {
-      var aiMax = 4.2;
-      var targetX = ball.x > 400 ? ball.x + 10 : 650;
-      var diffX = targetX - p2.x;
+      var aiMax = 4.2, targetX = ball.x > 400 ? ball.x + 10 : 650, diffX = targetX - p2.x;
       if (Math.abs(diffX) > 6) {
         var aiDir = diffX > 0 ? 1 : -1;
         p2.vx += mul(aiDir, 1.0) * dt;
@@ -2014,23 +1790,17 @@ window.onload = function() {
         p2.vx = mul(p2.vx, Math.pow(0.78, dt));
       }
       if (ball.x > 400 && ball.y < 250 && ball.vy > 0 && p2.y >= 340 && Math.abs(p2.x - ball.x) < 70) {
-        p2.vy = -10.5;
-        p2.squash = 1.22;
-        SoundEngine.playCatMeow(p2.skin, true);
+        p2.vy = -10.5; p2.squash = 1.22; SoundEngine.playCatMeow(p2.skin, true);
       }
     }
 
     var wasAir2 = p2.y < 340;
-    p2.vy += mul(0.36, dt);
-    p2.x += mul(p2.vx, dt);
-    p2.y += mul(p2.vy, dt);
-
+    p2.vy += mul(0.36, dt); p2.x += mul(p2.vx, dt); p2.y += mul(p2.vy, dt);
     if (p2.y >= 340) { p2.y = 340; if (wasAir2) p2.squash = 0.82; p2.vy = 0; }
     p2.squash += mul(1 - p2.squash, 0.2) * dt;
     if (p2.x < 410 + p2.r) { p2.x = 410 + p2.r; p2.vx = 0; }
     if (p2.x > 800 - p2.r - 6) { p2.x = 800 - p2.r - 6; p2.vx = 0; }
 
-    // 초보자용 체공 시간 증가: 중력 가속도를 낮춰 공중에 더 오래 머물게 함
     ball.vy += mul(0.115, dt);
     ball.x += mul(ball.vx, dt);
     ball.y += mul(ball.vy, dt);
@@ -2052,25 +1822,17 @@ window.onload = function() {
 
     if (ball.y > 430) {
       if (ball.x < 400) {
-        score2++;
-        SoundEngine.playScore(false);
+        score2++; SoundEngine.playScore(false);
         if (score2 >= 15) {
-          gameOver = true;
-          winnerText = "🎉 " + p2.name + " 승리! (터치해 재시작)";
+          gameOver = true; winnerText = "🎉 " + p2.name + " 승리! (터치해 재시작)";
           if (!matchRecorded) { matchRecorded = true; recordMatchResult(false); }
-        } else {
-          ball.x = 580; ball.y = 140; ball.vx = -1.3; ball.vy = -1.8; ball.spikeType = 'none'; particles = [];
-        }
+        } else { ball.x = 580; ball.y = 140; ball.vx = -1.3; ball.vy = -1.8; ball.spikeType = 'none'; particles = []; }
       } else {
-        score1++;
-        SoundEngine.playScore(true);
+        score1++; SoundEngine.playScore(true);
         if (score1 >= 15) {
-          gameOver = true;
-          winnerText = "🎉 " + p1.name + " 승리! (터치해 재시작)";
+          gameOver = true; winnerText = "🎉 " + p1.name + " 승리! (터치해 재시작)";
           if (!matchRecorded) { matchRecorded = true; recordMatchResult(true); }
-        } else {
-          ball.x = 220; ball.y = 140; ball.vx = 1.3; ball.vy = -1.8; ball.spikeType = 'none'; particles = [];
-        }
+        } else { ball.x = 220; ball.y = 140; ball.vx = 1.3; ball.vy = -1.8; ball.spikeType = 'none'; particles = []; }
       }
     }
 
@@ -2081,69 +1843,40 @@ window.onload = function() {
         p2: { x: p2.x, y: p2.y, vx: p2.vx, ht: p2.hitTimer, sq: p2.squash, nm: p2.name, tr: p2.tier, sk: p2.skin },
         b: { x: ball.x, y: ball.y, st: ball.spikeType, sk: ball.skin },
         s1: score1, s2: score2, go: gameOver, wt: winnerText,
-        sc: spectatorConns.length,
-        wtm: worldTime
+        sc: spectatorConns.length, wtm: worldTime
       });
     }
   }
 
   function updateParticles(dt) {
     if (ball.spikeType !== 'none' && particles.length < 40) {
-      var pColor = '#ffffff';
-      var pKind = 'circle';
-      var pSize = mul(Math.random(), 6) + 4;
-
-      if (ball.spikeType === 'wind') {
-        pColor = Math.random() > 0.4 ? 'rgba(255,255,255,0.85)' : 'rgba(186,230,253,0.85)';
-        pKind = 'wind';
-        pSize = mul(Math.random(), 5) + 5;
-      } else if (ball.spikeType === 'meteor') {
-        pColor = Math.random() > 0.45 ? '#f97316' : '#facc15';
-        pKind = 'circle';
-        pSize = mul(Math.random(), 8) + 4;
-      } else if (ball.spikeType === 'lightning') {
-        pColor = Math.random() > 0.4 ? '#38bdf8' : '#fef08a';
-        pKind = 'bolt';
-      } else if (ball.spikeType === 'ice') {
-        pColor = Math.random() > 0.4 ? '#bae6fd' : '#ffffff';
-        pKind = 'crystal';
-      } else if (ball.spikeType === 'sakura') {
-        pColor = Math.random() > 0.4 ? '#f9a8d4' : '#fbcfe8';
-        pKind = 'petal';
-      } else if (ball.spikeType === 'blackhole') {
-        pColor = Math.random() > 0.4 ? '#a855f7' : '#312e81';
-        pKind = 'void';
-      }
+      var pColor = '#ffffff', pKind = 'circle', pSize = mul(Math.random(), 6) + 4;
+      if (ball.spikeType === 'wind') { pColor = Math.random() > 0.4 ? 'rgba(255,255,255,0.85)' : 'rgba(186,230,253,0.85)'; pKind = 'wind'; pSize = mul(Math.random(), 5) + 5; }
+      else if (ball.spikeType === 'meteor') { pColor = Math.random() > 0.45 ? '#f97316' : '#facc15'; pKind = 'circle'; pSize = mul(Math.random(), 8) + 4; }
+      else if (ball.spikeType === 'lightning') { pColor = Math.random() > 0.4 ? '#38bdf8' : '#fef08a'; pKind = 'bolt'; }
+      else if (ball.spikeType === 'ice') { pColor = Math.random() > 0.4 ? '#bae6fd' : '#ffffff'; pKind = 'crystal'; }
+      else if (ball.spikeType === 'sakura') { pColor = Math.random() > 0.4 ? '#f9a8d4' : '#fbcfe8'; pKind = 'petal'; }
+      else if (ball.spikeType === 'blackhole') { pColor = Math.random() > 0.4 ? '#a855f7' : '#312e81'; pKind = 'void'; }
 
       particles.push({
-        x: ball.x + mul(Math.random() - 0.5, 20),
-        y: ball.y + mul(Math.random() - 0.5, 20),
-        vx: mul(Math.random() - 0.5, 2.8) - mul(ball.vx, 0.22),
-        vy: mul(Math.random() - 0.5, 2.8) - mul(ball.vy, 0.22),
-        size: pSize,
-        color: pColor,
-        kind: pKind,
-        life: 20
+        x: ball.x + mul(Math.random() - 0.5, 20), y: ball.y + mul(Math.random() - 0.5, 20),
+        vx: mul(Math.random() - 0.5, 2.8) - mul(ball.vx, 0.22), vy: mul(Math.random() - 0.5, 2.8) - mul(ball.vy, 0.22),
+        size: pSize, color: pColor, kind: pKind, life: 20
       });
     }
     for (var i = particles.length - 1; i >= 0; i--) {
       var pt = particles[i];
-      pt.x += mul(pt.vx, dt);
-      pt.y += mul(pt.vy, dt);
-      pt.life -= dt;
+      pt.x += mul(pt.vx, dt); pt.y += mul(pt.vy, dt); pt.life -= dt;
       if (pt.life <= 0) particles.splice(i, 1);
     }
   }
 
   function hitBall(p, isSpike) {
-    var dx = ball.x - p.x, dy = ball.y - p.y;
-    var dist = Math.hypot(dx, dy);
+    var dx = ball.x - p.x, dy = ball.y - p.y, dist = Math.hypot(dx, dy);
     if (dist < ball.r + p.r + 6 && dist > 0) {
       var overlap = (ball.r + p.r + 6) - dist;
-      ball.x += mul(dx / dist, overlap);
-      ball.y += mul(dy / dist, overlap);
-      p.hitTimer = 18;
-      p.squash = 1.15;
+      ball.x += mul(dx / dist, overlap); ball.y += mul(dy / dist, overlap);
+      p.hitTimer = 18; p.squash = 1.15;
       var angle = Math.atan2(dy, dx);
       SoundEngine.playCatMeow(p.skin, false);
       if (isSpike) {
@@ -2175,78 +1908,49 @@ window.onload = function() {
   }
 
   function drawChar(p) {
-    var sk = CAT_SKINS[p.skin] || CAT_SKINS.cream;
-    var isSimple = sk.simple;
+    var sk = CAT_SKINS[p.skin] || CAT_SKINS.cream, isSimple = sk.simple;
 
     ctx.save();
     var labelStr = p.tier ? (p.tier + " " + p.name) : p.name;
     ctx.font = 'bold 12px sans-serif';
     var nameWidth = ctx.measureText(labelStr).width + 14;
     ctx.fillStyle = 'rgba(15, 23, 42, 0.8)';
-    ctx.beginPath();
-    ctx.roundRect(p.x - nameWidth / 2, p.y - 72, nameWidth, 21, 8);
-    ctx.fill();
+    ctx.beginPath(); ctx.roundRect(p.x - nameWidth / 2, p.y - 72, nameWidth, 21, 8); ctx.fill();
     ctx.fillStyle = p.side === 1 ? '#fde047' : '#e0f2fe';
-    ctx.textAlign = 'center';
-    ctx.fillText(labelStr, p.x, p.y - 57);
+    ctx.textAlign = 'center'; ctx.fillText(labelStr, p.x, p.y - 57);
     ctx.restore();
 
     ctx.save();
-    ctx.translate(p.x, p.y + 32);
-    ctx.scale(2 - p.squash, p.squash);
-    ctx.translate(0, -32);
+    ctx.translate(p.x, p.y + 32); ctx.scale(2 - p.squash, p.squash); ctx.translate(0, -32);
 
-    var dir = p.side === 1 ? 1 : -1;
-    var speedRatio = Math.abs(p.vx) / p.maxSpeed;
-    var time = performance.now();
+    var dir = p.side === 1 ? 1 : -1, speedRatio = Math.abs(p.vx) / p.maxSpeed, time = performance.now();
 
     var tailWag = mul(Math.sin(mul(time, 0.008)), 6);
-    ctx.lineCap = 'round';
-    ctx.strokeStyle = '#0f172a';
-    ctx.lineWidth = isSimple ? 8 : 10;
-    ctx.beginPath();
-    ctx.moveTo(mul(-dir, 12), 17);
-    ctx.quadraticCurveTo(mul(-dir, 36), 2 + tailWag, mul(-dir, 28), -18 + tailWag);
-    ctx.stroke();
+    ctx.lineCap = 'round'; ctx.strokeStyle = '#0f172a'; ctx.lineWidth = isSimple ? 8 : 10;
+    ctx.beginPath(); ctx.moveTo(mul(-dir, 12), 17); ctx.quadraticCurveTo(mul(-dir, 36), 2 + tailWag, mul(-dir, 28), -18 + tailWag); ctx.stroke();
 
     ctx.strokeStyle = (sk.id === 'persian') ? '#bae6fd' : (sk.id === 'siamese' ? '#4e342e' : sk.color);
-    ctx.lineWidth = isSimple ? 4.5 : 6;
-    ctx.stroke();
+    ctx.lineWidth = isSimple ? 4.5 : 6; ctx.stroke();
 
     if (sk.id === 'persian' || sk.id === 'calico') {
       ctx.fillStyle = sk.id === 'persian' ? '#0f172a' : '#ea580c';
-      ctx.beginPath();
-      ctx.arc(mul(-dir, 28), -18 + tailWag, 4.5, 0, TAU);
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(mul(-dir, 28), -18 + tailWag, 4.5, 0, TAU); ctx.fill();
     }
 
     ctx.fillStyle = sk.color;
-    ctx.beginPath();
-    ctx.ellipse(0, 17, 16, 13, 0, 0, TAU);
-    ctx.fill();
-    ctx.lineWidth = 2.5;
-    ctx.strokeStyle = '#0f172a';
-    ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(0, 17, 16, 13, 0, 0, TAU); ctx.fill();
+    ctx.lineWidth = 2.5; ctx.strokeStyle = '#0f172a'; ctx.stroke();
 
     if (!isSimple) {
-      if (sk.id === 'persian') {
-        ctx.fillStyle = '#bae6fd';
-        ctx.beginPath(); ctx.ellipse(mul(-dir, 4), 19, 10, 8, 0, 0, TAU); ctx.fill();
-      } else if (sk.id === 'calico') {
-        ctx.fillStyle = '#1e293b';
-        ctx.beginPath(); ctx.arc(mul(-dir, 6), 16, 6, 0, TAU); ctx.fill();
-      }
+      if (sk.id === 'persian') { ctx.fillStyle = '#bae6fd'; ctx.beginPath(); ctx.ellipse(mul(-dir, 4), 19, 10, 8, 0, 0, TAU); ctx.fill(); }
+      else if (sk.id === 'calico') { ctx.fillStyle = '#1e293b'; ctx.beginPath(); ctx.arc(mul(-dir, 6), 16, 6, 0, TAU); ctx.fill(); }
       ctx.fillStyle = sk.stripe;
-      ctx.beginPath();
-      ctx.roundRect(mul(dir, 3), 12, 3.8, 8.5, 2);
-      ctx.roundRect(mul(dir, 8.5), 14, 3.8, 6.5, 2);
-      ctx.fill();
+      ctx.beginPath(); ctx.roundRect(mul(dir, 3), 12, 3.8, 8.5, 2); ctx.roundRect(mul(dir, 8.5), 14, 3.8, 6.5, 2); ctx.fill();
     }
 
     var paw = mul(Math.sin(mul(time, 0.022)), mul(4.2, speedRatio));
     ctx.fillStyle = (sk.id === 'persian' || sk.id === 'siamese') ? '#3e2723' : '#ffffff';
-    ctx.strokeStyle = '#0f172a';
-    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.arc(-8, 28 + paw, 5, 0, TAU); ctx.fill(); ctx.stroke();
     ctx.beginPath(); ctx.arc(8, 28 - paw, 5, 0, TAU); ctx.fill(); ctx.stroke();
 
@@ -2254,322 +1958,175 @@ window.onload = function() {
     var rightEarColor = (sk.id === 'persian') ? '#334155' : (sk.id === 'siamese' ? '#4e342e' : (sk.id === 'calico' ? '#1e293b' : sk.color));
 
     if (isSimple) {
-      ctx.fillStyle = sk.color;
-      ctx.strokeStyle = '#0f172a';
-      ctx.lineWidth = 2.4;
+      ctx.fillStyle = sk.color; ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 2.4;
       ctx.beginPath(); ctx.moveTo(-21, -12); ctx.lineTo(-18, -34); ctx.lineTo(-6, -22); ctx.closePath(); ctx.fill(); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(21, -12); ctx.lineTo(18, -34); ctx.lineTo(6, -22); ctx.closePath(); ctx.fill(); ctx.stroke();
     } else {
-      ctx.fillStyle = leftEarColor;
-      ctx.strokeStyle = '#0f172a';
-      ctx.lineWidth = 2.4;
-      ctx.beginPath();
-      ctx.moveTo(-23, -10); ctx.quadraticCurveTo(-26, -34, -20, -36); ctx.quadraticCurveTo(-13, -37, -7, -21); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = leftEarColor; ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 2.4;
+      ctx.beginPath(); ctx.moveTo(-23, -10); ctx.quadraticCurveTo(-26, -34, -20, -36); ctx.quadraticCurveTo(-13, -37, -7, -21); ctx.closePath(); ctx.fill(); ctx.stroke();
       ctx.fillStyle = sk.earInner;
-      ctx.beginPath();
-      ctx.moveTo(-20, -14); ctx.quadraticCurveTo(-22, -29, -18.5, -31); ctx.quadraticCurveTo(-15, -31, -11, -20); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(-20, -14); ctx.quadraticCurveTo(-22, -29, -18.5, -31); ctx.quadraticCurveTo(-15, -31, -11, -20); ctx.closePath(); ctx.fill();
 
       ctx.fillStyle = rightEarColor;
-      ctx.beginPath();
-      ctx.moveTo(23, -10); ctx.quadraticCurveTo(26, -34, 20, -36); ctx.quadraticCurveTo(13, -37, 7, -21); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(23, -10); ctx.quadraticCurveTo(26, -34, 20, -36); ctx.quadraticCurveTo(13, -37, 7, -21); ctx.closePath(); ctx.fill(); ctx.stroke();
       ctx.fillStyle = sk.earInner;
-      ctx.beginPath();
-      ctx.moveTo(20, -14); ctx.quadraticCurveTo(22, -29, 18.5, -31); ctx.quadraticCurveTo(15, -31, 11, -20); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(20, -14); ctx.quadraticCurveTo(22, -29, 18.5, -31); ctx.quadraticCurveTo(15, -31, 11, -20); ctx.closePath(); ctx.fill();
     }
 
-    ctx.fillStyle = sk.color;
-    traceCatHeadPath(isSimple);
-    ctx.fill();
+    ctx.fillStyle = sk.color; traceCatHeadPath(isSimple); ctx.fill();
 
     if (!isSimple) {
-      ctx.save();
-      traceCatHeadPath(false);
-      ctx.clip();
-
+      ctx.save(); traceCatHeadPath(false); ctx.clip();
       if (sk.id === 'persian') {
-        ctx.fillStyle = '#bae6fd';
-        ctx.beginPath(); ctx.ellipse(0, -17, 27, 13, 0, 0, TAU); ctx.fill();
-        ctx.fillStyle = '#e0f2fe';
-        ctx.beginPath(); ctx.arc(-22, 6, 10, 0, TAU); ctx.arc(22, 6, 10, 0, TAU); ctx.fill();
+        ctx.fillStyle = '#bae6fd'; ctx.beginPath(); ctx.ellipse(0, -17, 27, 13, 0, 0, TAU); ctx.fill();
+        ctx.fillStyle = '#e0f2fe'; ctx.beginPath(); ctx.arc(-22, 6, 10, 0, TAU); ctx.arc(22, 6, 10, 0, TAU); ctx.fill();
       } else if (sk.id === 'calico') {
-        ctx.fillStyle = '#ea580c';
-        ctx.beginPath(); ctx.arc(-18, -14, 15, 0, TAU); ctx.fill();
-        ctx.fillStyle = '#1e293b';
-        ctx.beginPath(); ctx.arc(20, -12, 14, 0, TAU); ctx.fill();
+        ctx.fillStyle = '#ea580c'; ctx.beginPath(); ctx.arc(-18, -14, 15, 0, TAU); ctx.fill();
+        ctx.fillStyle = '#1e293b'; ctx.beginPath(); ctx.arc(20, -12, 14, 0, TAU); ctx.fill();
       } else if (sk.id === 'siamese') {
-        ctx.fillStyle = '#5d4037';
-        ctx.beginPath(); ctx.ellipse(dir * 2, 3, 15, 11, 0, 0, TAU); ctx.fill();
+        ctx.fillStyle = '#5d4037'; ctx.beginPath(); ctx.ellipse(dir * 2, 3, 15, 11, 0, 0, TAU); ctx.fill();
       } else {
-        ctx.fillStyle = sk.light;
-        ctx.beginPath(); ctx.ellipse(-6, -15, 13, 6, -0.25, 0, TAU); ctx.fill();
+        ctx.fillStyle = sk.light; ctx.beginPath(); ctx.ellipse(-6, -15, 13, 6, -0.25, 0, TAU); ctx.fill();
       }
-
       if (sk.id !== 'siamese') {
         ctx.fillStyle = sk.stripe;
         ctx.beginPath();
-        ctx.roundRect(-7, -26, 2.8, 9, 1.5);
-        ctx.roundRect(-1.4, -26, 2.8, 11, 1.5);
-        ctx.roundRect(4.2, -26, 2.8, 9, 1.5);
-        ctx.roundRect(-30, -1, 8.5, 2.5, 1.2);
-        ctx.roundRect(-30, 3.5, 7.5, 2.5, 1.2);
-        ctx.roundRect(21.5, -1, 8.5, 2.5, 1.2);
-        ctx.roundRect(22.5, 3.5, 7.5, 2.5, 1.2);
+        ctx.roundRect(-7, -26, 2.8, 9, 1.5); ctx.roundRect(-1.4, -26, 2.8, 11, 1.5); ctx.roundRect(4.2, -26, 2.8, 9, 1.5);
+        ctx.roundRect(-30, -1, 8.5, 2.5, 1.2); ctx.roundRect(-30, 3.5, 7.5, 2.5, 1.2);
+        ctx.roundRect(21.5, -1, 8.5, 2.5, 1.2); ctx.roundRect(22.5, 3.5, 7.5, 2.5, 1.2);
         ctx.fill();
       }
       ctx.restore();
     }
 
-    ctx.lineWidth = 2.6;
-    ctx.strokeStyle = '#0f172a';
-    traceCatHeadPath(isSimple);
-    ctx.stroke();
+    ctx.lineWidth = 2.6; ctx.strokeStyle = '#0f172a'; traceCatHeadPath(isSimple); ctx.stroke();
 
     if (sk.id === 'gold') {
-      ctx.fillStyle = '#fef08a';
-      ctx.strokeStyle = '#854d0e';
-      ctx.lineWidth = 1.6;
+      ctx.fillStyle = '#fef08a'; ctx.strokeStyle = '#854d0e'; ctx.lineWidth = 1.6;
       ctx.beginPath();
-      ctx.moveTo(-9, -24);
-      ctx.lineTo(-11, -35);
-      ctx.lineTo(-4, -29);
-      ctx.lineTo(0, -37);
-      ctx.lineTo(4, -29);
-      ctx.lineTo(11, -35);
-      ctx.lineTo(9, -24);
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
+      ctx.moveTo(-9, -24); ctx.lineTo(-11, -35); ctx.lineTo(-4, -29); ctx.lineTo(0, -37);
+      ctx.lineTo(4, -29); ctx.lineTo(11, -35); ctx.lineTo(9, -24);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
     }
 
     ctx.fillStyle = 'rgba(244, 63, 94, 0.35)';
-    ctx.beginPath();
-    ctx.ellipse(-15, 4, 4.5, 3, 0, 0, TAU);
-    ctx.ellipse(15, 4, 4.5, 3, 0, 0, TAU);
-    ctx.fill();
+    ctx.beginPath(); ctx.ellipse(-15, 4, 4.5, 3, 0, 0, TAU); ctx.ellipse(15, 4, 4.5, 3, 0, 0, TAU); ctx.fill();
 
-    var isBlackCat = (sk.id === 'black');
-    var isSiamese = (sk.id === 'siamese');
+    var isBlackCat = (sk.id === 'black'), isSiamese = (sk.id === 'siamese');
     if (p.hitTimer > 0) {
-      ctx.strokeStyle = (isBlackCat || isSiamese) ? '#fde047' : '#0f172a';
-      ctx.lineWidth = 2.6;
-      ctx.lineCap = 'round';
+      ctx.strokeStyle = (isBlackCat || isSiamese) ? '#fde047' : '#0f172a'; ctx.lineWidth = 2.6; ctx.lineCap = 'round';
       ctx.beginPath();
       ctx.moveTo(-12, -4); ctx.lineTo(-8, -7.5); ctx.lineTo(-4, -4);
       ctx.moveTo(4, -4); ctx.lineTo(8, -7.5); ctx.lineTo(12, -4);
       ctx.stroke();
     } else {
-      var eyeX1 = -8.5 + dir;
-      var eyeX2 = 8.5 + dir;
+      var eyeX1 = -8.5 + dir, eyeX2 = 8.5 + dir;
       ctx.fillStyle = isBlackCat ? '#facc15' : (isSiamese ? '#38bdf8' : '#0f172a');
-      ctx.beginPath();
-      ctx.ellipse(eyeX1, -2.5, 3.8, 4.4, 0, 0, TAU);
-      ctx.ellipse(eyeX2, -2.5, 3.8, 4.4, 0, 0, TAU);
-      ctx.fill();
+      ctx.beginPath(); ctx.ellipse(eyeX1, -2.5, 3.8, 4.4, 0, 0, TAU); ctx.ellipse(eyeX2, -2.5, 3.8, 4.4, 0, 0, TAU); ctx.fill();
 
       if (isBlackCat || isSiamese) {
         ctx.fillStyle = '#0f172a';
-        ctx.beginPath();
-        ctx.ellipse(eyeX1, -2.5, 1.4, 3.5, 0, 0, TAU);
-        ctx.ellipse(eyeX2, -2.5, 1.4, 3.5, 0, 0, TAU);
-        ctx.fill();
+        ctx.beginPath(); ctx.ellipse(eyeX1, -2.5, 1.4, 3.5, 0, 0, TAU); ctx.ellipse(eyeX2, -2.5, 1.4, 3.5, 0, 0, TAU); ctx.fill();
       }
-
       ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.arc(eyeX1 - 1.2, -4, 1.5, 0, TAU);
-      ctx.arc(eyeX2 - 1.2, -4, 1.5, 0, TAU);
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(eyeX1 - 1.2, -4, 1.5, 0, TAU); ctx.arc(eyeX2 - 1.2, -4, 1.5, 0, TAU); ctx.fill();
     }
 
     var noseX = dir;
     ctx.fillStyle = '#fb7185';
-    ctx.beginPath();
-    ctx.ellipse(noseX, 2.5, 2.5, 1.8, 0, 0, TAU);
-    ctx.fill();
+    ctx.beginPath(); ctx.ellipse(noseX, 2.5, 2.5, 1.8, 0, 0, TAU); ctx.fill();
 
-    ctx.strokeStyle = (isBlackCat || isSiamese) ? '#f8fafc' : '#0f172a';
-    ctx.lineWidth = 1.6;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.arc(noseX - 2.6, 5.2, 2.5, 0.15, 2.9);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.arc(noseX + 2.6, 5.2, 2.5, 0.25, 3.0);
-    ctx.stroke();
+    ctx.strokeStyle = (isBlackCat || isSiamese) ? '#f8fafc' : '#0f172a'; ctx.lineWidth = 1.6; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.arc(noseX - 2.6, 5.2, 2.5, 0.15, 2.9); ctx.stroke();
+    ctx.beginPath(); ctx.arc(noseX + 2.6, 5.2, 2.5, 0.25, 3.0); ctx.stroke();
 
     ctx.restore();
   }
 
   function drawBall() {
-    ctx.save();
-    ctx.translate(ball.x, ball.y);
+    ctx.save(); ctx.translate(ball.x, ball.y);
 
-    if (ball.spikeType === 'wind') {
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
-      ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.arc(0, 0, ball.r + 5, 0, TAU); ctx.stroke();
-    } else if (ball.spikeType === 'meteor') {
-      ctx.fillStyle = 'rgba(249, 115, 22, 0.42)';
-      ctx.beginPath(); ctx.arc(0, 0, ball.r + 8, 0, TAU); ctx.fill();
-    } else if (ball.spikeType === 'lightning') {
-      ctx.fillStyle = 'rgba(56, 189, 248, 0.42)';
-      ctx.beginPath(); ctx.arc(0, 0, ball.r + 8, 0, TAU); ctx.fill();
-    } else if (ball.spikeType === 'ice') {
-      ctx.fillStyle = 'rgba(186, 230, 253, 0.45)';
-      ctx.beginPath(); ctx.arc(0, 0, ball.r + 8, 0, TAU); ctx.fill();
-    } else if (ball.spikeType === 'sakura') {
-      ctx.fillStyle = 'rgba(244, 114, 182, 0.38)';
-      ctx.beginPath(); ctx.arc(0, 0, ball.r + 8, 0, TAU); ctx.fill();
-    } else if (ball.spikeType === 'blackhole') {
-      ctx.fillStyle = 'rgba(88, 28, 135, 0.55)';
-      ctx.beginPath(); ctx.arc(0, 0, ball.r + 10, 0, TAU); ctx.fill();
-    }
+    if (ball.spikeType === 'wind') { ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, ball.r + 5, 0, TAU); ctx.stroke(); }
+    else if (ball.spikeType === 'meteor') { ctx.fillStyle = 'rgba(249, 115, 22, 0.42)'; ctx.beginPath(); ctx.arc(0, 0, ball.r + 8, 0, TAU); ctx.fill(); }
+    else if (ball.spikeType === 'lightning') { ctx.fillStyle = 'rgba(56, 189, 248, 0.42)'; ctx.beginPath(); ctx.arc(0, 0, ball.r + 8, 0, TAU); ctx.fill(); }
+    else if (ball.spikeType === 'ice') { ctx.fillStyle = 'rgba(186, 230, 253, 0.45)'; ctx.beginPath(); ctx.arc(0, 0, ball.r + 8, 0, TAU); ctx.fill(); }
+    else if (ball.spikeType === 'sakura') { ctx.fillStyle = 'rgba(244, 114, 182, 0.38)'; ctx.beginPath(); ctx.arc(0, 0, ball.r + 8, 0, TAU); ctx.fill(); }
+    else if (ball.spikeType === 'blackhole') { ctx.fillStyle = 'rgba(88, 28, 135, 0.55)'; ctx.beginPath(); ctx.arc(0, 0, ball.r + 10, 0, TAU); ctx.fill(); }
 
-    ctx.beginPath();
-    ctx.arc(0, 0, ball.r, 0, TAU);
-    ctx.clip();
+    ctx.beginPath(); ctx.arc(0, 0, ball.r, 0, TAU); ctx.clip();
 
     if (ball.skin === 'watermelon') {
-      ctx.fillStyle = '#22c55e';
-      ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
-      ctx.strokeStyle = '#14532d';
-      ctx.lineWidth = 4;
-      ctx.beginPath();
-      ctx.moveTo(-10, -20); ctx.quadraticCurveTo(-4, 0, -10, 20);
-      ctx.moveTo(0, -20);   ctx.quadraticCurveTo(0, 0, 0, 20);
-      ctx.moveTo(10, -20);  ctx.quadraticCurveTo(4, 0, 10, 20);
-      ctx.stroke();
+      ctx.fillStyle = '#22c55e'; ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
+      ctx.strokeStyle = '#14532d'; ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.moveTo(-10, -20); ctx.quadraticCurveTo(-4, 0, -10, 20); ctx.moveTo(0, -20); ctx.quadraticCurveTo(0, 0, 0, 20); ctx.moveTo(10, -20); ctx.quadraticCurveTo(4, 0, 10, 20); ctx.stroke();
     } else if (ball.skin === 'rainbow') {
       var rGrad = ctx.createLinearGradient(-ball.r, -ball.r, ball.r, ball.r);
-      rGrad.addColorStop(0, '#f43f5e');
-      rGrad.addColorStop(0.25, '#f59e0b');
-      rGrad.addColorStop(0.5, '#eab308');
-      rGrad.addColorStop(0.75, '#22c55e');
-      rGrad.addColorStop(1, '#3b82f6');
-      ctx.fillStyle = rGrad;
-      ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
+      rGrad.addColorStop(0, '#f43f5e'); rGrad.addColorStop(0.25, '#f59e0b'); rGrad.addColorStop(0.5, '#eab308'); rGrad.addColorStop(0.75, '#22c55e'); rGrad.addColorStop(1, '#3b82f6');
+      ctx.fillStyle = rGrad; ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
     } else if (ball.skin === 'soccer') {
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
       ctx.fillStyle = '#0f172a';
-      ctx.beginPath(); ctx.arc(0, 0, 6.5, 0, TAU); ctx.fill();
-      ctx.beginPath(); ctx.arc(-15, -10, 5, 0, TAU); ctx.fill();
-      ctx.beginPath(); ctx.arc(15, -10, 5, 0, TAU); ctx.fill();
-      ctx.beginPath(); ctx.arc(-12, 14, 5, 0, TAU); ctx.fill();
-      ctx.beginPath(); ctx.arc(12, 14, 5, 0, TAU); ctx.fill();
+      ctx.beginPath(); ctx.arc(0, 0, 6.5, 0, TAU); ctx.arc(-15, -10, 5, 0, TAU); ctx.arc(15, -10, 5, 0, TAU); ctx.arc(-12, 14, 5, 0, TAU); ctx.arc(12, 14, 5, 0, TAU); ctx.fill();
     } else if (ball.skin === 'paw') {
-      ctx.fillStyle = '#fce7f3';
-      ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
+      ctx.fillStyle = '#fce7f3'; ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
       ctx.fillStyle = '#f43f5e';
-      ctx.beginPath(); ctx.ellipse(0, 4, 6.5, 5, 0, 0, TAU); ctx.fill();
-      ctx.beginPath(); ctx.arc(-7, -4, 2.7, 0, TAU); ctx.fill();
-      ctx.beginPath(); ctx.arc(-2.5, -7, 2.7, 0, TAU); ctx.fill();
-      ctx.beginPath(); ctx.arc(2.5, -7, 2.7, 0, TAU); ctx.fill();
-      ctx.beginPath(); ctx.arc(7, -4, 2.7, 0, TAU); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(0, 4, 6.5, 5, 0, 0, TAU); ctx.arc(-7, -4, 2.7, 0, TAU); ctx.arc(-2.5, -7, 2.7, 0, TAU); ctx.arc(2.5, -7, 2.7, 0, TAU); ctx.arc(7, -4, 2.7, 0, TAU); ctx.fill();
     } else if (ball.skin === 'golden') {
       var gGrad = ctx.createRadialGradient(-5, -5, 2, 0, 0, ball.r);
-      gGrad.addColorStop(0, '#fef9c3');
-      gGrad.addColorStop(0.5, '#facc15');
-      gGrad.addColorStop(1, '#ca8a04');
-      ctx.fillStyle = gGrad;
-      ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
+      gGrad.addColorStop(0, '#fef9c3'); gGrad.addColorStop(0.5, '#facc15'); gGrad.addColorStop(1, '#ca8a04');
+      ctx.fillStyle = gGrad; ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
     } else {
-      ctx.fillStyle = '#facc15';
-      ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
-      ctx.strokeStyle = '#ca8a04';
-      ctx.lineWidth = 2;
+      ctx.fillStyle = '#facc15'; ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
+      ctx.strokeStyle = '#ca8a04'; ctx.lineWidth = 2;
       ctx.beginPath(); ctx.arc(-7, 0, 15, -1.1, 1.1); ctx.stroke();
       ctx.beginPath(); ctx.arc(7, 0, 15, 2.0, 4.2); ctx.stroke();
     }
 
-    if (ball.spikeType === 'meteor') {
-      ctx.fillStyle = 'rgba(239, 68, 68, 0.58)';
-      ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
-    } else if (ball.spikeType === 'lightning') {
-      ctx.fillStyle = 'rgba(56, 189, 248, 0.52)';
-      ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
-    } else if (ball.spikeType === 'ice') {
-      ctx.fillStyle = 'rgba(224, 242, 254, 0.65)';
-      ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
-    } else if (ball.spikeType === 'sakura') {
-      ctx.fillStyle = 'rgba(244, 114, 182, 0.45)';
-      ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
-    } else if (ball.spikeType === 'blackhole') {
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.78)';
-      ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
-    }
+    if (ball.spikeType === 'meteor') { ctx.fillStyle = 'rgba(239, 68, 68, 0.58)'; ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2); }
+    else if (ball.spikeType === 'lightning') { ctx.fillStyle = 'rgba(56, 189, 248, 0.52)'; ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2); }
+    else if (ball.spikeType === 'ice') { ctx.fillStyle = 'rgba(224, 242, 254, 0.65)'; ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2); }
+    else if (ball.spikeType === 'sakura') { ctx.fillStyle = 'rgba(244, 114, 182, 0.45)'; ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2); }
+    else if (ball.spikeType === 'blackhole') { ctx.fillStyle = 'rgba(15, 23, 42, 0.78)'; ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2); }
 
     ctx.restore();
 
-    ctx.save();
-    ctx.translate(ball.x, ball.y);
-    ctx.beginPath();
-    ctx.arc(0, 0, ball.r, 0, TAU);
-    ctx.lineWidth = 3;
+    ctx.save(); ctx.translate(ball.x, ball.y);
+    ctx.beginPath(); ctx.arc(0, 0, ball.r, 0, TAU); ctx.lineWidth = 3;
     var strokeCol = '#0f172a';
     if (ball.spikeType === 'meteor') strokeCol = '#b91c1c';
     else if (ball.spikeType === 'lightning') strokeCol = '#0284c7';
     else if (ball.spikeType === 'ice') strokeCol = '#7dd3fc';
     else if (ball.spikeType === 'sakura') strokeCol = '#db2777';
     else if (ball.spikeType === 'blackhole') strokeCol = '#a855f7';
-    ctx.strokeStyle = strokeCol;
-    ctx.stroke();
+    ctx.strokeStyle = strokeCol; ctx.stroke();
     ctx.restore();
   }
 
   function drawHeroCat(x, y) {
-    ctx.save();
-    ctx.translate(x, y);
+    ctx.save(); ctx.translate(x, y);
     var wave = Math.sin(mul(performance.now(), 0.015));
 
-    ctx.fillStyle = '#10b981';
-    ctx.strokeStyle = '#064e3b';
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.moveTo(-6, -4);
-    ctx.quadraticCurveTo(-28, -12 + mul(wave, 5), -44, -4 + mul(wave, 7));
-    ctx.lineTo(-40, 8 + mul(wave, 5));
-    ctx.quadraticCurveTo(-22, 4, -6, 3);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
+    ctx.fillStyle = '#10b981'; ctx.strokeStyle = '#064e3b'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(-6, -4); ctx.quadraticCurveTo(-28, -12 + mul(wave, 5), -44, -4 + mul(wave, 7)); ctx.lineTo(-40, 8 + mul(wave, 5)); ctx.quadraticCurveTo(-22, 4, -6, 3); ctx.closePath(); ctx.fill(); ctx.stroke();
 
-    ctx.fillStyle = '#f8fafc';
-    ctx.strokeStyle = '#0f172a';
-    ctx.beginPath();
-    ctx.roundRect(-24, -4, 24, 9, 4);
-    ctx.fill();
-    ctx.stroke();
+    ctx.fillStyle = '#f8fafc'; ctx.strokeStyle = '#0f172a';
+    ctx.beginPath(); ctx.roundRect(-24, -4, 24, 9, 4); ctx.fill(); ctx.stroke();
 
-    ctx.fillStyle = '#facc15';
-    ctx.beginPath();
-    ctx.arc(-10, 0.5, 2.5, 0, TAU);
-    ctx.fill();
+    ctx.fillStyle = '#facc15'; ctx.beginPath(); ctx.arc(-10, 0.5, 2.5, 0, TAU); ctx.fill();
 
     ctx.fillStyle = '#fde68a';
-    ctx.beginPath();
-    ctx.moveTo(0, -7); ctx.lineTo(3, -15); ctx.lineTo(7, -8);
-    ctx.moveTo(6, -7); ctx.lineTo(10, -15); ctx.lineTo(13, -6);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(7, -2, 8.5, 0, TAU);
-    ctx.fill();
-    ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, -7); ctx.lineTo(3, -15); ctx.lineTo(7, -8); ctx.moveTo(6, -7); ctx.lineTo(10, -15); ctx.lineTo(13, -6); ctx.fill();
+    ctx.beginPath(); ctx.arc(7, -2, 8.5, 0, TAU); ctx.fill(); ctx.stroke();
 
-    ctx.fillStyle = '#0f172a';
-    ctx.beginPath();
-    ctx.arc(11, -3, 1.8, 0, TAU);
-    ctx.fill();
+    ctx.fillStyle = '#0f172a'; ctx.beginPath(); ctx.arc(11, -3, 1.8, 0, TAU); ctx.fill();
     ctx.restore();
   }
 
   function drawBackground() {
     var pal = getSkyPalette();
     var sky = ctx.createLinearGradient(0, 0, 0, 380);
-    sky.addColorStop(0, pal.top);
-    sky.addColorStop(1, pal.bot);
-    ctx.fillStyle = sky;
-    ctx.fillRect(0, 0, 800, 450);
+    sky.addColorStop(0, pal.top); sky.addColorStop(1, pal.bot);
+    ctx.fillStyle = sky; ctx.fillRect(0, 0, 800, 450);
 
     var nightAlpha = 0;
     if (worldTime >= 0.46 && worldTime < 0.54) nightAlpha = (worldTime - 0.46) / 0.08;
@@ -2577,16 +2134,13 @@ window.onload = function() {
     else if (worldTime > 0.78 && worldTime <= 0.86) nightAlpha = 1 - (worldTime - 0.78) / 0.08;
 
     if (nightAlpha > 0) {
-      ctx.save();
-      var now = performance.now();
+      ctx.save(); var now = performance.now();
       for (var i = 0; i < stars.length; i++) {
-        var st = stars[i];
-        var twinkle = 0.45 + mul(0.55, Math.abs(Math.sin(mul(now, 0.003) + st.phase)));
+        var st = stars[i], twinkle = 0.45 + mul(0.55, Math.abs(Math.sin(mul(now, 0.003) + st.phase)));
         ctx.fillStyle = "rgba(255, 255, 255, " + mul(nightAlpha, twinkle).toFixed(2) + ")";
         ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, TAU); ctx.fill();
       }
-      ctx.globalAlpha = nightAlpha;
-      ctx.fillStyle = '#fef08a';
+      ctx.globalAlpha = nightAlpha; ctx.fillStyle = '#fef08a';
       ctx.beginPath(); ctx.arc(675, 78, 22, 0, TAU); ctx.fill();
       ctx.fillStyle = pal.top;
       ctx.beginPath(); ctx.arc(684, 72, 19, 0, TAU); ctx.fill();
@@ -2596,20 +2150,15 @@ window.onload = function() {
     if (shootingStar.active) {
       ctx.save();
       var grad = ctx.createLinearGradient(shootingStar.x, shootingStar.y, shootingStar.x + 55, shootingStar.y - 25);
-      grad.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
-      grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+      grad.addColorStop(0, 'rgba(255, 255, 255, 0.95)'); grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
       ctx.strokeStyle = grad; ctx.lineWidth = 2.5; ctx.lineCap = 'round';
       ctx.beginPath(); ctx.moveTo(shootingStar.x, shootingStar.y); ctx.lineTo(shootingStar.x + 55, shootingStar.y - 25); ctx.stroke();
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath(); ctx.arc(shootingStar.x, shootingStar.y, 2.5, 0, TAU); ctx.fill();
+      ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(shootingStar.x, shootingStar.y, 2.5, 0, TAU); ctx.fill();
       ctx.restore();
     }
 
     if (worldTime <= 0.50) {
-      var sunProg = worldTime / 0.50;
-      var sunX = lerp(95, 705, sunProg);
-      var sunY = 75 + mul(Math.pow(sunProg, 2.2), 295);
-      var isSunset = worldTime > 0.34;
+      var sunProg = worldTime / 0.50, sunX = lerp(95, 705, sunProg), sunY = 75 + mul(Math.pow(sunProg, 2.2), 295), isSunset = worldTime > 0.34;
       ctx.save();
       ctx.fillStyle = isSunset ? 'rgba(251, 146, 60, 0.35)' : 'rgba(253, 224, 71, 0.28)';
       ctx.beginPath(); ctx.arc(sunX, sunY, isSunset ? 42 : 34, 0, TAU); ctx.fill();
@@ -2619,9 +2168,7 @@ window.onload = function() {
     }
 
     var cloudAlpha = nightAlpha > 0 ? lerp(0.7, 0.16, nightAlpha) : 0.72;
-    ctx.fillStyle = worldTime > 0.35 && worldTime < 0.50
-      ? "rgba(254, 215, 170, 0.68)"
-      : "rgba(255, 255, 255, " + cloudAlpha.toFixed(2) + ")";
+    ctx.fillStyle = worldTime > 0.35 && worldTime < 0.50 ? "rgba(254, 215, 170, 0.68)" : "rgba(255, 255, 255, " + cloudAlpha.toFixed(2) + ")";
     for (var c = 0; c < clouds.length; c++) {
       var cl = clouds[c];
       ctx.save(); ctx.translate(cl.x, cl.y); ctx.scale(cl.s, cl.s);
@@ -2634,20 +2181,14 @@ window.onload = function() {
       if (bd.x > -40 && bd.x < 840) {
         var wingY = mul(Math.sin(bd.phase), 5);
         ctx.strokeStyle = 'rgba(15, 23, 42, 0.72)'; ctx.lineWidth = 2; ctx.lineCap = 'round';
-        ctx.beginPath();
-        ctx.moveTo(bd.x - 8, bd.y + wingY);
-        ctx.quadraticCurveTo(bd.x - 4, bd.y - 4, bd.x, bd.y);
-        ctx.quadraticCurveTo(bd.x + 4, bd.y - 4, bd.x + 8, bd.y + wingY);
-        ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(bd.x - 8, bd.y + wingY); ctx.quadraticCurveTo(bd.x - 4, bd.y - 4, bd.x, bd.y); ctx.quadraticCurveTo(bd.x + 4, bd.y - 4, bd.x + 8, bd.y + wingY); ctx.stroke();
       }
     }
 
     if (heroCat.active) drawHeroCat(heroCat.x, heroCat.y);
 
-    ctx.fillStyle = pal.sand;
-    ctx.fillRect(0, 380, 800, 70);
-    ctx.fillStyle = pal.line;
-    ctx.fillRect(0, 380, 800, 6);
+    ctx.fillStyle = pal.sand; ctx.fillRect(0, 380, 800, 70);
+    ctx.fillStyle = pal.line; ctx.fillRect(0, 380, 800, 6);
   }
 
   function draw() {
@@ -2666,49 +2207,25 @@ window.onload = function() {
     drawChar(p1); drawChar(p2);
 
     for (var i = 0; i < particles.length; i++) {
-      var pt = particles[i];
-      ctx.save();
+      var pt = particles[i]; ctx.save();
       if (pt.kind === 'wind') {
-        ctx.strokeStyle = pt.color;
-        ctx.lineWidth = 2;
-        ctx.lineCap = 'round';
-        ctx.beginPath();
-        ctx.moveTo(pt.x - pt.size, pt.y);
-        ctx.lineTo(pt.x + pt.size, pt.y);
-        ctx.stroke();
+        ctx.strokeStyle = pt.color; ctx.lineWidth = 2; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(pt.x - pt.size, pt.y); ctx.lineTo(pt.x + pt.size, pt.y); ctx.stroke();
       } else if (pt.kind === 'bolt') {
-        ctx.strokeStyle = pt.color;
-        ctx.lineWidth = 2.2;
-        ctx.beginPath();
-        ctx.moveTo(pt.x - 6, pt.y - 4);
-        ctx.lineTo(pt.x, pt.y);
-        ctx.lineTo(pt.x - 3, pt.y + 4);
-        ctx.lineTo(pt.x + 6, pt.y + 7);
-        ctx.stroke();
+        ctx.strokeStyle = pt.color; ctx.lineWidth = 2.2;
+        ctx.beginPath(); ctx.moveTo(pt.x - 6, pt.y - 4); ctx.lineTo(pt.x, pt.y); ctx.lineTo(pt.x - 3, pt.y + 4); ctx.lineTo(pt.x + 6, pt.y + 7); ctx.stroke();
       } else if (pt.kind === 'crystal') {
-        ctx.strokeStyle = pt.color;
-        ctx.lineWidth = 2;
-        var sz = pt.size * 0.8;
-        ctx.beginPath();
-        ctx.moveTo(pt.x - sz, pt.y); ctx.lineTo(pt.x + sz, pt.y);
-        ctx.moveTo(pt.x, pt.y - sz); ctx.lineTo(pt.x, pt.y + sz);
-        ctx.stroke();
+        ctx.strokeStyle = pt.color; ctx.lineWidth = 2; var sz = pt.size * 0.8;
+        ctx.beginPath(); ctx.moveTo(pt.x - sz, pt.y); ctx.lineTo(pt.x + sz, pt.y); ctx.moveTo(pt.x, pt.y - sz); ctx.lineTo(pt.x, pt.y + sz); ctx.stroke();
       } else if (pt.kind === 'petal') {
         ctx.fillStyle = pt.color;
-        ctx.beginPath();
-        ctx.ellipse(pt.x, pt.y, pt.size * 0.7, pt.size * 0.4, pt.life * 0.2, 0, TAU);
-        ctx.fill();
+        ctx.beginPath(); ctx.ellipse(pt.x, pt.y, pt.size * 0.7, pt.size * 0.4, pt.life * 0.2, 0, TAU); ctx.fill();
       } else if (pt.kind === 'void') {
-        ctx.strokeStyle = pt.color;
-        ctx.lineWidth = 2.2;
-        ctx.beginPath();
-        ctx.arc(pt.x, pt.y, pt.size * 0.85, 0, TAU);
-        ctx.stroke();
+        ctx.strokeStyle = pt.color; ctx.lineWidth = 2.2;
+        ctx.beginPath(); ctx.arc(pt.x, pt.y, pt.size * 0.85, 0, TAU); ctx.stroke();
       } else {
         ctx.fillStyle = pt.color;
-        ctx.beginPath();
-        ctx.arc(pt.x, pt.y, pt.size, 0, TAU);
-        ctx.fill();
+        ctx.beginPath(); ctx.arc(pt.x, pt.y, pt.size, 0, TAU); ctx.fill();
       }
       ctx.restore();
     }
