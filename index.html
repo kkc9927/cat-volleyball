@@ -379,7 +379,6 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   box-shadow: 0 0 24px rgba(56, 189, 248, 0.48), inset 0 0 18px rgba(56, 189, 248, 0.4);
 }
 
-/* 십자 & 대각선 가이드 링 */
 .joy-inner-ring {
   position: absolute;
   inset: 22px;
@@ -407,7 +406,6 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   text-shadow: 0 0 8px rgba(250, 204, 21, 0.9);
 }
 
-/* 드래그 방향과 거리를 보여주는 네온 연결 바 */
 .joy-vector {
   position: absolute;
   left: 50%;
@@ -422,7 +420,6 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   opacity: 0;
 }
 
-/* 드래그 시 손가락을 따라 움직이는 썸스틱 노브 */
 .joy-stick {
   position: absolute;
   left: 50%;
@@ -532,7 +529,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
         <button class="btn-rank-open" id="btnOpenRank">🏆 랭킹</button>
       </div>
 
-      <button class="menu-btn btn-ai" id="btnStartAI">🐱 1인 플레이 (AI 대전)</button>
+      <button class="menu-btn btn-ai" id="btnStartAI">🐱 1인 플레이 (AI 대전 · Lv.1)</button>
       <button class="menu-btn btn-create" id="btnCreateRoom">🏠 방 만들기 (공개방 생성)</button>
       <button class="menu-btn btn-list" id="btnOpenRoomList">🔍 참여하기 (방 리스트 보기)</button>
     </div>
@@ -655,7 +652,7 @@ window.onload = function() {
       nickPlaceholder: "닉네임 입력",
       skinBtn: "🎨 스킨",
       rankBtn: "🏆 랭킹",
-      aiBtn: "🐱 1인 플레이 (AI 대전)",
+      aiBtnFmt: function(lv) { return "🐱 1인 플레이 (AI Lv." + lv + " 대전)"; },
       createRoomBtn: "🏠 방 만들기 (공개방 생성)",
       roomListBtn: "🔍 참여하기 (방 리스트 보기)",
       ctrlHint: "⌨️ PC: ←→(A/D) 이동 · ↑(W) 점프 · Space 스파이크 (10점 선승)",
@@ -687,8 +684,7 @@ window.onload = function() {
       lobbySeasonHeader: function(label) { return "🏐 냐옹이 배구 · " + label; },
       winMsg: function(name) { return "🎉 " + name + " 승리! (터치해 재시작)"; },
       creatorLabel: "제작: GCK",
-      aiName: "그레이냥(AI)",
-      aiTier: "🤖 AI",
+      aiName: "AI냥",
       defaultP1: "크림냥",
       defaultP2: "그레이냥",
       catSecTitle: "🐱 고양이 스킨 (클릭 시 소리·설명 확인)",
@@ -781,7 +777,7 @@ window.onload = function() {
       nickPlaceholder: "Enter nickname",
       skinBtn: "🎨 Skins",
       rankBtn: "🏆 Rank",
-      aiBtn: "🐱 Solo Play (vs AI)",
+      aiBtnFmt: function(lv) { return "🐱 Solo Play (vs AI Lv." + lv + ")"; },
       createRoomBtn: "🏠 Create Public Room",
       roomListBtn: "🔍 Join / Room List",
       ctrlHint: "⌨️ PC: ←→(A/D) Move · ↑(W) Jump · Space Spike (First to 10)",
@@ -813,8 +809,7 @@ window.onload = function() {
       lobbySeasonHeader: function(label) { return "🏐 Nyaong Volley · " + label; },
       winMsg: function(name) { return "🎉 " + name + " Wins! (Tap to restart)"; },
       creatorLabel: "By GCK",
-      aiName: "GrayCat(AI)",
-      aiTier: "🤖 AI",
+      aiName: "AICat",
       defaultP1: "CreamCat",
       defaultP2: "GrayCat",
       catSecTitle: "🐱 Cat Skins (Tap to hear & view info)",
@@ -924,7 +919,6 @@ window.onload = function() {
     document.getElementById("nickInput").placeholder = d.nickPlaceholder;
     document.getElementById("btnOpenSkins").innerText = d.skinBtn;
     document.getElementById("btnOpenRank").innerText = d.rankBtn;
-    document.getElementById("btnStartAI").innerText = d.aiBtn;
     document.getElementById("btnCreateRoom").innerText = d.createRoomBtn;
     document.getElementById("btnOpenRoomList").innerText = d.roomListBtn;
     document.getElementById("ctrlHintText").innerText = d.ctrlHint;
@@ -1275,6 +1269,18 @@ window.onload = function() {
     blackhole: { id: 'blackhole', free: false, reqLv: 4 }
   };
 
+  // 내 랭크 레벨(0~4)에 따른 AI 난이도 프리셋 (속도, 점프 거리/타점, 스파이크 확률 & 이펙트)
+  var AI_DIFFICULTIES = [
+    { lv: 1, maxSpeed: 4.2, jumpHeightY: 250, jumpRangeX: 70,  predictLead: 8,  spikeChance: 0.00, spikeSkin: 'wind',      skin: 'gray'    }, // 브론즈
+    { lv: 2, maxSpeed: 5.0, jumpHeightY: 265, jumpRangeX: 80,  predictLead: 16, spikeChance: 0.25, spikeSkin: 'wind',      skin: 'cheese'  }, // 실버
+    { lv: 3, maxSpeed: 5.8, jumpHeightY: 280, jumpRangeX: 90,  predictLead: 24, spikeChance: 0.50, spikeSkin: 'lightning', skin: 'persian' }, // 골드
+    { lv: 4, maxSpeed: 6.6, jumpHeightY: 295, jumpRangeX: 100, predictLead: 32, spikeChance: 0.75, spikeSkin: 'ice',       skin: 'siamese' }, // 다이아
+    { lv: 5, maxSpeed: 7.3, jumpHeightY: 310, jumpRangeX: 112, predictLead: 40, spikeChance: 0.95, spikeSkin: 'meteor',    skin: 'gold'    }  // 챌린저냥
+  ];
+
+  var currentAiConfig = AI_DIFFICULTIES[0];
+  var aiWillSpike = false;
+
   var currentSeason = { key: 'W_20260101', label: '' };
 
   var userState = {
@@ -1377,6 +1383,8 @@ window.onload = function() {
     applyWeeklySeasonResetIfNeeded();
     var info = getRankInfo(userState.wins, userState.losses);
     document.getElementById("rankSummaryBadge").innerText = info.summary;
+    var aiCfg = AI_DIFFICULTIES[info.lv] || AI_DIFFICULTIES[0];
+    document.getElementById("btnStartAI").innerText = T().aiBtnFmt(aiCfg.lv);
     return info;
   }
 
@@ -1728,6 +1736,7 @@ window.onload = function() {
     p1.x = 150; p1.y = 340; p1.vx = 0; p1.vy = 0; p1.squash = 1;
     p2.x = 650; p2.y = 340; p2.vx = 0; p2.vy = 0; p2.squash = 1;
     ball.x = 400; ball.y = 150; ball.vx = 1.3; ball.vy = -1.8; ball.spikeType = 'none';
+    aiWillSpike = false;
     particles = [];
   }
 
@@ -1986,8 +1995,18 @@ window.onload = function() {
     validateUnlocks(); isHostingRoom = false;
     try { sessionStorage.removeItem('cat_host_room'); } catch (e) {}
     var rInfo = getRankInfo(userState.wins, userState.losses);
-    p1.name = getMyNick(getCatMeta(userState.equippedCat).name); p1.tier = rInfo.tier; p1.skin = userState.equippedCat; p1.spikeSkin = userState.equippedSpike;
-    p2.name = d.aiName; p2.tier = d.aiTier; p2.skin = (userState.equippedCat === 'gray') ? 'cream' : 'gray'; p2.spikeSkin = 'wind';
+    currentAiConfig = AI_DIFFICULTIES[rInfo.lv] || AI_DIFFICULTIES[0];
+
+    p1.name = getMyNick(getCatMeta(userState.equippedCat).name);
+    p1.tier = rInfo.tier;
+    p1.skin = userState.equippedCat;
+    p1.spikeSkin = userState.equippedSpike;
+
+    p2.name = d.aiName + " Lv." + currentAiConfig.lv;
+    p2.tier = rInfo.tier;
+    p2.skin = (userState.equippedCat === currentAiConfig.skin) ? 'cream' : currentAiConfig.skin;
+    p2.spikeSkin = currentAiConfig.spikeSkin;
+
     ball.skin = userState.equippedBall;
     SoundEngine.playCatMeow(p1.skin, false);
     startMatch('ai');
@@ -2117,7 +2136,6 @@ window.onload = function() {
   joypadZone.addEventListener('touchend', onJoyTouchEnd, { passive: false });
   joypadZone.addEventListener('touchcancel', onJoyTouchEnd, { passive: false });
 
-  // PC 마우스 드래그 지원
   joypadZone.addEventListener('mousedown', function(e) {
     SoundEngine.unlockAndStart();
     if (gameState !== 'playing' || netMode === 'spectator') return;
@@ -2190,10 +2208,32 @@ window.onload = function() {
       else { p2.vx = mul(p2.vx, Math.pow(0.76, dt)); if (Math.abs(p2.vx) < 0.15) p2.vx = 0; }
       if (remoteKeys.U && p2.y >= 340) { p2.vy = -10.8; p2.squash = 1.22; SoundEngine.playCatMeow(p2.skin, true); }
     } else {
-      var aiMax = 4.2, targetX = ball.x > 400 ? ball.x + 10 : 650, diffX = targetX - p2.x;
-      if (Math.abs(diffX) > 6) { var aiDir = diffX > 0 ? 1 : -1; p2.vx += mul(aiDir, 1.0) * dt; if (p2.vx > aiMax) p2.vx = aiMax; if (p2.vx < -aiMax) p2.vx = -aiMax; }
-      else { p2.vx = mul(p2.vx, Math.pow(0.78, dt)); }
-      if (ball.x > 400 && ball.y < 250 && ball.vy > 0 && p2.y >= 340 && Math.abs(p2.x - ball.x) < 70) { p2.vy = -10.5; p2.squash = 1.22; SoundEngine.playCatMeow(p2.skin, true); }
+      // 내 랭크에 비례해 강해지는 AI 로직
+      var cfg = currentAiConfig;
+      var aiMax = cfg.maxSpeed;
+      var predictedBallX = ball.x + mul(ball.vx, cfg.predictLead * 0.22);
+      var targetX = ball.x > 380 ? (predictedBallX + 12) : 635;
+      if (targetX < 445) targetX = 445;
+      if (targetX > 765) targetX = 765;
+
+      var diffX = targetX - p2.x;
+      if (Math.abs(diffX) > 6) {
+        var aiDir = diffX > 0 ? 1 : -1;
+        var accel = 1.0 + (cfg.lv - 1) * 0.11;
+        p2.vx += mul(aiDir, accel) * dt;
+        if (p2.vx > aiMax) p2.vx = aiMax;
+        if (p2.vx < -aiMax) p2.vx = -aiMax;
+      } else {
+        p2.vx = mul(p2.vx, Math.pow(0.76, dt));
+      }
+
+      if (ball.x > 400 && ball.y < cfg.jumpHeightY && ball.vy > -1.0 && p2.y >= 340 && Math.abs(p2.x - ball.x) < cfg.jumpRangeX) {
+        p2.vy = -10.6;
+        p2.squash = 1.22;
+        aiWillSpike = (Math.random() < cfg.spikeChance);
+        SoundEngine.playCatMeow(p2.skin, true);
+      }
+      if (p2.y >= 340) aiWillSpike = false;
     }
 
     var wasAir2 = p2.y < 340;
@@ -2215,17 +2255,19 @@ window.onload = function() {
       SoundEngine.playBounce(true);
     }
 
-    hitBall(p1, !!keys["Space"]); hitBall(p2, netMode === 'host' ? !!remoteKeys.S : false);
+    hitBall(p1, !!keys["Space"]);
+    var p2Spike = (netMode === 'host') ? !!remoteKeys.S : (aiWillSpike && p2.y < 325);
+    hitBall(p2, p2Spike);
 
     if (ball.y > 430) {
       if (ball.x < 400) {
         score2++; SoundEngine.playScore(false);
         if (score2 >= WIN_SCORE) { gameOver = true; winnerText = T().winMsg(p2.name); if (!matchRecorded) { matchRecorded = true; recordMatchResult(false); } }
-        else { ball.x = 580; ball.y = 140; ball.vx = -1.3; ball.vy = -1.8; ball.spikeType = 'none'; particles = []; }
+        else { ball.x = 580; ball.y = 140; ball.vx = -1.3; ball.vy = -1.8; ball.spikeType = 'none'; aiWillSpike = false; particles = []; }
       } else {
         score1++; SoundEngine.playScore(true);
         if (score1 >= WIN_SCORE) { gameOver = true; winnerText = T().winMsg(p1.name); if (!matchRecorded) { matchRecorded = true; recordMatchResult(true); } }
-        else { ball.x = 220; ball.y = 140; ball.vx = 1.3; ball.vy = -1.8; ball.spikeType = 'none'; particles = []; }
+        else { ball.x = 220; ball.y = 140; ball.vx = 1.3; ball.vy = -1.8; ball.spikeType = 'none'; aiWillSpike = false; particles = []; }
       }
     }
 
@@ -2275,6 +2317,7 @@ window.onload = function() {
         ball.spikeType = p.spikeSkin || 'wind';
         ball.vx = mul(Math.cos(angle), 10.2) + mul(p.vx, 0.28);
         ball.vy = mul(Math.sin(angle), 10.2) - 3.2;
+        if (p === p2 && netMode === 'ai') aiWillSpike = false;
         SoundEngine.playSpikeSound(ball.spikeType);
       } else {
         ball.spikeType = 'none';
