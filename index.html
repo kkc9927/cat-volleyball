@@ -1271,11 +1271,11 @@ window.onload = function() {
 
   // 내 랭크 레벨(0~4)에 따른 AI 난이도 프리셋 (속도, 점프 거리/타점, 스파이크 확률 & 이펙트)
   var AI_DIFFICULTIES = [
-    { lv: 1, maxSpeed: 4.2, jumpHeightY: 250, jumpRangeX: 70,  predictLead: 8,  spikeChance: 0.00, spikeSkin: 'wind',      skin: 'gray'    }, // 브론즈
-    { lv: 2, maxSpeed: 5.0, jumpHeightY: 265, jumpRangeX: 80,  predictLead: 16, spikeChance: 0.25, spikeSkin: 'wind',      skin: 'cheese'  }, // 실버
-    { lv: 3, maxSpeed: 5.8, jumpHeightY: 280, jumpRangeX: 90,  predictLead: 24, spikeChance: 0.50, spikeSkin: 'lightning', skin: 'persian' }, // 골드
-    { lv: 4, maxSpeed: 6.6, jumpHeightY: 295, jumpRangeX: 100, predictLead: 32, spikeChance: 0.75, spikeSkin: 'ice',       skin: 'siamese' }, // 다이아
-    { lv: 5, maxSpeed: 7.3, jumpHeightY: 310, jumpRangeX: 112, predictLead: 40, spikeChance: 0.95, spikeSkin: 'meteor',    skin: 'gold'    }  // 챌린저냥
+    { lv: 1, maxSpeed: 4.3, jumpHeightY: 270, jumpRangeX: 85,  predictLead: 10, spikeChance: 0.00, spikeSkin: 'wind',      skin: 'gray'    }, // 브론즈
+    { lv: 2, maxSpeed: 5.1, jumpHeightY: 285, jumpRangeX: 95,  predictLead: 18, spikeChance: 0.40, spikeSkin: 'wind',      skin: 'cheese'  }, // 실버
+    { lv: 3, maxSpeed: 5.9, jumpHeightY: 300, jumpRangeX: 105, predictLead: 25, spikeChance: 0.65, spikeSkin: 'lightning', skin: 'persian' }, // 골드
+    { lv: 4, maxSpeed: 6.7, jumpHeightY: 312, jumpRangeX: 115, predictLead: 32, spikeChance: 0.85, spikeSkin: 'ice',       skin: 'siamese' }, // 다이아
+    { lv: 5, maxSpeed: 7.4, jumpHeightY: 322, jumpRangeX: 125, predictLead: 38, spikeChance: 1.00, spikeSkin: 'meteor',    skin: 'gold'    }  // 챌린저냥
   ];
 
   var currentAiConfig = AI_DIFFICULTIES[0];
@@ -2009,22 +2009,11 @@ window.onload = function() {
   document.getElementById("btnCloseRank").onclick = function() { rankPanel.style.display = 'none'; mainMenuBox.style.display = 'flex'; lobbyStatus.innerText = T().lobbyReadyMsg; };
 
   document.getElementById("btnStartAI").onclick = function() {
-    var d = T();
     validateUnlocks(); isHostingRoom = false;
     try { sessionStorage.removeItem('cat_host_room'); } catch (e) {}
-    var rInfo = getRankInfo(userState.wins, userState.losses);
-    currentAiConfig = AI_DIFFICULTIES[rInfo.lv] || AI_DIFFICULTIES[0];
-
     p1.name = getMyNick(getCatMeta(userState.equippedCat).name);
-    p1.tier = rInfo.tier;
     p1.skin = userState.equippedCat;
     p1.spikeSkin = userState.equippedSpike;
-
-    p2.name = d.aiName + " Lv." + currentAiConfig.lv;
-    p2.tier = rInfo.tier;
-    p2.skin = (userState.equippedCat === currentAiConfig.skin) ? 'cream' : currentAiConfig.skin;
-    p2.spikeSkin = currentAiConfig.spikeSkin;
-
     ball.skin = userState.equippedBall;
     SoundEngine.playCatMeow(p1.skin, false);
     startMatch('ai');
@@ -2226,18 +2215,19 @@ window.onload = function() {
       else { p2.vx = mul(p2.vx, Math.pow(0.76, dt)); if (Math.abs(p2.vx) < 0.15) p2.vx = 0; }
       if (remoteKeys.U && p2.y >= 340) { p2.vy = -10.8; p2.squash = 1.22; SoundEngine.playCatMeow(p2.skin, true); }
     } else {
-      // 내 랭크에 비례해 강해지는 AI 로직
+      // 내 랭크에 비례해 강해지는 AI 로직 (공격 포지셔닝 + 점프 강타 + 네트 앞 스파이크)
       var cfg = currentAiConfig;
       var aiMax = cfg.maxSpeed;
-      var predictedBallX = ball.x + mul(ball.vx, cfg.predictLead * 0.22);
-      var targetX = ball.x > 380 ? (predictedBallX + 12) : 635;
-      if (targetX < 445) targetX = 445;
+      var predictedBallX = ball.x + mul(ball.vx, cfg.predictLead * 0.25);
+      // 공보다 살짝 오른쪽(+24)에 자리를 잡아 왼쪽(상대 코트)으로 스파이크 각도를 만듦
+      var targetX = ball.x > 370 ? (predictedBallX + 24) : 630;
+      if (targetX < 442) targetX = 442;
       if (targetX > 765) targetX = 765;
 
       var diffX = targetX - p2.x;
       if (Math.abs(diffX) > 6) {
         var aiDir = diffX > 0 ? 1 : -1;
-        var accel = 1.0 + (cfg.lv - 1) * 0.11;
+        var accel = 1.05 + (cfg.lv - 1) * 0.12;
         p2.vx += mul(aiDir, accel) * dt;
         if (p2.vx > aiMax) p2.vx = aiMax;
         if (p2.vx < -aiMax) p2.vx = -aiMax;
@@ -2245,13 +2235,13 @@ window.onload = function() {
         p2.vx = mul(p2.vx, Math.pow(0.76, dt));
       }
 
-if (ball.x > 400 && ball.y < cfg.jumpHeightY && ball.vy > -1.5 && p2.y >= 340 && Math.abs(p2.x - ball.x) < cfg.jumpRangeX) {
-        p2.vy = -10.6;
+      // AI 점프 & 스파이크 예약
+      if (ball.x > 390 && ball.y > 110 && ball.y < cfg.jumpHeightY && ball.vy > -1.2 && p2.y >= 340 && Math.abs(p2.x - (ball.x + 18)) < cfg.jumpRangeX) {
+        p2.vy = -10.8;
         p2.squash = 1.22;
-        aiWillSpike = (Math.random() < cfg.spikeChance);
+        aiWillSpike = (cfg.spikeChance > 0 && Math.random() < cfg.spikeChance);
         SoundEngine.playCatMeow(p2.skin, true);
       }
-
     }
 
     var wasAir2 = p2.y < 340;
@@ -2274,7 +2264,15 @@ if (ball.x > 400 && ball.y < cfg.jumpHeightY && ball.vy > -1.5 && p2.y >= 340 &&
     }
 
     hitBall(p1, !!keys["Space"]);
-    var p2Spike = (netMode === 'host') ? !!remoteKeys.S : aiWillSpike;
+
+    // AI가 공을 치는 순간: 점프 예약 상태이거나, 네트 앞 공격 찬스일 때 확률적으로 스파이크 발동
+    var p2Spike = false;
+    if (netMode === 'host') {
+      p2Spike = !!remoteKeys.S;
+    } else {
+      var directSpike = (currentAiConfig.spikeChance > 0 && ball.x < 610 && ball.y < 325 && Math.random() < currentAiConfig.spikeChance);
+      p2Spike = aiWillSpike || directSpike;
+    }
     hitBall(p2, p2Spike);
 
     if (ball.y > 430) {
