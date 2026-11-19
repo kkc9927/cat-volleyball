@@ -817,8 +817,8 @@ window.onload = function() {
       introBadge: "✨ STORY INTRO · 냐옹이 배구",
       introSkipBtn: "건너뛰기 ▶",
       introCap1: "밤하늘 구경 중 별똥별 떨어졌다!! 소원 빌 틈이 어딨어, 달려!! ⭐",
-      introCap2L: "다다다다 발바닥 모터 풀가동!! (1초 뒤 하늘 점프 컷 등장!)",
-      introCap2R: "어푸푸~ 바닥에서 하늘로 부웅 점프!! 포동한 배와 배꼽 대공개!! 🐾✨",
+      introCap2L: "다다다다 발바닥 풀가동!! (1초 뒤 공중 점프 컷 등장!)",
+      introCap2R: "어푸푸~ 하늘로 붕 떠서 넘어간다!! 포동한 배와 배꼽 대공개!! 🐾✨",
       introCap3: "저기 별똥별 착지 지점 보인다!! 전속력으로 돌격!! 🏃💨",
       introCap4: "뭐야?! 빛나는 황금 배구공이잖아?! 냥냥이들 집단 대충격!! 😱🏐💥",
       guideHtml:
@@ -988,8 +988,8 @@ window.onload = function() {
       introBadge: "✨ STORY INTRO · Nyaong Volleyball",
       introSkipBtn: "Skip ▶",
       introCap1: "Shooting star incoming! No time to wish, RUN!! ⭐",
-      introCap2L: "Full paw-motor sprint! (Right jump cut in 1s!)",
-      introCap2R: "Low-angle slow-mo sky jump!! Belly & cute belly-button in full view!! 🐾✨",
+      introCap2L: "Full-frame paw & leg sprint! (Right jump cut in 1s!)",
+      introCap2R: "Floating over the sky in slow-mo!! Belly & belly-button in view!! 🐾✨",
       introCap3: "Almost at the landing spot!! Full-speed dash!! 🏃💨",
       introCap4: "A glowing golden volleyball?! Total cat shock!! 😱🏐💥",
       guideHtml:
@@ -1210,7 +1210,7 @@ window.onload = function() {
   // =========================================================================
   // 4컷 만화풍 스토리 인트로
   // 컷1 (0 ~ 2100ms): 밤하늘 별똥별 + 고양이 2마리 근접 뒷모습
-  // 컷2 (2100 ~ 5100ms): 2컷 만화 분할 (좌 즉시 등장: 하반신·다리 역동 질주 / 우 1초 뒤 스스륵 등장: 바닥 로우앵글 점프·배·배꼽·꼬리 슬로우)
+  // 컷2 (2100 ~ 5100ms): 2컷 만화 분할 (좌 즉시 등장: 발과 다리만 화면 가득 확대 질주 / 우 1초 뒤 스스륵 등장: 얼굴 없이 하늘을 붕 떠서 넘어가는 배·배꼽·꼬리·발)
   // 컷3 (5100 ~ 7300ms): 별똥별에 점점 가까워지는 고양이들
   // 컷4 (7300 ~ 9800ms): 거대한 빛나는 별똥별/배구공 앞 고퀄리티 놀람 모임 → 천천히 대기화면 전환
   // =========================================================================
@@ -1259,7 +1259,7 @@ window.onload = function() {
     g.restore();
   }
 
-  // 컷2 왼쪽: 프레임 왼쪽에서 대각선으로 뻗어나오는 고양이 하반신·다리 클로즈업 질주 컷씬
+  // 컷2 왼쪽: 몸통을 없애고 고양이의 큼직한 다리와 젤리 발바닥만 화면 가득 확대해 질주하는 컷씬
   function drawDynamicLegsCutLeft(g, x0, y0, pw, ph, ms) {
     g.save();
     g.beginPath(); g.rect(x0, y0, pw, ph); g.clip();
@@ -1270,120 +1270,116 @@ window.onload = function() {
     bg.addColorStop(1, '#172554');
     g.fillStyle = bg; g.fillRect(x0, y0, pw, ph);
 
-    // 대각선 만화 스피드라인
+    // 굵고 빠른 만화 스피드라인
     g.lineCap = 'round';
-    for (var s = 0; s < 16; s++) {
-      var ly = y0 + 10 + s * 15;
-      var spd = 1.15 + (s % 3) * 0.3;
-      var lx = x0 + pw - ((ms * spd + s * 83) % (pw + 140));
-      g.strokeStyle = (s % 2 === 0) ? 'rgba(125, 211, 252, 0.45)' : 'rgba(254, 240, 138, 0.32)';
-      g.lineWidth = (s % 3 === 0) ? 3.2 : 1.6;
-      g.beginPath(); g.moveTo(lx, ly); g.lineTo(lx + 105, ly - 10); g.stroke();
+    for (var s = 0; s < 18; s++) {
+      var ly = y0 + 8 + s * 13.5;
+      var spd = 1.25 + (s % 3) * 0.35;
+      var lx = x0 + pw - ((ms * spd + s * 79) % (pw + 150));
+      g.strokeStyle = (s % 2 === 0) ? 'rgba(125, 211, 252, 0.48)' : 'rgba(254, 240, 138, 0.34)';
+      g.lineWidth = (s % 3 === 0) ? 3.6 : 1.8;
+      g.beginPath(); g.moveTo(lx, ly); g.lineTo(lx + 115, ly - 8); g.stroke();
     }
 
-    // 바닥 트랙 & 먼지 구름
-    g.fillStyle = '#1e293b'; g.fillRect(x0, y0 + ph - 36, pw, 36);
-    g.strokeStyle = '#38bdf8'; g.lineWidth = 2.5;
-    g.beginPath(); g.moveTo(x0, y0 + ph - 36); g.lineTo(x0 + pw, y0 + ph - 36); g.stroke();
+    // 바닥 트랙 & 튀어 오르는 먼지 구름
+    var groundY = y0 + ph - 32;
+    g.fillStyle = '#1e293b'; g.fillRect(x0, groundY, pw, 32);
+    g.strokeStyle = '#38bdf8'; g.lineWidth = 3;
+    g.beginPath(); g.moveTo(x0, groundY); g.lineTo(x0 + pw, groundY); g.stroke();
 
-    for (var d = 0; d < 9; d++) {
-      var dx = x0 + ((d * 61 - ms * 0.65) % (pw + 60));
+    for (var d = 0; d < 10; d++) {
+      var dx = x0 + ((d * 57 - ms * 0.72) % (pw + 60));
       if (dx < x0 - 20) dx += pw + 60;
-      var dy = y0 + ph - 34 - (d % 4) * 5;
-      g.fillStyle = 'rgba(241, 245, 249, 0.38)';
-      g.beginPath(); g.arc(dx, dy, 6 + (d % 3) * 3, 0, TAU); g.fill();
+      var dy = groundY - 4 - (d % 4) * 6;
+      g.fillStyle = 'rgba(241, 245, 249, 0.42)';
+      g.beginPath(); g.arc(dx, dy, 7 + (d % 3) * 3.5, 0, TAU); g.fill();
     }
 
-    var cycle = ms * 0.026;
+    var cycle = ms * 0.028;
 
-    // 프레임 왼쪽 바깥에서 화면 안쪽으로 뻗어나오는 고양이 하반신 + 앞뒤 다리 세트
-    function drawSprintHindquarters(anchorX, anchorY, scale, colTop, colBot, stripeCol, phaseOff) {
+    // 화면 위쪽 프레임 바깥에서 뻗어나오는 큼직한 고양이 다리 & 발 클로즈업
+    function drawZoomedRunningLeg(pivotX, pivotY, phase, legColTop, legColBot, pawCol, scale, isFront) {
+      var swing = Math.sin(cycle + phase) * 0.85;
+      var lift = Math.max(0, -Math.cos(cycle + phase)) * 26;
+      var bend = Math.max(0, Math.sin(cycle + phase)) * 0.42;
+
       g.save();
-      g.translate(anchorX, anchorY + Math.sin(cycle * 2 + phaseOff) * 4);
+      g.translate(pivotX, pivotY - lift);
       g.scale(scale, scale);
+      g.rotate(-0.22 + swing);
 
-      // 휘날리는 꼬리 (왼쪽 위로 길게 뻗음)
-      var tailWave = Math.sin(cycle + phaseOff) * 14;
-      g.strokeStyle = '#0f172a'; g.lineWidth = 14; g.lineCap = 'round';
+      // 위쪽 프레임 바깥에서 내려오는 굵고 튼실한 다리(허벅지~종아리)
+      var legGrad = g.createLinearGradient(-22, -60, 24, 95);
+      legGrad.addColorStop(0, legColBot);
+      legGrad.addColorStop(0.55, legColTop);
+      legGrad.addColorStop(1, pawCol);
+
+      g.fillStyle = legGrad;
+      g.strokeStyle = '#0f172a';
+      g.lineWidth = 4.5;
       g.beginPath();
-      g.moveTo(-70, -24);
-      g.bezierCurveTo(-125, -48 + tailWave, -155, -88 - tailWave, -185, -72 + tailWave);
-      g.stroke();
-      g.strokeStyle = colTop; g.lineWidth = 8.5; g.stroke();
-
-      // 뒤쪽 뒷다리 (차고 나가는 각도)
-      var backSwing = Math.sin(cycle + phaseOff) * 0.68;
-      g.save();
-      g.translate(-44, 16);
-      g.rotate(-0.55 + backSwing);
-      g.fillStyle = colBot; g.strokeStyle = '#0f172a'; g.lineWidth = 3.5;
-      g.beginPath(); g.roundRect(-14, 0, 28, 56, 14); g.fill(); g.stroke();
-      g.fillStyle = '#ffffff';
-      g.beginPath(); g.ellipse(6, 58, 18, 11, 0.2, 0, TAU); g.fill(); g.stroke();
-      g.restore();
-
-      // 프레임 왼쪽에서 뻗어나온 큼직한 몸통 하단 (엉덩이~배 곡선, 윗부분은 프레임 밖으로 자연스럽게 잘림)
-      var bodyGrad = g.createLinearGradient(-90, -50, 70, 45);
-      bodyGrad.addColorStop(0, colBot);
-      bodyGrad.addColorStop(0.55, colTop);
-      bodyGrad.addColorStop(1, '#ffffff');
-      g.fillStyle = bodyGrad; g.strokeStyle = '#0f172a'; g.lineWidth = 4;
-      g.beginPath();
-      g.moveTo(-140, -68);
-      g.bezierCurveTo(-50, -78, 55, -52, 82, -10);
-      g.bezierCurveTo(96, 16, 62, 42, 0, 42);
-      g.bezierCurveTo(-65, 42, -115, 24, -140, -10);
+      g.moveTo(-26, -75);
+      g.bezierCurveTo(-28, -15, -24, 42, -18, 92);
+      g.lineTo(20, 92);
+      g.bezierCurveTo(25, 42, 28, -15, 24, -75);
       g.closePath();
       g.fill();
       g.stroke();
 
-      // 등/허리 줄무늬 포인트
-      g.fillStyle = stripeCol;
+      // 다리 털 줄무늬 포인트
+      g.fillStyle = isFront ? 'rgba(217, 119, 6, 0.35)' : 'rgba(51, 65, 85, 0.35)';
       g.beginPath();
-      g.roundRect(-34, -56, 8, 22, 4);
-      g.roundRect(-18, -50, 8, 20, 4);
+      g.roundRect(-21, 8, 18, 7, 3.5);
+      g.roundRect(-19, 24, 16, 7, 3.5);
       g.fill();
 
-      // 앞쪽 뒷다리 (땅을 박차며 쭉 뻗음)
-      var frontSwing = -Math.sin(cycle + phaseOff) * 0.78;
+      // 발목 아래 큼직한 발과 핑크 젤리 발바닥 (땅을 박차며 꺾이는 각도)
       g.save();
-      g.translate(-12, 22);
-      g.rotate(-0.35 + frontSwing);
-      g.fillStyle = colTop; g.strokeStyle = '#0f172a'; g.lineWidth = 3.8;
-      g.beginPath(); g.roundRect(-15, 0, 30, 62, 15); g.fill(); g.stroke();
-      // 큰 발바닥 + 핑크 젤리
-      g.fillStyle = '#ffffff';
-      g.beginPath(); g.ellipse(8, 64, 20, 12, 0.15, 0, TAU); g.fill(); g.stroke();
-      g.fillStyle = '#fb7185';
-      g.beginPath(); g.arc(15, 62, 4, 0, TAU); g.arc(7, 67, 3.2, 0, TAU); g.fill();
-      g.restore();
+      g.translate(4, 94);
+      g.rotate(0.28 - bend);
 
-      // 앞발 (오른쪽 앞으로 힘차게 뻗음)
-      var foreSwing = Math.sin(cycle + phaseOff + 0.8) * 0.55;
-      g.save();
-      g.translate(58, 12);
-      g.rotate(-0.85 + foreSwing);
-      g.fillStyle = colTop; g.strokeStyle = '#0f172a'; g.lineWidth = 3.6;
-      g.beginPath(); g.roundRect(-13, 0, 26, 54, 13); g.fill(); g.stroke();
-      g.fillStyle = '#ffffff';
-      g.beginPath(); g.ellipse(7, 56, 17, 11, 0.2, 0, TAU); g.fill(); g.stroke();
-      g.fillStyle = '#fb7185';
-      g.beginPath(); g.arc(13, 55, 3.6, 0, TAU); g.fill();
-      g.restore();
+      g.fillStyle = pawCol;
+      g.strokeStyle = '#0f172a';
+      g.lineWidth = 4.5;
+      g.beginPath();
+      g.ellipse(12, 8, 32, 20, 0.12, 0, TAU);
+      g.fill();
+      g.stroke();
 
+      // 발가락 경계선
+      g.lineWidth = 2.6;
+      g.beginPath();
+      g.moveTo(28, -4); g.lineTo(38, -1);
+      g.moveTo(31, 8); g.lineTo(42, 9);
+      g.stroke();
+
+      // 발바닥 핑크 젤리 패드 (땅을 박찰 때 보임)
+      g.fillStyle = '#fb7185';
+      g.beginPath();
+      g.ellipse(4, 13, 8, 5.5, 0.1, 0, TAU);
+      g.arc(17, 6, 4.2, 0, TAU);
+      g.arc(21, 14, 4.2, 0, TAU);
+      g.arc(15, 21, 3.8, 0, TAU);
+      g.fill();
+
+      g.restore();
       g.restore();
     }
 
-    // 뒤쪽 그레이냥 하반신 + 앞쪽 크림냥 하반신 겹쳐 질주
-    drawSprintHindquarters(x0 + pw * 0.42, y0 + ph - 122, 0.92, '#cbd5e1', '#94a3b8', '#475569', 1.1);
-    drawSprintHindquarters(x0 + pw * 0.54, y0 + ph - 104, 1.08, '#fef3c7', '#fde68a', '#d97706', 0);
+    // 뒤쪽 그레이냥 다리 2개 (화면 가득 크게)
+    drawZoomedRunningLeg(x0 + pw * 0.24, y0 + 78, 0.7, '#cbd5e1', '#94a3b8', '#f1f5f9', 0.96, false);
+    drawZoomedRunningLeg(x0 + pw * 0.66, y0 + 78, 0.7 + Math.PI, '#cbd5e1', '#94a3b8', '#f1f5f9', 0.96, false);
 
-    // 만화 의성어 텍스트 ("다다다!")
+    // 앞쪽 크림냥 다리 2개 (더 크고 역동적으로 화면 가득 질주)
+    drawZoomedRunningLeg(x0 + pw * 0.38, y0 + 84, 0, '#fef3c7', '#fde68a', '#ffffff', 1.12, true);
+    drawZoomedRunningLeg(x0 + pw * 0.76, y0 + 84, Math.PI, '#fef3c7', '#fde68a', '#ffffff', 1.12, true);
+
+    // 만화 의성어 ("다다다!")
     g.save();
-    g.translate(x0 + pw * 0.68, y0 + 44 + Math.sin(cycle * 2) * 3);
+    g.translate(x0 + pw * 0.62, y0 + 42 + Math.sin(cycle * 2) * 3);
     g.rotate(-0.12);
-    g.font = '900 22px sans-serif';
-    g.strokeStyle = '#0f172a'; g.lineWidth = 5;
+    g.font = '900 24px sans-serif';
+    g.strokeStyle = '#0f172a'; g.lineWidth = 5.5;
     var sfx = (currentLang === 'ko') ? '다다다!' : 'DASH!!';
     g.strokeText(sfx, 0, 0);
     g.fillStyle = '#fde047';
@@ -1393,147 +1389,134 @@ window.onload = function() {
     g.restore();
   }
 
-  // 컷2 오른쪽: 바닥에서 하늘을 보는 로우앵글, 고양이가 앞으로 부웅 뛰어올라 배와 배꼽이 다 보이는 코믹 슬로우 점프
+  // 컷2 오른쪽: 얼굴 없이 고양이의 통통한 배·배꼽·네 다리·꼬리만 하늘을 가로질러 붕 떠서 넘어가는 코믹 연출
   function drawSkyJumpBellyCutRight(g, x0, y0, pw, ph, tRight) {
     g.save();
     g.beginPath(); g.rect(x0, y0, pw, ph); g.clip();
 
-    // 바닥에서 하늘을 올려다보는 원근 하늘 배경
-    var sky = g.createRadialGradient(x0 + pw * 0.5, y0 + 25, 16, x0 + pw * 0.5, y0 + ph, ph * 1.15);
-    sky.addColorStop(0, '#090d16');
-    sky.addColorStop(0.55, '#0c4a6e');
-    sky.addColorStop(1, '#1e293b');
+    // 바닥에서 하늘을 올려다보는 밤하늘 배경
+    var sky = g.createLinearGradient(x0, y0 + ph, x0, y0);
+    sky.addColorStop(0, '#1e293b');
+    sky.addColorStop(0.45, '#0c4a6e');
+    sky.addColorStop(1, '#090d16');
     g.fillStyle = sky; g.fillRect(x0, y0, pw, ph);
 
-    // 하늘 위 별들과 원근 집중선
-    for (var i = 0; i < 16; i++) {
-      var sx = x0 + 18 + ((i * 59) % Math.max(40, pw - 36));
-      var sy = y0 + 12 + ((i * 31) % 105);
-      g.fillStyle = 'rgba(255, 255, 240, 0.8)';
-      g.beginPath(); g.arc(sx, sy, (i % 3 === 0) ? 2 : 1.3, 0, TAU); g.fill();
+    // 하늘 별빛
+    for (var i = 0; i < 18; i++) {
+      var sx = x0 + 16 + ((i * 59) % Math.max(40, pw - 32));
+      var sy = y0 + 12 + ((i * 31) % 125);
+      g.fillStyle = 'rgba(255, 255, 240, 0.82)';
+      g.beginPath(); g.arc(sx, sy, (i % 3 === 0) ? 2.1 : 1.3, 0, TAU); g.fill();
     }
 
-    // 하늘을 향해 뻗는 로우앵글 원근선
-    g.strokeStyle = 'rgba(186, 230, 253, 0.2)'; g.lineWidth = 2;
-    g.beginPath();
-    g.moveTo(x0 + 12, y0 + ph); g.lineTo(x0 + pw * 0.36, y0 + 20);
-    g.moveTo(x0 + pw - 12, y0 + ph); g.lineTo(x0 + pw * 0.64, y0 + 20);
-    g.stroke();
-
-    // 점프 진행도: 초반 부웅 뛰어오른 뒤 공중 체공 구간에서 슬로우 모션
+    // 왼쪽 아래에서 오른쪽 위로 포물선을 그리며 붕 떠서 넘어감 (중간 공중 체공 슬로우)
     var rawP = Math.min(1, tRight / 1900);
-    var slowP = rawP < 0.30
-      ? (rawP / 0.30) * 0.45
+    var slowP = rawP < 0.28
+      ? (rawP / 0.28) * 0.36
       : (rawP < 0.78
-        ? 0.45 + ((rawP - 0.30) / 0.48) * 0.25
-        : 0.70 + ((rawP - 0.78) / 0.22) * 0.30);
+        ? 0.36 + ((rawP - 0.28) / 0.50) * 0.32
+        : 0.68 + ((rawP - 0.78) / 0.22) * 0.32);
 
-    // 바닥(아래쪽)에서 위쪽 카메라를 향해 원근감 있게 커지면서 솟구침
-    var jumpHeight = Math.sin(slowP * Math.PI * 0.88) * 86;
-    var catX = x0 + pw * 0.50;
-    var catY = (y0 + ph - 26) - jumpHeight;
-    var perspectiveScale = 0.76 + Math.sin(slowP * Math.PI * 0.85) * 0.48;
+    var arcX = x0 + pw * 0.16 + slowP * (pw * 0.72);
+    var arcY = (y0 + ph - 44) - Math.sin(slowP * Math.PI) * 112;
+    var airTilt = -0.65 + slowP * 1.25; // 붕 떠서 포물선 궤적을 따라 몸이 기울며 넘어감
+    var airScale = 0.88 + Math.sin(slowP * Math.PI) * 0.28;
 
-    // 슬로우 모션 잔상
-    if (rawP > 0.22 && rawP < 0.85) {
+    // 궤적 바람선 & 잔상
+    g.save();
+    g.strokeStyle = 'rgba(186, 230, 253, 0.32)';
+    g.lineWidth = 3;
+    g.setLineDash([8, 8]);
+    g.beginPath();
+    g.moveTo(x0 + pw * 0.12, y0 + ph - 36);
+    g.quadraticCurveTo(x0 + pw * 0.50, y0 + 24, arcX, arcY);
+    g.stroke();
+    g.restore();
+
+    if (rawP > 0.20 && rawP < 0.86) {
       g.save();
-      g.globalAlpha = 0.22;
-      g.translate(catX, catY + 18);
-      g.scale(perspectiveScale * 0.94, perspectiveScale * 0.94);
+      g.globalAlpha = 0.20;
+      g.translate(arcX - 22, arcY + 12);
+      g.rotate(airTilt - 0.15);
+      g.scale(airScale * 0.94, airScale * 0.94);
       g.fillStyle = '#fde68a';
-      g.beginPath(); g.ellipse(0, 0, 34, 44, 0, 0, TAU); g.fill();
+      g.beginPath(); g.ellipse(0, 0, 32, 42, 0, 0, TAU); g.fill();
       g.restore();
     }
 
+    // 얼굴 없이 통통한 몸통(배+배꼽)과 사방으로 뻗은 네 다리·꼬리만 그려서 자연스럽고 코믹하게 표현
     g.save();
-    g.translate(catX, catY);
-    g.scale(perspectiveScale, perspectiveScale);
+    g.translate(arcX, arcY);
+    g.rotate(airTilt);
+    g.scale(airScale, airScale);
 
-    // 아래쪽으로 길게 흔들리는 꼬리 (로우앵글이라 몸통 뒤·아래로 보임)
-    var tailWag = Math.sin(tRight * 0.016) * 14;
+    // 뒤로 길게 휘날리는 꼬리
+    var tailWag = Math.sin(tRight * 0.018) * 14;
     g.strokeStyle = '#0f172a'; g.lineWidth = 10; g.lineCap = 'round';
     g.beginPath();
     g.moveTo(0, 34);
-    g.bezierCurveTo(18 + tailWag, 54, -16 + tailWag, 72, 10 + tailWag, 86);
+    g.bezierCurveTo(-18 + tailWag, 56, 20 + tailWag, 74, -8 + tailWag, 90);
     g.stroke();
     g.strokeStyle = '#fef3c7'; g.lineWidth = 5.5; g.stroke();
 
-    // 위쪽 하늘을 향해 뻗은 양 앞발 (원근감 때문에 살짝 작게)
-    g.fillStyle = '#fef3c7'; g.strokeStyle = '#0f172a'; g.lineWidth = 2.8;
-    g.save(); g.translate(-22, -26); g.rotate(-0.42);
-    g.beginPath(); g.roundRect(-7, -26, 14, 28, 7); g.fill(); g.stroke();
-    g.fillStyle = '#ffffff'; g.beginPath(); g.ellipse(0, -27, 9, 6, 0, 0, TAU); g.fill(); g.stroke();
+    // 만세 하듯 위쪽으로 쭉 뻗은 앞다리 두 개 + 젤리 발바닥 (얼굴은 가려져 안 보임)
+    g.fillStyle = '#fef3c7'; g.strokeStyle = '#0f172a'; g.lineWidth = 3;
+    g.save(); g.translate(-17, -30); g.rotate(-0.32);
+    g.beginPath(); g.roundRect(-8, -32, 16, 36, 8); g.fill(); g.stroke();
+    g.fillStyle = '#ffffff'; g.beginPath(); g.ellipse(0, -33, 11, 8, 0, 0, TAU); g.fill(); g.stroke();
+    g.fillStyle = '#fb7185'; g.beginPath(); g.arc(0, -33, 3.5, 0, TAU); g.fill();
     g.restore();
 
-    g.save(); g.translate(22, -26); g.rotate(0.42);
-    g.beginPath(); g.roundRect(-7, -26, 14, 28, 7); g.fill(); g.stroke();
-    g.fillStyle = '#ffffff'; g.beginPath(); g.ellipse(0, -27, 9, 6, 0, 0, TAU); g.fill(); g.stroke();
+    g.save(); g.translate(17, -30); g.rotate(0.32);
+    g.beginPath(); g.roundRect(-8, -32, 16, 36, 8); g.fill(); g.stroke();
+    g.fillStyle = '#ffffff'; g.beginPath(); g.ellipse(0, -33, 11, 8, 0, 0, TAU); g.fill(); g.stroke();
+    g.fillStyle = '#fb7185'; g.beginPath(); g.arc(0, -33, 3.5, 0, TAU); g.fill();
     g.restore();
 
-    // 포동포동하게 드러난 배 (로우앵글 입체 그라데이션)
-    var bellyGrad = g.createRadialGradient(-6, 2, 6, 0, 4, 42);
+    // 아래쪽으로 활짝 뻗은 뒷다리 두 개 + 핑크 젤리 발바닥
+    g.save(); g.translate(-22, 28); g.rotate(0.42);
+    g.beginPath(); g.roundRect(-9, 0, 18, 32, 9); g.fill(); g.stroke();
+    g.fillStyle = '#ffffff'; g.beginPath(); g.ellipse(0, 33, 13, 9, 0, 0, TAU); g.fill(); g.stroke();
+    g.fillStyle = '#fb7185';
+    g.beginPath(); g.ellipse(0, 34, 4.5, 3.2, 0, 0, TAU);
+    g.arc(-5.5, 29, 2, 0, TAU); g.arc(0, 28, 2, 0, TAU); g.arc(5.5, 29, 2, 0, TAU);
+    g.fill();
+    g.restore();
+
+    g.save(); g.translate(22, 28); g.rotate(-0.42);
+    g.beginPath(); g.roundRect(-9, 0, 18, 32, 9); g.fill(); g.stroke();
+    g.fillStyle = '#ffffff'; g.beginPath(); g.ellipse(0, 33, 13, 9, 0, 0, TAU); g.fill(); g.stroke();
+    g.fillStyle = '#fb7185';
+    g.beginPath(); g.ellipse(0, 34, 4.5, 3.2, 0, 0, TAU);
+    g.arc(-5.5, 29, 2, 0, TAU); g.arc(0, 28, 2, 0, TAU); g.arc(5.5, 29, 2, 0, TAU);
+    g.fill();
+    g.restore();
+
+    // 포동포동한 몸통과 배 (얼굴 없이 매끈한 상단 실루엣)
+    var bellyGrad = g.createRadialGradient(-6, 0, 6, 0, 2, 44);
     bellyGrad.addColorStop(0, '#fffbeb');
     bellyGrad.addColorStop(0.65, '#fef3c7');
     bellyGrad.addColorStop(1, '#fde68a');
-    g.fillStyle = bellyGrad; g.strokeStyle = '#0f172a'; g.lineWidth = 3.2;
-    g.beginPath(); g.ellipse(0, 4, 33, 40, 0, 0, TAU); g.fill(); g.stroke();
+    g.fillStyle = bellyGrad; g.strokeStyle = '#0f172a'; g.lineWidth = 3.4;
+    g.beginPath(); g.ellipse(0, 0, 32, 42, 0, 0, TAU); g.fill(); g.stroke();
 
-    // 배 중앙 복슬복슬한 밝은 배털 영역
+    // 밝은 배털 패치
     g.fillStyle = '#ffffff';
-    g.beginPath(); g.ellipse(0, 6, 22, 27, 0, 0, TAU); g.fill();
+    g.beginPath(); g.ellipse(0, 2, 21, 29, 0, 0, TAU); g.fill();
 
-    // 귀여운 코믹 배꼽 (배 정중앙 포인트!)
+    // 배 정중앙 귀여운 배꼽!
     g.fillStyle = '#fda4af';
     g.strokeStyle = '#be123c';
-    g.lineWidth = 1.8;
+    g.lineWidth = 1.9;
     g.beginPath();
-    g.ellipse(0, 10, 5.2, 3.8, 0, 0, TAU);
+    g.ellipse(0, 6, 5.5, 4, 0, 0, TAU);
     g.fill();
     g.stroke();
 
-    // 카메라에 가장 가까운 아래쪽 큰 양 뒷다리 & 젤리 발바닥 (로우앵글 원근 강조)
-    g.fillStyle = '#fef3c7'; g.strokeStyle = '#0f172a'; g.lineWidth = 3.2;
-    // 왼쪽 뒷다리
-    g.save(); g.translate(-24, 28); g.rotate(0.35);
-    g.beginPath(); g.roundRect(-10, 0, 20, 28, 10); g.fill(); g.stroke();
-    g.fillStyle = '#ffffff';
-    g.beginPath(); g.ellipse(0, 29, 14, 10, 0, 0, TAU); g.fill(); g.stroke();
-    g.fillStyle = '#fb7185';
-    g.beginPath(); g.ellipse(0, 30, 5, 3.5, 0, 0, TAU);
-    g.arc(-6, 25, 2.2, 0, TAU); g.arc(0, 24, 2.2, 0, TAU); g.arc(6, 25, 2.2, 0, TAU);
-    g.fill();
     g.restore();
 
-    // 오른쪽 뒷다리
-    g.save(); g.translate(24, 28); g.rotate(-0.35);
-    g.beginPath(); g.roundRect(-10, 0, 20, 28, 10); g.fill(); g.stroke();
-    g.fillStyle = '#ffffff';
-    g.beginPath(); g.ellipse(0, 29, 14, 10, 0, 0, TAU); g.fill(); g.stroke();
-    g.fillStyle = '#fb7185';
-    g.beginPath(); g.ellipse(0, 30, 5, 3.5, 0, 0, TAU);
-    g.arc(-6, 25, 2.2, 0, TAU); g.arc(0, 24, 2.2, 0, TAU); g.arc(6, 25, 2.2, 0, TAU);
-    g.fill();
-    g.restore();
-
-    // 위쪽에 보이는 턱 밑 & 쫑긋한 귀·고개 (하늘을 향해 점프하는 각도)
-    g.fillStyle = '#fef3c7'; g.strokeStyle = '#0f172a'; g.lineWidth = 2.8;
-    g.beginPath(); g.moveTo(-16, -30); g.lineTo(-21, -49); g.lineTo(-5, -36); g.closePath(); g.fill(); g.stroke();
-    g.beginPath(); g.moveTo(16, -30); g.lineTo(21, -49); g.lineTo(5, -36); g.closePath(); g.fill(); g.stroke();
-
-    g.beginPath(); g.arc(0, -31, 18, 0, TAU); g.fill(); g.stroke();
-
-    // 아래에서 올려다본 턱·입·눈 표정
-    g.fillStyle = '#0f172a';
-    g.beginPath(); g.arc(-6.5, -34, 2.2, 0, TAU); g.arc(6.5, -34, 2.2, 0, TAU); g.fill();
-    g.fillStyle = '#fb7185';
-    g.beginPath(); g.ellipse(0, -28, 2.8, 2, 0, 0, TAU); g.fill();
-    g.strokeStyle = '#0f172a'; g.lineWidth = 1.8;
-    g.beginPath(); g.arc(0, -24, 4, 0.2, Math.PI - 0.2); g.stroke();
-
-    g.restore();
-
-    // 바닥 가장자리
-    g.fillStyle = '#0f172a'; g.fillRect(x0, y0 + ph - 10, pw, 10);
+    // 하단 지면 라인
+    g.fillStyle = '#0f172a'; g.fillRect(x0, y0 + ph - 12, pw, 12);
     g.restore();
   }
 
@@ -1567,7 +1550,7 @@ window.onload = function() {
     g.restore();
   }
 
-  // 마지막 컷 고퀄리티 놀람 고양이 일러스트 (게임 본편 캐릭터 퀄리티 + 만화 충격 리액션)
+  // 마지막 컷 고퀄리티 놀람 고양이 일러스트
   function drawHighQualityShockedCat(g, x, y, opt, ms) {
     g.save();
     g.translate(x, y);
@@ -1576,7 +1559,6 @@ window.onload = function() {
     var tremor = Math.sin(ms * 0.045) * 1.4;
     g.translate(tremor, opt.hopY);
 
-    // 솟구쳐 곤두선 꼬리
     var tailWave = Math.sin(ms * 0.025) * 7;
     g.strokeStyle = '#0f172a'; g.lineWidth = 10.5; g.lineCap = 'round';
     g.beginPath();
@@ -1585,19 +1567,16 @@ window.onload = function() {
     g.stroke();
     g.strokeStyle = opt.bodyGradTop; g.lineWidth = 6; g.stroke();
 
-    // 입체 몸통
     var bodyGrad = g.createRadialGradient(-4, 8, 3, 0, 14, 24);
     bodyGrad.addColorStop(0, opt.bodyGradTop);
     bodyGrad.addColorStop(1, opt.bodyGradBot);
     g.fillStyle = bodyGrad; g.strokeStyle = '#0f172a'; g.lineWidth = 2.8;
     g.beginPath(); g.ellipse(0, 15, 18, 14, 0, 0, TAU); g.fill(); g.stroke();
 
-    // 놀라서 들린 앞발
     g.fillStyle = '#ffffff';
     g.beginPath(); g.ellipse(12, 22, 6.5, 4.8, -0.3, 0, TAU); g.fill(); g.stroke();
     g.beginPath(); g.ellipse(-6, 26, 6, 4.5, 0.1, 0, TAU); g.fill(); g.stroke();
 
-    // 입체 뾰족 귀 + 핑크 안쪽
     g.fillStyle = opt.earCol; g.strokeStyle = '#0f172a'; g.lineWidth = 2.8;
     g.beginPath(); g.moveTo(-21, -10); g.quadraticCurveTo(-24, -35, -17, -37); g.quadraticCurveTo(-10, -37, -5, -20); g.closePath(); g.fill(); g.stroke();
     g.fillStyle = '#fda4af';
@@ -1608,7 +1587,6 @@ window.onload = function() {
     g.fillStyle = '#fda4af';
     g.beginPath(); g.moveTo(18, -14); g.quadraticCurveTo(20, -29, 16, -31); g.quadraticCurveTo(12, -31, 9, -19); g.closePath(); g.fill();
 
-    // 볼살이 살아있는 고양이 얼굴
     var headGrad = g.createRadialGradient(-6, -10, 4, 0, -2, 28);
     headGrad.addColorStop(0, opt.bodyGradTop);
     headGrad.addColorStop(1, opt.bodyGradBot);
@@ -1622,7 +1600,6 @@ window.onload = function() {
     g.closePath();
     g.fill();
 
-    // 이마 & 볼 줄무늬 디테일
     g.save();
     g.clip();
     g.fillStyle = opt.stripeCol;
@@ -1644,41 +1621,27 @@ window.onload = function() {
     g.closePath();
     g.stroke();
 
-    // 왕관 (치즈/골드 포인트용 옵션)
-    if (opt.hasCrown) {
-      g.fillStyle = '#fef08a'; g.strokeStyle = '#854d0e'; g.lineWidth = 1.6;
-      g.beginPath();
-      g.moveTo(-8, -23); g.lineTo(-10, -33); g.lineTo(-4, -28); g.lineTo(0, -35);
-      g.lineTo(4, -28); g.lineTo(10, -33); g.lineTo(8, -23);
-      g.closePath(); g.fill(); g.stroke();
-    }
-
-    // 붉은 볼터치
     g.fillStyle = 'rgba(244, 63, 94, 0.42)';
     g.beginPath(); g.ellipse(-13, 4, 4.5, 3, 0, 0, TAU); g.ellipse(15, 4, 4.2, 2.8, 0, 0, TAU); g.fill();
 
-    // 찢어질 듯 커진 만화 놀람 눈
     g.fillStyle = '#ffffff'; g.strokeStyle = '#0f172a'; g.lineWidth = 2.4;
     g.beginPath();
     g.arc(-2, -4, 7.2, 0, TAU);
     g.arc(13, -4, 6.8, 0, TAU);
     g.fill(); g.stroke();
 
-    // 작은 놀란 동공
     g.fillStyle = '#0f172a';
     g.beginPath();
     g.arc(0, -4, 2.1, 0, TAU);
     g.arc(14.5, -4, 2.0, 0, TAU);
     g.fill();
 
-    // 눈 반짝임 하이라이트
     g.fillStyle = '#ffffff';
     g.beginPath();
     g.arc(-2.5, -6.5, 2.1, 0, TAU);
     g.arc(12.2, -6.5, 1.9, 0, TAU);
     g.fill();
 
-    // 핑크 코 & 놀라서 크게 벌어진 코믹 입
     g.fillStyle = '#fb7185';
     g.beginPath(); g.ellipse(6.5, 3, 2.8, 2, 0, 0, TAU); g.fill();
 
@@ -1687,7 +1650,6 @@ window.onload = function() {
     g.fillStyle = '#fda4af';
     g.beginPath(); g.ellipse(6.5, 13.5, 3.2, 2.2, 0, 0, TAU); g.fill();
 
-    // 만화 말풍선 / 충격 기호
     g.save();
     g.scale(opt.faceRight ? 1 : -1, 1);
     g.font = '900 19px sans-serif';
@@ -1710,14 +1672,12 @@ window.onload = function() {
     g.fillStyle = aura;
     g.beginPath(); g.arc(x, y, radius * 3.2 + pulse, 0, TAU); g.fill();
 
-    // 별똥별 꼬리 빛
     var tailGrad = g.createLinearGradient(x, y, x + 150, y - 62);
     tailGrad.addColorStop(0, 'rgba(254, 240, 138, 0.85)');
     tailGrad.addColorStop(1, 'rgba(254, 240, 138, 0)');
     g.strokeStyle = tailGrad; g.lineWidth = 11; g.lineCap = 'round';
     g.beginPath(); g.moveTo(x, y); g.lineTo(x + 150, y - 62); g.stroke();
 
-    // 만화 집중선
     g.save(); g.translate(x, y);
     for (var r = 0; r < 14; r++) {
       var ra = (r * TAU) / 14 + ms * 0.002;
@@ -1780,15 +1740,13 @@ window.onload = function() {
       return;
     }
 
-    // 컷2 (2100 ~ 5100ms): 2컷 만화 분할 (좌 즉시 등장 / 우 1000ms 뒤 스스륵 등장)
+    // 컷2 (2100 ~ 5100ms): 2컷 만화 분할 (좌: 발·다리 확대 질주 / 우 1초 뒤: 얼굴 없이 붕 떠서 넘어가는 점프)
     if (ms < 5100) {
       var t2 = ms - 2100;
       var splitX = w * 0.49;
 
-      // 왼쪽 컷 즉시 등장
       drawDynamicLegsCutLeft(ictx, 0, 0, splitX + 8, h, t2);
 
-      // 오른쪽 컷은 1초(1000ms) 뒤부터 스스륵 나타남
       var rightDelay = 1000;
       if (t2 >= rightDelay) {
         var tRight = t2 - rightDelay;
@@ -1807,7 +1765,6 @@ window.onload = function() {
         capEl.innerText = d.introCap2L;
       }
 
-      // 만화 컷 중앙 프레임 경계선
       ictx.strokeStyle = '#fde047';
       ictx.lineWidth = 4;
       ictx.beginPath(); ictx.moveTo(splitX, 0); ictx.lineTo(splitX, h); ictx.stroke();
@@ -1874,7 +1831,6 @@ window.onload = function() {
     var hop3 = -Math.abs(Math.sin(t4 * 0.017 + 1.1)) * 14;
     var hop4 = -Math.abs(Math.cos(t4 * 0.017 + 1.1)) * 12;
 
-    // 뒤쪽 합류하는 치즈냥 & 삼색냥
     drawHighQualityShockedCat(ictx, ballCx - 165 - (1 - gather) * 50, h - 84, {
       bodyGradTop: '#fde68a', bodyGradBot: '#f59e0b', earCol: '#f59e0b', stripeCol: '#92400e',
       scale: 0.94, hopY: hop3, faceRight: true, bangText: '!!'
@@ -1885,7 +1841,6 @@ window.onload = function() {
       scale: 0.94, hopY: hop4, faceRight: false, bangText: '!?'
     }, t4);
 
-    // 앞쪽 메인 크림냥 & 그레이냥
     drawHighQualityShockedCat(ictx, ballCx - 92 - (1 - gather) * 55, h - 72, {
       bodyGradTop: '#fffbeb', bodyGradBot: '#fde68a', earCol: '#fef3c7', stripeCol: '#d97706',
       scale: 1.24, hopY: hop1, faceRight: true, bangText: '?!'
