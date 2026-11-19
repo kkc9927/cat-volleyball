@@ -2321,7 +2321,7 @@ window.onload = function() {
     }
   }
 
-  function hitBall(p, isSpike) {
+function hitBall(p, isSpike) {
     var dx = ball.x - p.x, dy = ball.y - p.y, dist = Math.hypot(dx, dy);
     if (dist < ball.r + p.r + 6 && dist > 0) {
       var overlap = (ball.r + p.r + 6) - dist;
@@ -2331,9 +2331,17 @@ window.onload = function() {
       SoundEngine.playCatMeow(p.skin, false);
       if (isSpike) {
         ball.spikeType = p.spikeSkin || 'wind';
-        ball.vx = mul(Math.cos(angle), 10.2) + mul(p.vx, 0.28);
-        ball.vy = mul(Math.sin(angle), 10.2) - 3.2;
-        if (p === p2 && netMode === 'ai') aiWillSpike = false;
+        if (p === p2 && netMode === 'ai') {
+          // AI 스파이크는 항상 왼쪽(플레이어 코트) 네트 너머를 향해 강타!
+          var targetCourtX = 110 + Math.random() * 210;
+          var aimAngle = Math.atan2(350 - ball.y, targetCourtX - ball.x);
+          ball.vx = mul(Math.cos(aimAngle), 10.5);
+          ball.vy = Math.min(-2.2, mul(Math.sin(aimAngle), 10.5) - 3.6);
+          aiWillSpike = false;
+        } else {
+          ball.vx = mul(Math.cos(angle), 10.2) + mul(p.vx, 0.28);
+          ball.vy = mul(Math.sin(angle), 10.2) - 3.2;
+        }
         SoundEngine.playSpikeSound(ball.spikeType);
       } else {
         ball.spikeType = 'none';
