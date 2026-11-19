@@ -20,7 +20,7 @@ h1 { font-size: 0.96rem; margin: 0; white-space: nowrap; }
 .home-btn:active { background: #475569; }
 
 /* 게임 캔버스 래퍼 */
-.game-wrapper { position: relative; width: 100%; max-width: 800px; max-height: 59dvh; aspect-ratio: 800 / 450; }
+.game-wrapper { position: relative; width: 100%; max-width: 800px; max-height: 58dvh; aspect-ratio: 800 / 450; }
 canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%; display: block; background: #0284c7; transform: translateZ(0); }
 
 /* 메인 대기화면(로비) 오버레이 */
@@ -340,38 +340,109 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 }
 .reward-btns { display: flex; gap: 8px; width: 100%; max-width: 280px; margin-top: 2px; }
 
-/* 모바일 터치 패드: 왼쪽에 이동(좌/우) + 점프 통합 배치 */
-.controls { width: 100%; max-width: 800px; flex: 1; max-height: 158px; display: flex; justify-content: space-between; align-items: stretch; gap: 12px; padding: 6px 4px 8px; }
-.dpad-group {
-  flex: 1.65;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1.05fr;
-  gap: 7px;
-}
-.action-group {
-  flex: 0.85;
-  display: flex;
-}
-.touch-btn {
+/* RPG 스타일 반원형(좌·우·상) 패드 + 오른쪽 스파이크 */
+.controls {
+  width: 100%;
+  max-width: 800px;
   flex: 1;
-  height: 100%;
-  min-height: 76px;
+  max-height: 165px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 4px 10px 8px;
+}
+
+.semi-pad-wrap {
+  position: relative;
+  width: 224px;
+  height: 128px;
+  flex-shrink: 0;
+  background: radial-gradient(circle at 50% 100%, rgba(56, 189, 248, 0.14) 0%, rgba(30, 41, 59, 0.72) 72%, rgba(15, 23, 42, 0.25) 100%);
+  border: 2px solid rgba(125, 211, 252, 0.35);
+  border-bottom: none;
+  border-radius: 128px 128px 16px 16px;
+  box-shadow: inset 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+.semi-btn {
+  position: absolute;
+  width: 68px;
+  height: 54px;
   border-radius: 16px;
-  border: 2.5px solid rgba(255,255,255,0.45);
-  background: rgba(255,255,255,0.14);
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.15);
   color: #fff;
-  font-size: 1.35rem;
   font-weight: bold;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  transition: transform 0.06s ease, background 0.08s ease;
 }
-.touch-btn:active, .touch-btn.active { background: rgba(56,189,248,0.65); border-color: #7dd3fc; transform: scale(0.96); }
-.jump-btn { background: rgba(56,189,248,0.28); border-color: rgba(125,211,252,0.75); font-size: 1.05rem; }
-.spike-btn { background: rgba(249,115,22,0.48); border-color: #fb923c; font-size: 1.02rem; }
-.spike-btn.active { background: rgba(249,115,22,0.85); border-color: #fed7aa; }
-.sub-label { font-size: 0.66rem; font-weight: normal; opacity: 0.88; margin-top: 2px; }
+
+.semi-left {
+  left: 10px;
+  bottom: 8px;
+  font-size: 1.25rem;
+}
+
+.semi-right {
+  right: 10px;
+  bottom: 8px;
+  font-size: 1.25rem;
+}
+
+.semi-up {
+  left: 50%;
+  top: 8px;
+  transform: translateX(-50%);
+  width: 78px;
+  height: 52px;
+  background: rgba(56, 189, 248, 0.3);
+  border-color: rgba(125, 211, 252, 0.8);
+  font-size: 1.08rem;
+}
+
+.semi-btn.active {
+  background: rgba(56, 189, 248, 0.72);
+  border-color: #e0f2fe;
+}
+.semi-up.active {
+  transform: translateX(-50%) scale(0.95);
+}
+.semi-left.active, .semi-right.active {
+  transform: scale(0.95);
+}
+
+.sub-label { font-size: 0.62rem; font-weight: normal; opacity: 0.9; margin-top: 1px; }
+
+.action-group {
+  flex: 1;
+  max-width: 155px;
+  height: 112px;
+  display: flex;
+}
+
+.spike-btn {
+  width: 100%;
+  height: 100%;
+  border-radius: 22px;
+  border: 2.5px solid #fb923c;
+  background: rgba(249, 115, 22, 0.48);
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.05rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.spike-btn.active {
+  background: rgba(249, 115, 22, 0.88);
+  border-color: #fed7aa;
+  transform: scale(0.96);
+}
 
 /* 관전자 전용 안내 바 */
 .spectator-banner {
@@ -493,15 +564,15 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   </div>
 </div>
 
-<!-- 플레이어용 터치 패드: 왼쪽(이동+점프 통합) / 오른쪽(스파이크) -->
+<!-- 플레이어용 터치 패드: RPG 반원형 좌·우·상 + 오른쪽 스파이크 -->
 <div class="controls" id="controlsArea">
-  <div class="dpad-group" id="dpadArea">
-    <div class="touch-btn" id="btnLeft">◀<span class="sub-label" id="subLeft">왼쪽</span></div>
-    <div class="touch-btn" id="btnRight">▶<span class="sub-label" id="subRight">오른쪽</span></div>
-    <div class="touch-btn jump-btn" id="btnJump">▲<span class="sub-label" id="jumpText">점프</span></div>
+  <div class="semi-pad-wrap" id="semiPadBox">
+    <div class="semi-btn semi-up" id="btnJump">▲<span class="sub-label" id="jumpText">점프</span></div>
+    <div class="semi-btn semi-left" id="btnLeft">◀<span class="sub-label" id="subLeft">왼쪽</span></div>
+    <div class="semi-btn semi-right" id="btnRight">▶<span class="sub-label" id="subRight">오른쪽</span></div>
   </div>
   <div class="action-group">
-    <div class="touch-btn spike-btn" id="btnSpike">💥<span id="spikeText">스파이크</span><span class="sub-label" id="subSpike">Space / 터치</span></div>
+    <div class="spike-btn" id="btnSpike">💥<span id="spikeText">스파이크</span><span class="sub-label" id="subSpike">Space / 터치</span></div>
   </div>
 </div>
 
@@ -1896,20 +1967,15 @@ window.onload = function() {
   document.getElementById("btnCancelRoom").onclick = function() { returnToLobby(T().roomCancelled); };
   btnHome.onclick = function() { returnToLobby(); };
 
-  // --- 8. 터치 및 키보드 조작 (왼쪽 통합 이동+점프 대각선 점프 최적화) ---
+  // --- 8. 터치 및 키보드 조작 (RPG 스타일 좌·우·상 반원형 패드 + 대각선 점프 지원) ---
   window.onkeydown = function(e) { keys[e.code] = true; if (gameState === 'playing' && gameOver && e.code === 'Space' && (netMode === 'ai' || netMode === 'host')) resetGame(); };
   window.onkeyup = function(e) { keys[e.code] = false; };
   cvs.addEventListener('touchstart', function(e) { if (gameState === 'playing' && gameOver && (netMode === 'ai' || netMode === 'host')) { e.preventDefault(); resetGame(); } });
   cvs.addEventListener('click', function() { if (gameState === 'playing' && gameOver && (netMode === 'ai' || netMode === 'host')) resetGame(); });
 
-  var dpadArea = document.getElementById("dpadArea"), btnLeft = document.getElementById("btnLeft"), btnRight = document.getElementById("btnRight"), btnJump = document.getElementById("btnJump");
+  var semiPadBox = document.getElementById("semiPadBox"), btnLeft = document.getElementById("btnLeft"), btnRight = document.getElementById("btnRight"), btnJump = document.getElementById("btnJump");
 
-  function isPointInEl(x, y, el, pad) {
-    var r = el.getBoundingClientRect();
-    return x >= r.left - pad && x <= r.right + pad && y >= r.top - pad && y <= r.bottom + pad;
-  }
-
-  function handleLeftPad(e) {
+  function handleSemiPad(e) {
     e.preventDefault();
     SoundEngine.unlockAndStart();
     if (gameState !== 'playing' || netMode === 'spectator') return;
@@ -1919,12 +1985,26 @@ window.onload = function() {
     var rightActive = false;
     var jumpActive = false;
 
+    var boxRect = semiPadBox.getBoundingClientRect();
+    var centerX = boxRect.left + boxRect.width * 0.5;
+    var midY = boxRect.top + boxRect.height * 0.56;
+
     for (var i = 0; i < e.touches.length; i++) {
       var tx = e.touches[i].clientX;
       var ty = e.touches[i].clientY;
-      if (isPointInEl(tx, ty, btnLeft, 10)) leftActive = true;
-      if (isPointInEl(tx, ty, btnRight, 10)) rightActive = true;
-      if (isPointInEl(tx, ty, btnJump, 10)) jumpActive = true;
+
+      if (tx >= boxRect.left - 24 && tx <= boxRect.right + 24 && ty >= boxRect.top - 24 && ty <= boxRect.bottom + 20) {
+        // 상단 반원 구역 또는 점프 버튼 근처면 점프 활성화 (좌/우와 동시 적용 시 대각선 점프!)
+        if (ty < midY) {
+          jumpActive = true;
+        }
+        // 좌측/우측 구역 판정
+        if (tx < centerX - 10) {
+          leftActive = true;
+        } else if (tx > centerX + 10) {
+          rightActive = true;
+        }
+      }
     }
 
     keys['ArrowLeft'] = leftActive;
@@ -1936,10 +2016,10 @@ window.onload = function() {
     btnJump.classList.toggle('active', jumpActive);
   }
 
-  dpadArea.addEventListener('touchstart', handleLeftPad, { passive: false });
-  dpadArea.addEventListener('touchmove', handleLeftPad, { passive: false });
-  dpadArea.addEventListener('touchend', handleLeftPad, { passive: false });
-  dpadArea.addEventListener('touchcancel', handleLeftPad, { passive: false });
+  semiPadBox.addEventListener('touchstart', handleSemiPad, { passive: false });
+  semiPadBox.addEventListener('touchmove', handleSemiPad, { passive: false });
+  semiPadBox.addEventListener('touchend', handleSemiPad, { passive: false });
+  semiPadBox.addEventListener('touchcancel', handleSemiPad, { passive: false });
 
   function bindMouseFallback(btn, code) {
     var down = function(e) {
