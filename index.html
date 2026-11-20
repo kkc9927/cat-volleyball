@@ -2947,7 +2947,7 @@ window.onload = function() {
             if (gameState !== 'playing') startMatch('host');
           } else {
             spectatorConns.push(c); updateSpecBadge(spectatorConns.length);
-            c.send({ type: 'role', role: 'spectator', p1Name: p1.name, p2Name: p2.name, specCount: spectatorConns.length });
+            c.send({ type: 'role', role: 'spectator', p1Name: p1.name, p1Tier: p1.tier, p1Skin: p1.skin, p2Name: p2.name, p2Skin: p2.skin, ballSkin: ball.skin, specCount: spectatorConns.length });
           }
         } else if (data && data.type === 'keys' && c === player2Conn) {
           remoteKeys = data.keys;
@@ -3066,7 +3066,7 @@ window.onload = function() {
           if (data.type === 'role') {
             p1.name = data.p1Name || cur.defaultP1; p1.tier = data.p1Tier || cur.tiers[0].badge; p1.skin = data.p1Skin || 'cream'; ball.skin = data.ballSkin || 'classic';
             if (data.role === 'guest') { p2.name = myNick; p2.tier = rInfo.tier; p2.skin = userState.equippedCat; startMatch('guest'); }
-            else { p2.name = data.p2Name || cur.defaultP2; updateSpecBadge(data.specCount || 1); document.getElementById("spectatorInfo").innerText = cur.specWatching(p1.name, p2.name); startMatch('spectator'); }
+            else { p2.name = data.p2Name || cur.defaultP2; if (data.p2Skin) p2.skin = data.p2Skin; updateSpecBadge(data.specCount || 1); document.getElementById("spectatorInfo").innerText = cur.specWatching(p1.name, p2.name); startMatch('spectator'); }
           } else if (data.type === 'state') {
             if (data.p1.ht > 14 && prevHit1 <= 14) { SoundEngine.playCatMeow(data.p1.sk, false); if (data.b.st !== 'none') SoundEngine.playSpikeSound(data.b.st); }
             if (data.p2.ht > 14 && prevHit2 <= 14) { SoundEngine.playCatMeow(data.p2.sk, false); if (data.b.st !== 'none') SoundEngine.playSpikeSound(data.b.st); }
@@ -3425,7 +3425,7 @@ window.onload = function() {
     }
     hitBall(p2, p2Spike);
 
-    if (ball.y > 430) {
+    if (ball.y > 404) {
       if (ball.x < 400) {
         score2++; SoundEngine.playScore(false);
         if (score2 >= WIN_SCORE) { gameOver = true; winnerText = T().winMsg(p2.name); if (!matchRecorded) { matchRecorded = true; recordMatchResult(false); } }
@@ -3486,7 +3486,7 @@ window.onload = function() {
           var framesToNet = Math.max(10, (ball.x - 400) / Math.abs(vxSpeed));
           var netClearY = 215;
 
-          var vyForNet = (netClearY - ball.y - 0.5 * 0.115 * framesToNet * framesToNet) / framesToNet;
+          var vyForNet = (netClearY - ball.y - 0.5 * 0.095 * framesToNet * framesToNet) / framesToNet;
           ball.vx = vxSpeed;
           ball.vy = Math.min(-4.8, vyForNet);
           aiWillSpike = false;
