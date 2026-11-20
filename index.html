@@ -3817,7 +3817,13 @@ window.onload = function() {
     } else if (ball.skin === 'paw') {
       ctx.fillStyle = '#fce7f3'; ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
       ctx.fillStyle = '#f43f5e';
-      ctx.beginPath(); ctx.ellipse(0, 4, 6.5, 5, 0, 0, TAU); ctx.arc(-7, -4, 2.7, 0, TAU); ctx.arc(-2.5, -7, 2.7, 0, TAU); ctx.arc(2.5, -7, 2.7, 0, TAU); ctx.arc(7, -4, 2.7, 0, TAU); ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(0, 7, 11.5, 8.5, 0, 0, TAU);
+      ctx.arc(-12.5, -5.5, 4.6, 0, TAU);
+      ctx.arc(-4.5, -11.5, 4.6, 0, TAU);
+      ctx.arc(4.5, -11.5, 4.6, 0, TAU);
+      ctx.arc(12.5, -5.5, 4.6, 0, TAU);
+      ctx.fill();
     } else if (ball.skin === 'golden') {
       var gGrad = ctx.createRadialGradient(-5, -5, 2, 0, 0, ball.r);
       gGrad.addColorStop(0, '#ffffff'); gGrad.addColorStop(0.35, '#fef08a'); gGrad.addColorStop(0.75, '#facc15'); gGrad.addColorStop(1, '#b45309');
