@@ -2342,12 +2342,12 @@ window.onload = function() {
   };
 
   // 브론즈·실버는 입문자가 편하게 즐길 수 있도록 속도·점프·반응·실수율을 대폭 완화
-  var AI_DIFFICULTIES = [
-    { lv: 1, maxSpeed: 3.6, jumpHeightY: 255, jumpRangeX: 72,  predictLead: 6,  jumpChance: 0.75, errorOffset: 16, spikeChance: 0.00, spikeSkin: 'wind',      skin: 'gray'    }, // 브론즈 (적당한 입문 난이도)
-    { lv: 2, maxSpeed: 4.4, jumpHeightY: 270, jumpRangeX: 82,  predictLead: 12, jumpChance: 0.85, errorOffset: 10, spikeChance: 0.25, spikeSkin: 'wind',      skin: 'cheese'  }, // 실버
-    { lv: 3, maxSpeed: 5.6, jumpHeightY: 295, jumpRangeX: 100, predictLead: 22, jumpChance: 1.00, errorOffset: 0,  spikeChance: 0.75, spikeSkin: 'lightning', skin: 'persian' }, // 골드
-    { lv: 4, maxSpeed: 6.6, jumpHeightY: 310, jumpRangeX: 112, predictLead: 30, jumpChance: 1.00, errorOffset: 0,  spikeChance: 0.90, spikeSkin: 'ice',       skin: 'siamese' }, // 다이아
-    { lv: 5, maxSpeed: 7.4, jumpHeightY: 322, jumpRangeX: 125, predictLead: 38, jumpChance: 1.00, errorOffset: 0,  spikeChance: 1.00, spikeSkin: 'meteor',    skin: 'gold'    }  // 챌린저냥
+ var AI_DIFFICULTIES = [
+    { lv: 1, maxSpeed: 3.6,  jumpHeightY: 255, jumpRangeX: 70,  predictLead: 6,  jumpChance: 0.78, errorOffset: 18, spikeChance: 0.00, spikeSkin: 'wind',      skin: 'gray'    }, // 브론즈 (랠리 가능한 초보)
+    { lv: 2, maxSpeed: 3.95, jumpHeightY: 265, jumpRangeX: 76,  predictLead: 9,  jumpChance: 0.83, errorOffset: 14, spikeChance: 0.18, spikeSkin: 'wind',      skin: 'cheese'  }, // 실버 (난이도 소폭 하향)
+    { lv: 3, maxSpeed: 5.6,  jumpHeightY: 295, jumpRangeX: 100, predictLead: 22, jumpChance: 1.00, errorOffset: 0,  spikeChance: 0.75, spikeSkin: 'lightning', skin: 'persian' }, // 골드
+    { lv: 4, maxSpeed: 6.6,  jumpHeightY: 310, jumpRangeX: 112, predictLead: 30, jumpChance: 1.00, errorOffset: 0,  spikeChance: 0.90, spikeSkin: 'ice',       skin: 'siamese' }, // 다이아
+    { lv: 5, maxSpeed: 7.4,  jumpHeightY: 322, jumpRangeX: 125, predictLead: 38, jumpChance: 1.00, errorOffset: 0,  spikeChance: 1.00, spikeSkin: 'meteor',    skin: 'gold'    }  // 챌린저냥
   ];
 
   var currentAiConfig = AI_DIFFICULTIES[0];
