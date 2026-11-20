@@ -2965,6 +2965,8 @@ window.onload = function() {
       if (err && err.type === 'unavailable-id') {
         if (fixedCode) setTimeout(function() { if (isHostingRoom) tryCreateHostSlot(0, fixedCode); }, 1200);
         else tryCreateHostSlot(slotIndex + 1, null);
+      } else {
+        lobbyStatus.innerText = T().noInternet;
       }
     });
   }
@@ -2993,15 +2995,28 @@ window.onload = function() {
     scanPeer = sp;
 
     sp.on('open', function() {
+      var probeSlot = function(idx) {
+        if (idx >= LOBBY_SLOTS.length || scanPeer !== sp) return;
+        var slotId = LOBBY_SLOTS[idx];
+        var c = sp.connect(slotId, { reliable: true }), done = false;
+        var finishOne = function() {
+          if (done) return;
+          done = true;
+          checkedCount++;
+          renderRoomList(foundRooms, checkedCount >= LOBBY_SLOTS.length);
+        };
+        c.on('open', function() { c.send({ type: 'probe' }); });
+        c.on('data', function(data) {
+          if (data && data.type === 'roomInfo') {
+            if (!foundRooms.some(function(r) { return r.roomId === data.roomId; })) foundRooms.push(data);
+            finishOne();
+          }
+        });
+        c.on('error', finishOne);
+        setTimeout(function() { try { c.close(); } catch (e) {} finishOne(); }, 3200);
+      };
       for (var i = 0; i < LOBBY_SLOTS.length; i++) {
-        (function(slotId) {
-          var c = sp.connect(slotId, { reliable: true }), done = false;
-          var finishOne = function() { if (done) return; done = true; checkedCount++; renderRoomList(foundRooms, checkedCount >= LOBBY_SLOTS.length); };
-          c.on('open', function() { c.send({ type: 'probe' }); });
-          c.on('data', function(data) { if (data && data.type === 'roomInfo') { foundRooms.push(data); finishOne(); } });
-          c.on('error', finishOne);
-          setTimeout(function() { try { c.close(); } catch (e) {} finishOne(); }, 3500);
-        })(LOBBY_SLOTS[i]);
+        (function(idx) { setTimeout(function() { probeSlot(idx); }, idx * 90); })(i);
       }
     });
     sp.on('error', function() { renderRoomList(foundRooms, true); });
@@ -3057,10 +3072,20 @@ window.onload = function() {
     lobbyStatus.innerText = d.connectingRoom(code);
     peer = new Peer(joinConfig);
 
+    var joinTimeout = setTimeout(function() {
+      if (gameState !== 'playing') {
+        lobbyStatus.innerText = T().roomNotFound;
+        if (peer) { try { peer.destroy(); } catch (e) {} peer = null; }
+      }
+    }, 8000);
+
     peer.on('open', function() {
       conn = peer.connect(code, { reliable: true });
       conn.on('open', function() {
-        conn.send({ type: 'hello', nick: myNick, tier: rInfo.tier, catSkin: userState.equippedCat, spikeSkin: userState.equippedSpike });
+        clearTimeout(joinTimeout);
+        var helloPayload = { type: 'hello', nick: myNick, tier: rInfo.tier, catSkin: userState.equippedCat, spikeSkin: userState.equippedSpike };
+        conn.send(helloPayload);
+        setTimeout(function() { if (conn && conn.open && gameState !== 'playing') conn.send(helloPayload); }, 450);
         conn.on('data', function(data) {
           var cur = T();
           if (data.type === 'role') {
@@ -3090,9 +3115,10 @@ window.onload = function() {
           }
         });
       });
-      conn.on('close', function() { returnToLobby(T().hostClosed); });
+      conn.on('close', function() { clearTimeout(joinTimeout); returnToLobby(T().hostClosed); });
+      conn.on('error', function() { clearTimeout(joinTimeout); lobbyStatus.innerText = T().roomNotFound; });
     });
-    peer.on('error', function() { lobbyStatus.innerText = T().roomNotFound; });
+    peer.on('error', function() { clearTimeout(joinTimeout); lobbyStatus.innerText = T().roomNotFound; });
   }
 
   document.addEventListener("visibilitychange", function() {
