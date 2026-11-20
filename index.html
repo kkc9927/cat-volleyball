@@ -619,7 +619,7 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   box-shadow: 0 0 18px rgba(251, 146, 60, 0.85);
 }
 
-/* 가로 모드(Landscape): 게임 화면 겹침 방지 + 조작부 확대 및 안쪽 배치 */
+/* 가로 모드(Landscape): 버튼 확대 + 오른쪽 노치 잘림 방지 + 게임 화면 겹침 방지 */
 @media (orientation: landscape) and (max-height: 520px) {
   body {
     padding: 2px 8px;
@@ -628,28 +628,8 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   .top-bar {
     position: fixed;
     top: 4px;
-    left: 10px;
-    right: 10px;
-    max-width: none;
-    z-index: 20;
-    pointer-events: none;
-  }
-  .top-bar button, .top-bar .spec-badge {
-    pointer-events: auto;
-  }
-  h1 { display: none; }
-
- /* 가로 모드(Landscape): 점프·스파이크 가로 나란히 배치 유지 + 게임 화면 겹침 방지 */
-@media (orientation: landscape) and (max-height: 520px) {
-  body {
-    padding: 2px 8px;
-    justify-content: center;
-  }
-  .top-bar {
-    position: fixed;
-    top: 4px;
-    left: 10px;
-    right: 10px;
+    left: max(12px, env(safe-area-inset-left));
+    right: max(12px, env(safe-area-inset-right));
     max-width: none;
     z-index: 20;
     pointer-events: none;
@@ -664,14 +644,15 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
     width: auto;
     height: 92dvh;
     max-height: 92dvh;
-    max-width: calc(100vw - 320px);
+    max-width: calc(100vw - 340px);
   }
 
+  /* 좌우 안전 여백(노치/베젤 보호) 적용으로 오른쪽 버튼 잘림 방지 */
   .controls {
     position: fixed;
-    left: 16px;
-    right: 16px;
-    bottom: 14px;
+    left: max(18px, env(safe-area-inset-left));
+    right: max(18px, env(safe-area-inset-right));
+    bottom: max(12px, env(safe-area-inset-bottom));
     max-width: none;
     max-height: none;
     padding: 0;
@@ -682,24 +663,24 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 
   /* 왼쪽 조이패드 */
   .joypad-zone {
-    width: 118px;
-    height: 118px;
+    width: 126px;
+    height: 126px;
     pointer-events: auto;
     opacity: 0.9;
   }
   .joy-base {
-    width: 110px;
-    height: 110px;
+    width: 116px;
+    height: 116px;
   }
   .joy-stick {
-    width: 44px;
-    height: 44px;
-    margin-left: -22px;
-    margin-top: -22px;
-    font-size: 0.9rem;
+    width: 46px;
+    height: 46px;
+    margin-left: -23px;
+    margin-top: -23px;
+    font-size: 0.92rem;
   }
 
-  /* 오른쪽 점프 + 스파이크 버튼을 가로로 나란히 배치 */
+  /* 오른쪽 점프 + 스파이크 버튼을 큼직한 둥근 패드로 가로 배치 */
   .action-group {
     flex-direction: row;
     align-items: flex-end;
@@ -709,10 +690,10 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
     opacity: 0.9;
   }
   .jump-btn, .spike-btn {
-    width: 78px;
-    height: 82px;
-    border-radius: 50%;
-    font-size: 0.84rem;
+    width: 86px;
+    height: 96px;
+    border-radius: 20px;
+    font-size: 0.88rem;
   }
   .sub-label {
     display: none;
