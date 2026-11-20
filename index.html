@@ -112,8 +112,10 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   padding: 6px 10px;
+  gap: 3px;
+  overflow-y: auto;
   z-index: 10;
 }
 .lobby-header { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 420px; margin-bottom: 4px; gap: 6px; }
@@ -202,12 +204,14 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   margin-top: 2px;
 }
 
-/* 대기화면 하단 배너 광고 슬롯 (320x50 규격) */
+/* 대기화면 하단 배너 광고 슬롯 (320x50 규격, 겹침 방지) */
 .lobby-ad-slot {
   width: 100%;
   max-width: 320px;
+  height: 50px;
   min-height: 50px;
-  margin-top: 3px;
+  flex-shrink: 0;
+  margin-top: auto;
   background: rgba(15, 23, 42, 0.85);
   border: 1px dashed rgba(148, 163, 184, 0.55);
   border-radius: 7px;
@@ -656,6 +660,19 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   }
   .joypad-zone:active, .action-group:active {
     opacity: 0.96;
+  }
+
+  /* ▼ 여기부터 새로 추가되는 로비·광고 겹침 방지 코드 ▼ */
+  .lobby-overlay {
+    padding: 4px 10px;
+    gap: 2px;
+  }
+  .menu-box { gap: 3px; }
+  .menu-btn { padding: 4px 8px; font-size: 0.76rem; }
+  .ctrl-hint { display: none; }
+  .lobby-ad-slot {
+    height: 40px;
+    min-height: 40px;
   }
 }
 /* 관전자 전용 안내 바 */
@@ -2267,8 +2284,8 @@ window.onload = function() {
 
   // 브론즈·실버는 입문자가 편하게 즐길 수 있도록 속도·점프·반응·실수율을 대폭 완화
   var AI_DIFFICULTIES = [
-    { lv: 1, maxSpeed: 2.9, jumpHeightY: 225, jumpRangeX: 52,  predictLead: 2,  jumpChance: 0.45, errorOffset: 38, spikeChance: 0.00, spikeSkin: 'wind',      skin: 'gray'    }, // 브론즈 (입문용 매우 쉬움)
-    { lv: 2, maxSpeed: 3.7, jumpHeightY: 250, jumpRangeX: 68,  predictLead: 8,  jumpChance: 0.70, errorOffset: 22, spikeChance: 0.18, spikeSkin: 'wind',      skin: 'cheese'  }, // 실버 (쉬움)
+    { lv: 1, maxSpeed: 3.6, jumpHeightY: 255, jumpRangeX: 72,  predictLead: 6,  jumpChance: 0.75, errorOffset: 16, spikeChance: 0.00, spikeSkin: 'wind',      skin: 'gray'    }, // 브론즈 (적당한 입문 난이도)
+    { lv: 2, maxSpeed: 4.4, jumpHeightY: 270, jumpRangeX: 82,  predictLead: 12, jumpChance: 0.85, errorOffset: 10, spikeChance: 0.25, spikeSkin: 'wind',      skin: 'cheese'  }, // 실버
     { lv: 3, maxSpeed: 5.6, jumpHeightY: 295, jumpRangeX: 100, predictLead: 22, jumpChance: 1.00, errorOffset: 0,  spikeChance: 0.75, spikeSkin: 'lightning', skin: 'persian' }, // 골드
     { lv: 4, maxSpeed: 6.6, jumpHeightY: 310, jumpRangeX: 112, predictLead: 30, jumpChance: 1.00, errorOffset: 0,  spikeChance: 0.90, spikeSkin: 'ice',       skin: 'siamese' }, // 다이아
     { lv: 5, maxSpeed: 7.4, jumpHeightY: 322, jumpRangeX: 125, predictLead: 38, jumpChance: 1.00, errorOffset: 0,  spikeChance: 1.00, spikeSkin: 'meteor',    skin: 'gold'    }  // 챌린저냥
