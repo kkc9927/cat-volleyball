@@ -2407,6 +2407,7 @@ window.onload = function() {
     try { localStorage.setItem('cat_volley_season_v1', JSON.stringify(userState)); } catch (e) {}
   }
 
+  // 챌린저냥 조건: 10승 이상이면서 승률 75% 이상
   function getRankInfo(wins, losses) {
     var tiers = T().tiers;
     var total = wins + losses;
@@ -2418,7 +2419,8 @@ window.onload = function() {
     else if (wins >= 3 || (total >= 2 && rate >= 50)) { lv = 2; tier = tiers[2].badge; }
     else if (wins >= 1) { lv = 1; tier = tiers[1].badge; }
 
-    var score = mul(wins, 30) + rate;
+    // 등급(lv)을 최우선 가중치(10,000점 단위)로 반영해 하위 등급이 상위 등급을 역전하지 못하게 고정
+    var score = mul(lv, 10000) + mul(wins, 100) + rate;
     var summary = currentLang === 'ko'
       ? tier + " · " + wins + "승 " + losses + "패 (" + rate + "%)"
       : tier + " · " + wins + "W " + losses + "L (" + rate + "%)";
@@ -2513,9 +2515,10 @@ window.onload = function() {
         }
         list.sort(function(a, b) {
           var ra = getRankInfo(a.wins, a.losses), rb = getRankInfo(b.wins, b.losses);
-          if (rb.score !== ra.score) return rb.score - ra.score;
-          if (b.wins !== a.wins) return b.wins - a.wins;
-          return rb.rate - ra.rate;
+          if (rb.lv !== ra.lv) return rb.lv - ra.lv;          // 1순위: 등급(티어) 높은 순
+          if (b.wins !== a.wins) return b.wins - a.wins;      // 2순위: 같은 등급 내 다승 순
+          if (rb.rate !== ra.rate) return rb.rate - ra.rate;  // 3순위: 승률 높은 순
+          return a.losses - b.losses;                         // 4순위: 패배 적은 순
         });
 
         var top10 = list.slice(0, 10);
