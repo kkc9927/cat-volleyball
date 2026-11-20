@@ -616,17 +616,17 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   box-shadow: 0 0 18px rgba(251, 146, 60, 0.85);
 }
 
-/* 가로 모드(Landscape): 화면 찌그러짐 방지 + 반투명 오버레이 배치 */
+/* 가로 모드(Landscape): 게임 화면 겹침 방지 + 조작부 확대 및 안쪽 배치 */
 @media (orientation: landscape) and (max-height: 520px) {
   body {
-    padding: 2px 6px;
+    padding: 2px 8px;
     justify-content: center;
   }
   .top-bar {
     position: fixed;
     top: 4px;
-    left: 8px;
-    right: 8px;
+    left: 10px;
+    right: 10px;
     max-width: none;
     z-index: 20;
     pointer-events: none;
@@ -636,33 +636,64 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   }
   h1 { display: none; }
 
+  /* 게임 화면이 버튼에 가려지지 않도록 좌우 여백을 남기는 비율로 설정 */
   .game-wrapper {
     width: auto;
-    height: 95dvh;
-    max-height: 95dvh;
-    max-width: 98vw;
+    height: 92dvh;
+    max-height: 92dvh;
+    max-width: calc(100vw - 270px);
   }
 
+  /* 조작부를 양쪽 끝에서 안쪽으로 당기고, 크기를 키워 터치감 개선 */
   .controls {
     position: fixed;
-    left: 12px;
-    right: 12px;
-    bottom: 8px;
+    left: 24px;
+    right: 24px;
+    bottom: 14px;
     max-width: none;
     max-height: none;
     padding: 0;
     pointer-events: none;
     z-index: 15;
   }
-  .joypad-zone, .action-group {
+  .joypad-zone {
+    width: 128px;
+    height: 128px;
     pointer-events: auto;
-    opacity: 0.78;
+    opacity: 0.88;
+  }
+  .joy-base {
+    width: 118px;
+    height: 118px;
+  }
+  .joy-stick {
+    width: 48px;
+    height: 48px;
+    margin-left: -24px;
+    margin-top: -24px;
+    font-size: 0.95rem;
+  }
+  .action-group {
+    gap: 10px;
+    height: 106px;
+    pointer-events: auto;
+    opacity: 0.88;
+  }
+  .jump-btn {
+    width: 96px;
+    border-radius: 22px;
+    font-size: 0.96rem;
+  }
+  .spike-btn {
+    width: 104px;
+    border-radius: 22px;
+    font-size: 0.96rem;
   }
   .joypad-zone:active, .action-group:active {
-    opacity: 0.96;
+    opacity: 0.98;
   }
 
-  /* ▼ 여기부터 새로 추가되는 로비·광고 겹침 방지 코드 ▼ */
+  /* 가로 모드 로비 내부 여백·배너 겹침 방지 */
   .lobby-overlay {
     padding: 4px 10px;
     gap: 2px;
