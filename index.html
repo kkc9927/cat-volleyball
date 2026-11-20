@@ -29,7 +29,13 @@ h1 { font-size: 0.96rem; margin: 0; white-space: nowrap; }
 .home-btn:active { background: #475569; }
 
 /* 게임 캔버스 래퍼 */
-.game-wrapper { position: relative; width: 100%; max-width: 800px; max-height: 58dvh; aspect-ratio: 800 / 450; }
+.game-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  max-height: 67dvh;
+  aspect-ratio: 800 / 450;
+}
 canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%; display: block; background: #0284c7; transform: translateZ(0); }
 
 /* 귀여운 스토리 인트로 오버레이 */
@@ -453,18 +459,18 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   width: 100%;
   max-width: 800px;
   flex: 1;
-  max-height: 168px;
+  max-height: 118px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  padding: 4px 12px 8px;
+  padding: 2px 14px 6px;
 }
 
 .joypad-zone {
   position: relative;
-  width: 148px;
-  height: 148px;
+  width: 114px;
+  height: 114px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -473,18 +479,18 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 
 .joy-base {
   position: relative;
-  width: 134px;
-  height: 134px;
+  width: 104px;
+  height: 104px;
   border-radius: 50%;
   background: radial-gradient(circle at 35% 30%, rgba(56, 189, 248, 0.24), rgba(15, 23, 42, 0.88) 72%);
-  border: 2.5px solid rgba(125, 211, 252, 0.55);
-  box-shadow: 0 0 18px rgba(56, 189, 248, 0.2), inset 0 0 14px rgba(2, 132, 199, 0.35);
+  border: 2px solid rgba(125, 211, 252, 0.55);
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.2), inset 0 0 12px rgba(2, 132, 199, 0.35);
   transition: border-color 0.12s ease, box-shadow 0.12s ease;
 }
 
 .joy-base.dragging {
   border-color: #38bdf8;
-  box-shadow: 0 0 24px rgba(56, 189, 248, 0.48), inset 0 0 18px rgba(56, 189, 248, 0.4);
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.48), inset 0 0 14px rgba(56, 189, 248, 0.4);
 }
 
 .joy-inner-ring {
@@ -500,14 +506,14 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 
 .joy-dir {
   position: absolute;
-  font-size: 0.88rem;
+  font-size: 0.82rem;
   font-weight: bold;
   color: rgba(186, 230, 253, 0.72);
   pointer-events: none;
   transition: color 0.08s ease, transform 0.08s ease;
 }
-.joy-dir.left  { left: 10px; top: 50%; transform: translateY(-50%); }
-.joy-dir.right { right: 10px; top: 50%; transform: translateY(-50%); }
+.joy-dir.left  { left: 8px; top: 50%; transform: translateY(-50%); }
+.joy-dir.right { right: 8px; top: 50%; transform: translateY(-50%); }
 
 .joy-dir.lit {
   color: #fde047;
@@ -532,80 +538,126 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 52px;
-  height: 52px;
-  margin-left: -26px;
-  margin-top: -26px;
+  width: 42px;
+  height: 42px;
+  margin-left: -21px;
+  margin-top: -21px;
   border-radius: 50%;
   background: radial-gradient(circle at 32% 30%, #e0f2fe, #38bdf8 55%, #0284c7 100%);
-  border: 2.5px solid #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45), 0 0 14px rgba(56, 189, 248, 0.65);
+  border: 2px solid #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45), 0 0 12px rgba(56, 189, 248, 0.65);
   pointer-events: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   color: #0f172a;
 }
 
 .joy-base.dragging .joy-stick {
   background: radial-gradient(circle at 32% 30%, #fef9c3, #facc15 60%, #d97706 100%);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), 0 0 18px rgba(250, 204, 21, 0.85);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 16px rgba(250, 204, 21, 0.85);
 }
 
-.sub-label { font-size: 0.62rem; font-weight: normal; opacity: 0.9; margin-top: 2px; }
+.sub-label { font-size: 0.6rem; font-weight: normal; opacity: 0.9; margin-top: 2px; }
 
 .action-group {
   display: flex;
   align-items: center;
-  gap: 10px;
-  height: 118px;
+  gap: 8px;
+  height: 92px;
 }
 
 .jump-btn {
-  width: 104px;
+  width: 88px;
   height: 100%;
-  border-radius: 24px;
+  border-radius: 20px;
   border: 2.5px solid #38bdf8;
   background: radial-gradient(circle at 35% 25%, rgba(56, 189, 248, 0.62), rgba(2, 132, 199, 0.55));
   color: #fff;
   font-weight: bold;
-  font-size: 1.0rem;
+  font-size: 0.9rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
 }
 .jump-btn.active {
   background: radial-gradient(circle at 35% 25%, #bae6fd, #0284c7);
   border-color: #fef08a;
   transform: scale(0.95);
-  box-shadow: 0 0 20px rgba(56, 189, 248, 0.85);
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.85);
 }
 
 .spike-btn {
-  width: 112px;
+  width: 96px;
   height: 100%;
-  border-radius: 24px;
+  border-radius: 20px;
   border: 2.5px solid #fb923c;
   background: radial-gradient(circle at 35% 25%, rgba(251, 146, 60, 0.65), rgba(194, 65, 12, 0.55));
   color: #fff;
   font-weight: bold;
-  font-size: 1.0rem;
+  font-size: 0.9rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.3);
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
 }
 .spike-btn.active {
   background: radial-gradient(circle at 35% 25%, #fdba74, #ea580c);
   border-color: #fef08a;
   transform: scale(0.95);
-  box-shadow: 0 0 20px rgba(251, 146, 60, 0.85);
+  box-shadow: 0 0 18px rgba(251, 146, 60, 0.85);
 }
 
+/* 가로 모드(Landscape): 화면 찌그러짐 방지 + 반투명 오버레이 배치 */
+@media (orientation: landscape) and (max-height: 520px) {
+  body {
+    padding: 2px 6px;
+    justify-content: center;
+  }
+  .top-bar {
+    position: fixed;
+    top: 4px;
+    left: 8px;
+    right: 8px;
+    max-width: none;
+    z-index: 20;
+    pointer-events: none;
+  }
+  .top-bar button, .top-bar .spec-badge {
+    pointer-events: auto;
+  }
+  h1 { display: none; }
+
+  .game-wrapper {
+    width: auto;
+    height: 95dvh;
+    max-height: 95dvh;
+    max-width: 98vw;
+  }
+
+  .controls {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: 8px;
+    max-width: none;
+    max-height: none;
+    padding: 0;
+    pointer-events: none;
+    z-index: 15;
+  }
+  .joypad-zone, .action-group {
+    pointer-events: auto;
+    opacity: 0.78;
+  }
+  .joypad-zone:active, .action-group:active {
+    opacity: 0.96;
+  }
+}
 /* 관전자 전용 안내 바 */
 .spectator-banner {
   display: none;
@@ -3009,7 +3061,7 @@ window.onload = function() {
 
   var joyTouchId = null;
   var isMouseJoyDragging = false;
-  var JOY_MAX_RADIUS = 44;
+  var JOY_MAX_RADIUS = 34;
 
   function resetJoypadVisuals() {
     joyTouchId = null;
