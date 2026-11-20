@@ -3506,6 +3506,22 @@ window.onload = function() {
   function drawChar(p) {
     var sk = CAT_SKINS[p.skin] || CAT_SKINS.cream, isSimple = sk.simple, time = performance.now();
     if (sk.id === 'gold') drawGoldCatAurora(p.x, p.y, time);
+    if (sk.id === 'siamese') {
+      ctx.save();
+      var diaPulse = Math.sin(mul(time, 0.006));
+      var diaAura = ctx.createRadialGradient(p.x, p.y, p.r * 0.4, p.x, p.y, p.r + 18 + diaPulse * 3);
+      diaAura.addColorStop(0.0, 'rgba(186, 230, 253, 0.5)');
+      diaAura.addColorStop(0.6, 'rgba(56, 189, 248, 0.3)');
+      diaAura.addColorStop(1.0, 'rgba(56, 189, 248, 0)');
+      ctx.fillStyle = diaAura;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r + 20, 0, TAU); ctx.fill();
+
+      var dTw1 = Math.sin(mul(time, 0.009));
+      if (dTw1 > -0.2) drawStarSparkle(p.x - 24, p.y - 18, 6.0 * (0.6 + Math.max(0, dTw1) * 0.6), '#e0f2fe');
+      var dTw2 = Math.cos(mul(time, 0.008));
+      if (dTw2 > -0.2) drawStarSparkle(p.x + 25, p.y + 10, 5.5 * (0.6 + Math.max(0, dTw2) * 0.6), '#7dd3fc');
+      ctx.restore();
+    }
 
     ctx.save();
     var labelStr = p.tier ? (p.tier + " " + p.name) : p.name;
@@ -3670,9 +3686,31 @@ window.onload = function() {
       ctx.strokeStyle = '#14532d'; ctx.lineWidth = 4;
       ctx.beginPath(); ctx.moveTo(-10, -20); ctx.quadraticCurveTo(-4, 0, -10, 20); ctx.moveTo(0, -20); ctx.quadraticCurveTo(0, 0, 0, 20); ctx.moveTo(10, -20); ctx.quadraticCurveTo(4, 0, 10, 20); ctx.stroke();
     } else if (ball.skin === 'rainbow') {
-      var rGrad = ctx.createLinearGradient(-ball.r, -ball.r, ball.r, ball.r);
-      rGrad.addColorStop(0, '#f43f5e'); rGrad.addColorStop(0.25, '#f59e0b'); rGrad.addColorStop(0.5, '#eab308'); rGrad.addColorStop(0.75, '#22c55e'); rGrad.addColorStop(1, '#3b82f6');
-      ctx.fillStyle = rGrad; ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
+      ctx.save();
+      ctx.rotate(mul(time, 0.004));
+      var rColors = ['#ff3b30', '#ff9500', '#facc15', '#22c55e', '#06b6d4', '#3b82f6', '#a855f7'];
+      var slice = TAU / rColors.length;
+      for (var ri = 0; ri < rColors.length; ri++) {
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.arc(0, 0, ball.r + 2, ri * slice, (ri + 1) * slice + 0.05);
+        ctx.closePath();
+        ctx.fillStyle = rColors[ri];
+        ctx.fill();
+      }
+      ctx.restore();
+
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.65)'; ctx.lineWidth = 1.6;
+      ctx.beginPath(); ctx.arc(-7, 0, ball.r * 0.72, -1.1, 1.1); ctx.stroke();
+      ctx.beginPath(); ctx.arc(7, 0, ball.r * 0.72, 2.0, 4.2); ctx.stroke();
+
+      var holo = ctx.createRadialGradient(-ball.r * 0.32, -ball.r * 0.32, 2, 0, 0, ball.r);
+      holo.addColorStop(0, 'rgba(255, 255, 255, 0.85)');
+      holo.addColorStop(0.35, 'rgba(255, 255, 255, 0.15)');
+      holo.addColorStop(0.8, 'rgba(255, 255, 255, 0)');
+      holo.addColorStop(1, 'rgba(15, 23, 42, 0.32)');
+      ctx.fillStyle = holo;
+      ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
     } else if (ball.skin === 'soccer') {
       ctx.fillStyle = '#ffffff'; ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
       ctx.fillStyle = '#0f172a';
@@ -3703,7 +3741,7 @@ window.onload = function() {
 
     ctx.save(); ctx.translate(ball.x, ball.y);
     ctx.beginPath(); ctx.arc(0, 0, ball.r, 0, TAU); ctx.lineWidth = 3;
-    var strokeCol = ball.skin === 'golden' ? '#fef08a' : '#0f172a';
+    var strokeCol = ball.skin === 'golden' ? '#fef08a' : (ball.skin === 'rainbow' ? '#ffffff' : '#0f172a');
     if (ball.spikeType === 'meteor') strokeCol = '#b91c1c';
     else if (ball.spikeType === 'lightning') strokeCol = '#0284c7';
     else if (ball.spikeType === 'ice') strokeCol = '#7dd3fc';
