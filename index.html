@@ -938,7 +938,7 @@ window.onload = function() {
         { lv: 1, badge: "🥈 실버",     condText: "이번 시즌 1승 달성" },
         { lv: 2, badge: "🥇 골드",     condText: "3승 또는 승률 50%(2전↑)" },
         { lv: 3, badge: "💎 다이아",   condText: "6승 또는 승률 60%(5전↑)" },
-        { lv: 4, badge: "👑 챌린저냥", condText: "10승 또는 승률 70%(8전↑)" }
+        { lv: 4, badge: "👑 챌린저냥", condText: "10승 이상 & 승률 75%↑" }
       ],
       cats: {
         cream:   { name: "크림냥",     desc: "포근하고 담백한 기본 크림 고양이. 깔끔한 '냐옹~' 목소리를 냅니다." },
@@ -1111,7 +1111,7 @@ window.onload = function() {
         { lv: 1, badge: "🥈 Silver",     condText: "1 win this season" },
         { lv: 2, badge: "🥇 Gold",       condText: "3 wins or 50% WR (2+ games)" },
         { lv: 3, badge: "💎 Diamond",    condText: "6 wins or 60% WR (5+ games)" },
-        { lv: 4, badge: "👑 Challenger", condText: "10 wins or 70% WR (8+ games)" }
+        { lv: 4, badge: "👑 Challenger", condText: "10+ wins & 75%+ WR" }
       ],
       cats: {
         cream:   { name: "CreamCat",   desc: "Cozy starter cream cat with a gentle 'nya~' voice." },
@@ -2288,7 +2288,7 @@ window.onload = function() {
     var rate = total > 0 ? Math.round((wins / total) * 100) : 0;
     var lv = 0, tier = tiers[0].badge;
 
-    if (wins >= 10 || (total >= 8 && rate >= 70)) { lv = 4; tier = tiers[4].badge; }
+    if (wins >= 10 && rate >= 75) { lv = 4; tier = tiers[4].badge; }
     else if (wins >= 6 || (total >= 5 && rate >= 60)) { lv = 3; tier = tiers[3].badge; }
     else if (wins >= 3 || (total >= 2 && rate >= 50)) { lv = 2; tier = tiers[2].badge; }
     else if (wins >= 1) { lv = 1; tier = tiers[1].badge; }
@@ -2300,7 +2300,7 @@ window.onload = function() {
 
     return { lv: lv, tier: tier, rate: rate, total: total, score: score, summary: summary };
   }
-
+  
   function isRankMet(reqLv) {
     applyWeeklySeasonResetIfNeeded();
     return getRankInfo(userState.wins, userState.losses).lv >= (reqLv || 0);
@@ -2700,7 +2700,7 @@ window.onload = function() {
       p1.tier = rInfo.tier;
       p2.name = T().aiName + " Lv." + currentAiConfig.lv;
       p2.tier = rInfo.tier;
-      p2.skin = (userState.equippedCat === currentAiConfig.skin) ? 'cream' : currentAiConfig.skin;
+      p2.skin = currentAiConfig.skin;
       p2.spikeSkin = currentAiConfig.spikeSkin;
     } else if (netMode === 'host') {
       p1.tier = rInfo.tier;
@@ -2708,6 +2708,7 @@ window.onload = function() {
       p2.tier = rInfo.tier;
     }
   }
+
 
   function resetGame() {
     score1 = 0; score2 = 0; prevScore1 = 0; prevScore2 = 0;
