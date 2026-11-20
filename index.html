@@ -571,46 +571,46 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 .action-group {
   display: flex;
   align-items: center;
-  gap: 8px;
-  height: 92px;
+  gap: 10px;
+  height: 118px;
 }
 
 .jump-btn {
-  width: 88px;
+  width: 104px;
   height: 100%;
-  border-radius: 20px;
+  border-radius: 24px;
   border: 2.5px solid #38bdf8;
   background: radial-gradient(circle at 35% 25%, rgba(56, 189, 248, 0.62), rgba(2, 132, 199, 0.55));
   color: #fff;
   font-weight: bold;
-  font-size: 0.9rem;
+  font-size: 1.0rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
 }
 .jump-btn.active {
   background: radial-gradient(circle at 35% 25%, #bae6fd, #0284c7);
   border-color: #fef08a;
   transform: scale(0.95);
-  box-shadow: 0 0 18px rgba(56, 189, 248, 0.85);
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.85);
 }
 
 .spike-btn {
-  width: 96px;
+  width: 112px;
   height: 100%;
-  border-radius: 20px;
+  border-radius: 24px;
   border: 2.5px solid #fb923c;
   background: radial-gradient(circle at 35% 25%, rgba(251, 146, 60, 0.65), rgba(194, 65, 12, 0.55));
   color: #fff;
   font-weight: bold;
-  font-size: 0.9rem;
+  font-size: 1.0rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
+  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.3);
 }
 .spike-btn.active {
   background: radial-gradient(circle at 35% 25%, #fdba74, #ea580c);
@@ -3818,13 +3818,11 @@ window.onload = function() {
       ctx.fillStyle = '#fce7f3';
       ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
 
-      // 은은한 배구공 라인
       ctx.strokeStyle = '#f9a8d4';
       ctx.lineWidth = 1.6;
       ctx.beginPath(); ctx.arc(-9, 0, ball.r * 0.75, -1.1, 1.1); ctx.stroke();
       ctx.beginPath(); ctx.arc(9, 0, ball.r * 0.75, 2.0, 4.2); ctx.stroke();
 
-      // 고양이 발바닥 젤리 (각 원이 엉키지 않도록 개별 경로로 분리)
       ctx.fillStyle = '#f43f5e';
       ctx.beginPath();
       ctx.ellipse(0, 7, 11, 8, 0, 0, TAU);
@@ -3840,7 +3838,8 @@ window.onload = function() {
         ctx.beginPath();
         ctx.ellipse(toes[ti].x, toes[ti].y, toes[ti].rx, toes[ti].ry, toes[ti].rot, 0, TAU);
         ctx.fill();
-      } else if (ball.skin === 'golden') {
+      }
+    } else if (ball.skin === 'golden') {
       var gGrad = ctx.createRadialGradient(-5, -5, 2, 0, 0, ball.r);
       gGrad.addColorStop(0, '#ffffff'); gGrad.addColorStop(0.35, '#fef08a'); gGrad.addColorStop(0.75, '#facc15'); gGrad.addColorStop(1, '#b45309');
       ctx.fillStyle = gGrad; ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
