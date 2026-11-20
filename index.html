@@ -3425,7 +3425,7 @@ window.onload = function() {
     }
     hitBall(p2, p2Spike);
 
-    if (ball.y > 404) {
+    if (ball.y + ball.r >= 384) {
       if (ball.x < 400) {
         score2++; SoundEngine.playScore(false);
         if (score2 >= WIN_SCORE) { gameOver = true; winnerText = T().winMsg(p2.name); if (!matchRecorded) { matchRecorded = true; recordMatchResult(false); } }
@@ -3606,7 +3606,7 @@ window.onload = function() {
     ctx.textAlign = 'center'; ctx.fillText(labelStr, p.x, p.y - 53);
     ctx.restore();
 
-    ctx.save(); ctx.translate(p.x, p.y + 48); ctx.scale((2 - p.squash) * 1.18, p.squash * 1.18); ctx.translate(0, -34);
+    ctx.save(); ctx.translate(p.x, p.y + 45); ctx.scale((2 - p.squash) * 1.18, p.squash * 1.18); ctx.translate(0, -34);
 
     var dir = p.side === 1 ? 1 : -1, speedRatio = Math.abs(p.vx) / p.maxSpeed;
     var tailWag = mul(Math.sin(mul(time, 0.008)), 6);
