@@ -2890,7 +2890,35 @@ window.onload = function() {
     document.getElementById("roomCodeDisplay").innerText = targetId;
     lobbyStatus.innerText = d.slotConnecting(slotIndex + 1);
 
-    var tempPeer = new Peer(targetId);
+    var PEER_NET_CONFIG = {
+      config: {
+        iceServers: [
+          { urls: "stun:stun.relay.metered.ca:80" },
+          {
+            urls: "turn:global.relay.metered.ca:80",
+            username: "d14574fd8e955a4ed1a56ced",
+            credential: "WOiiDqHntogS8Kht"
+          },
+          {
+            urls: "turn:global.relay.metered.ca:80?transport=tcp",
+            username: "d14574fd8e955a4ed1a56ced",
+            credential: "WOiiDqHntogS8Kht"
+          },
+          {
+            urls: "turn:global.relay.metered.ca:443",
+            username: "d14574fd8e955a4ed1a56ced",
+            credential: "WOiiDqHntogS8Kht"
+          },
+          {
+            urls: "turns:global.relay.metered.ca:443?transport=tcp",
+            username: "d14574fd8e955a4ed1a56ced",
+            credential: "WOiiDqHntogS8Kht"
+          }
+        ]
+      }
+    };
+
+    var tempPeer = new Peer(targetId, PEER_NET_CONFIG);
     peer = tempPeer;
 
     tempPeer.on('open', function(id) {
@@ -2905,7 +2933,7 @@ window.onload = function() {
         if (data && data.type === 'probe') {
           var isPlaying = (player2Conn && player2Conn.open);
           c.send({ type: 'roomInfo', roomId: myRoomId, hostName: p1.name, hostTier: p1.tier, p2Name: isPlaying ? p2.name : "", status: isPlaying ? 'playing' : 'waiting', specCount: spectatorConns.length });
-          setTimeout(function() { try { c.close(); } catch (e) {} }, 300);
+          setTimeout(function() { try { c.close(); } catch (e) {} }, 400);
           return;
         }
         if (data && data.type === 'hello') {
@@ -2948,7 +2976,19 @@ window.onload = function() {
     roomListBox.innerHTML = '<div style="padding:16px; color:#bae6fd; font-size:0.78rem;">' + d.scanningRooms + '</div>';
     lobbyStatus.innerText = d.scanningRoomsStatus;
 
-    var foundRooms = [], checkedCount = 0, sp = new Peer();
+    var scanConfig = {
+      config: {
+        iceServers: [
+          { urls: "stun:stun.relay.metered.ca:80" },
+          { urls: "turn:global.relay.metered.ca:80", username: "d14574fd8e955a4ed1a56ced", credential: "WOiiDqHntogS8Kht" },
+          { urls: "turn:global.relay.metered.ca:80?transport=tcp", username: "d14574fd8e955a4ed1a56ced", credential: "WOiiDqHntogS8Kht" },
+          { urls: "turn:global.relay.metered.ca:443", username: "d14574fd8e955a4ed1a56ced", credential: "WOiiDqHntogS8Kht" },
+          { urls: "turns:global.relay.metered.ca:443?transport=tcp", username: "d14574fd8e955a4ed1a56ced", credential: "WOiiDqHntogS8Kht" }
+        ]
+      }
+    };
+
+    var foundRooms = [], checkedCount = 0, sp = new Peer(scanConfig);
     scanPeer = sp;
 
     sp.on('open', function() {
@@ -2959,7 +2999,7 @@ window.onload = function() {
           c.on('open', function() { c.send({ type: 'probe' }); });
           c.on('data', function(data) { if (data && data.type === 'roomInfo') { foundRooms.push(data); finishOne(); } });
           c.on('error', finishOne);
-          setTimeout(function() { try { c.close(); } catch (e) {} finishOne(); }, 1600);
+          setTimeout(function() { try { c.close(); } catch (e) {} finishOne(); }, 3500);
         })(LOBBY_SLOTS[i]);
       }
     });
@@ -3000,9 +3040,21 @@ window.onload = function() {
     if (scanPeer) { try { scanPeer.destroy(); } catch (e) {} scanPeer = null; }
     if (peer) { try { peer.destroy(); } catch (e) {} }
 
+    var joinConfig = {
+      config: {
+        iceServers: [
+          { urls: "stun:stun.relay.metered.ca:80" },
+          { urls: "turn:global.relay.metered.ca:80", username: "d14574fd8e955a4ed1a56ced", credential: "WOiiDqHntogS8Kht" },
+          { urls: "turn:global.relay.metered.ca:80?transport=tcp", username: "d14574fd8e955a4ed1a56ced", credential: "WOiiDqHntogS8Kht" },
+          { urls: "turn:global.relay.metered.ca:443", username: "d14574fd8e955a4ed1a56ced", credential: "WOiiDqHntogS8Kht" },
+          { urls: "turns:global.relay.metered.ca:443?transport=tcp", username: "d14574fd8e955a4ed1a56ced", credential: "WOiiDqHntogS8Kht" }
+        ]
+      }
+    };
+
     var rInfo = getRankInfo(userState.wins, userState.losses), myNick = getMyNick(getCatMeta(userState.equippedCat).name);
     lobbyStatus.innerText = d.connectingRoom(code);
-    peer = new Peer();
+    peer = new Peer(joinConfig);
 
     peer.on('open', function() {
       conn = peer.connect(code);
