@@ -3872,22 +3872,159 @@ window.onload = function() {
   }
 
   function drawHeroCat(x, y) {
-    ctx.save(); ctx.translate(x, y);
-    var wave = Math.sin(mul(performance.now(), 0.015));
+    ctx.save();
+    ctx.translate(x, y);
+    var t = performance.now();
+    var wave = Math.sin(mul(t, 0.014));
+    var bob = Math.sin(mul(t, 0.008)) * 2.5;
+    ctx.translate(0, bob);
 
-    ctx.fillStyle = '#10b981'; ctx.strokeStyle = '#064e3b'; ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.moveTo(-6, -4); ctx.quadraticCurveTo(-28, -12 + mul(wave, 5), -44, -4 + mul(wave, 7)); ctx.lineTo(-40, 8 + mul(wave, 5)); ctx.quadraticCurveTo(-22, 4, -6, 3); ctx.closePath(); ctx.fill(); ctx.stroke();
+    // 1. 뒤쪽 비행 바람 궤적
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(-36, -12); ctx.lineTo(-68, -12);
+    ctx.moveTo(-42, 8); ctx.lineTo(-76, 8);
+    ctx.stroke();
 
-    ctx.fillStyle = '#f8fafc'; ctx.strokeStyle = '#0f172a';
-    ctx.beginPath(); ctx.roundRect(-24, -4, 24, 9, 4); ctx.fill(); ctx.stroke();
+    // 2. 살랑이는 고양이 꼬리
+    ctx.strokeStyle = '#78350f';
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.moveTo(-24, 2);
+    ctx.quadraticCurveTo(-38, -6 - wave * 4, -44, 2 - wave * 5);
+    ctx.stroke();
+    ctx.strokeStyle = '#fde68a';
+    ctx.lineWidth = 2.8;
+    ctx.stroke();
 
-    ctx.fillStyle = '#facc15'; ctx.beginPath(); ctx.arc(-10, 0.5, 2.5, 0, TAU); ctx.fill();
+    // 3. 펄럭이는 붉은 슈퍼 히어로 망토
+    ctx.fillStyle = '#ef4444';
+    ctx.strokeStyle = '#7f1d1d';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(-3, -6);
+    ctx.quadraticCurveTo(-26, -18 + wave * 6, -48, -8 + wave * 9);
+    ctx.lineTo(-42, 7 + wave * 6);
+    ctx.quadraticCurveTo(-22, 1, -4, 1);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
 
+    // 4. 뻗은 뒷다리 & 분홍 발바닥 젤리
+    ctx.fillStyle = '#fef3c7';
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.roundRect(-34, 1, 16, 7.5, 4);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#fb7185';
+    ctx.beginPath();
+    ctx.arc(-32, 4.8, 1.8, 0, TAU);
+    ctx.fill();
+
+    // 5. 슈퍼 히어로 슈트 몸통 (파란 슈트 + 노란 벨트 + 가슴 별 엠블럼)
+    ctx.fillStyle = '#2563eb';
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.ellipse(-9, 1, 15, 9.5, 0, 0, TAU);
+    ctx.fill();
+    ctx.stroke();
+
+    // 노란 허리 벨트
+    ctx.fillStyle = '#facc15';
+    ctx.fillRect(-17, -7.5, 4.2, 17);
+
+    // 가슴 엠블럼 (노란 방패 + 붉은 별)
+    ctx.fillStyle = '#fef08a';
+    ctx.beginPath();
+    ctx.arc(-4, 2.5, 4.5, 0, TAU);
+    ctx.fill();
+    drawStarSparkle(-4, 2.5, 4.2, '#ef4444');
+
+    // 6. 고양이 귀 (분홍 속귀 포함)
     ctx.fillStyle = '#fde68a';
-    ctx.beginPath(); ctx.moveTo(0, -7); ctx.lineTo(3, -15); ctx.lineTo(7, -8); ctx.moveTo(6, -7); ctx.lineTo(10, -15); ctx.lineTo(13, -6); ctx.fill();
-    ctx.beginPath(); ctx.arc(7, -2, 8.5, 0, TAU); ctx.fill(); ctx.stroke();
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(2, -7); ctx.lineTo(3, -20); ctx.lineTo(10, -10);
+    ctx.closePath();
+    ctx.fill(); ctx.stroke();
 
-    ctx.fillStyle = '#0f172a'; ctx.beginPath(); ctx.arc(11, -3, 1.8, 0, TAU); ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(9, -8); ctx.lineTo(14, -20); ctx.lineTo(18, -7);
+    ctx.closePath();
+    ctx.fill(); ctx.stroke();
+
+    ctx.fillStyle = '#fda4af';
+    ctx.beginPath();
+    ctx.moveTo(4, -9); ctx.lineTo(4.5, -16); ctx.lineTo(8.5, -10);
+    ctx.moveTo(10.5, -9); ctx.lineTo(13.5, -16); ctx.lineTo(16, -8.5);
+    ctx.fill();
+
+    // 7. 통통한 고양이 얼굴
+    ctx.fillStyle = '#fef3c7';
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.ellipse(11, -1, 12.5, 11, 0, 0, TAU);
+    ctx.fill();
+    ctx.stroke();
+
+    // 이마 치즈 줄무늬
+    ctx.fillStyle = '#d97706';
+    ctx.beginPath();
+    ctx.roundRect(7, -11.5, 2, 4.5, 1);
+    ctx.roundRect(10.5, -12, 2, 5.5, 1);
+    ctx.roundRect(14, -11.5, 2, 4.5, 1);
+    ctx.fill();
+
+    // 8. 앞으로 쭉 뻗은 앞발(슈퍼맨 포즈!)
+    ctx.fillStyle = '#ffffff';
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(16, 2, 16, 7, 3.5);
+    ctx.fill();
+    ctx.stroke();
+
+    // 9. 반짝이는 눈 · 볼터치 · 분홍 코 · 고양이 입 · 수염
+    ctx.fillStyle = 'rgba(244, 63, 94, 0.38)';
+    ctx.beginPath();
+    ctx.ellipse(11, 3, 3, 2, 0, 0, TAU);
+    ctx.fill();
+
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.arc(16.5, -2.5, 2.3, 0, TAU);
+    ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(15.8, -3.3, 0.9, 0, TAU);
+    ctx.fill();
+
+    ctx.fillStyle = '#fb7185';
+    ctx.beginPath();
+    ctx.ellipse(21.5, 0.2, 1.8, 1.3, 0, 0, TAU);
+    ctx.fill();
+
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.arc(19.5, 2.3, 2, 0.1, 2.8);
+    ctx.stroke();
+
+    // 수염
+    ctx.strokeStyle = '#78350f';
+    ctx.lineWidth = 1.1;
+    ctx.beginPath();
+    ctx.moveTo(14, 1.5); ctx.lineTo(7, 0.5);
+    ctx.moveTo(14, 3.5); ctx.lineTo(7, 4.5);
+    ctx.stroke();
+
     ctx.restore();
   }
 
