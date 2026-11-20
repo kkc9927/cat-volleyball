@@ -636,61 +636,86 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   }
   h1 { display: none; }
 
-  /* 게임 화면이 버튼에 가려지지 않도록 좌우 여백을 남기는 비율로 설정 */
+ /* 가로 모드(Landscape): 점프·스파이크 가로 나란히 배치 유지 + 게임 화면 겹침 방지 */
+@media (orientation: landscape) and (max-height: 520px) {
+  body {
+    padding: 2px 8px;
+    justify-content: center;
+  }
+  .top-bar {
+    position: fixed;
+    top: 4px;
+    left: 10px;
+    right: 10px;
+    max-width: none;
+    z-index: 20;
+    pointer-events: none;
+  }
+  .top-bar button, .top-bar .spec-badge {
+    pointer-events: auto;
+  }
+  h1 { display: none; }
+
+  /* 양쪽 조작부 폭을 제외한 중앙 영역에 게임 화면 배치 */
   .game-wrapper {
     width: auto;
     height: 92dvh;
     max-height: 92dvh;
-    max-width: calc(100vw - 270px);
+    max-width: calc(100vw - 320px);
   }
 
-  /* 조작부를 양쪽 끝에서 안쪽으로 당기고, 크기를 키워 터치감 개선 */
   .controls {
     position: fixed;
-    left: 24px;
-    right: 24px;
+    left: 16px;
+    right: 16px;
     bottom: 14px;
     max-width: none;
     max-height: none;
     padding: 0;
+    align-items: flex-end;
     pointer-events: none;
     z-index: 15;
   }
+
+  /* 왼쪽 조이패드 */
   .joypad-zone {
-    width: 128px;
-    height: 128px;
-    pointer-events: auto;
-    opacity: 0.88;
-  }
-  .joy-base {
     width: 118px;
     height: 118px;
+    pointer-events: auto;
+    opacity: 0.9;
+  }
+  .joy-base {
+    width: 110px;
+    height: 110px;
   }
   .joy-stick {
-    width: 48px;
-    height: 48px;
-    margin-left: -24px;
-    margin-top: -24px;
-    font-size: 0.95rem;
+    width: 44px;
+    height: 44px;
+    margin-left: -22px;
+    margin-top: -22px;
+    font-size: 0.9rem;
   }
+
+  /* 오른쪽 점프 + 스파이크 버튼을 가로로 나란히 배치 */
   .action-group {
-    gap: 10px;
-    height: 106px;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 8px;
+    height: auto;
     pointer-events: auto;
-    opacity: 0.88;
+    opacity: 0.9;
   }
-  .jump-btn {
-    width: 96px;
-    border-radius: 22px;
-    font-size: 0.96rem;
+  .jump-btn, .spike-btn {
+    width: 78px;
+    height: 82px;
+    border-radius: 50%;
+    font-size: 0.84rem;
   }
-  .spike-btn {
-    width: 104px;
-    border-radius: 22px;
-    font-size: 0.96rem;
+  .sub-label {
+    display: none;
   }
   .joypad-zone:active, .action-group:active {
-    opacity: 0.98;
+    opacity: 1;
   }
 
   /* 가로 모드 로비 내부 여백·배너 겹침 방지 */
