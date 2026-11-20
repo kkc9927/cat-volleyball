@@ -3749,16 +3749,17 @@ window.onload = function() {
         ctx.moveTo(ax + 5, ay + 2); ctx.lineTo(ax + 1, ay + 2); ctx.lineTo(ax + 1, ay + 6);
         ctx.stroke();
       } else if (id === 'calico') {
-        // 삼색냥: 폭포수 눈물 줄기
-        ctx.fillStyle = 'rgba(56, 189, 248, 0.72)';
+        // 삼색냥: 눈 위치(p.y + 8 부근)에서 양옆으로 뿜어져 나오는 폭포수 눈물 줄기
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.78)';
         var wv = Math.sin(time * 0.025) * 2.5;
+        var eyeY = p.y + 8;
         ctx.beginPath();
-        ctx.moveTo(p.x - 11, p.y - 16); ctx.quadraticCurveTo(p.x - 24 + wv, p.y + 4, p.x - 20, p.y + 34);
-        ctx.lineTo(p.x - 13, p.y + 34); ctx.quadraticCurveTo(p.x - 16 + wv, p.y + 4, p.x - 8, p.y - 16);
+        ctx.moveTo(p.x - 12 + dir, eyeY); ctx.quadraticCurveTo(p.x - 26 + wv, eyeY + 14, p.x - 22, p.y + 42);
+        ctx.lineTo(p.x - 15, p.y + 42); ctx.quadraticCurveTo(p.x - 18 + wv, eyeY + 14, p.x - 8 + dir, eyeY);
         ctx.fill();
         ctx.beginPath();
-        ctx.moveTo(p.x + 11, p.y - 16); ctx.quadraticCurveTo(p.x + 24 - wv, p.y + 4, p.x + 20, p.y + 34);
-        ctx.lineTo(p.x + 13, p.y + 34); ctx.quadraticCurveTo(p.x + 16 - wv, p.y + 4, p.x + 8, p.y - 16);
+        ctx.moveTo(p.x + 12 + dir, eyeY); ctx.quadraticCurveTo(p.x + 26 - wv, eyeY + 14, p.x + 22, p.y + 42);
+        ctx.lineTo(p.x + 15, p.y + 42); ctx.quadraticCurveTo(p.x + 18 - wv, eyeY + 14, p.x + 8 + dir, eyeY);
         ctx.fill();
       } else if (id === 'siamese') {
         // 샴냥: 고개를 홱 돌리고 삐짐 암흑 오라
