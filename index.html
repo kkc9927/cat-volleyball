@@ -2753,10 +2753,10 @@ window.onload = function() {
   }
 
   // --- 5. 플레이어 및 공 객체 ---
-  var p1 = { x: 150, y: 340, vx: 0, vy: 0, r: 26, maxSpeed: 7.5, side: 1, name: '크림냥', tier: '🥉 브론즈', skin: 'cream', spikeSkin: 'wind', hitTimer: 0, squash: 1 };
-  var p2 = { x: 650, y: 340, vx: 0, vy: 0, r: 26, maxSpeed: 7.5, side: 2, name: '그레이냥', tier: '🥉 브론즈', skin: 'gray', spikeSkin: 'wind', hitTimer: 0, squash: 1 };
+  var p1 = { x: 150, y: 334, vx: 0, vy: 0, r: 40, maxSpeed: 7.5, side: 1, name: '크림냥', tier: '🥉 브론즈', skin: 'cream', spikeSkin: 'wind', hitTimer: 0, squash: 1 };
+  var p2 = { x: 650, y: 334, vx: 0, vy: 0, r: 40, maxSpeed: 7.5, side: 2, name: '그레이냥', tier: '🥉 브론즈', skin: 'gray', spikeSkin: 'wind', hitTimer: 0, squash: 1 };
 
-  var ball = { x: 400, y: 150, vx: 1.3, vy: -1.8, r: 22, spikeType: 'none', skin: 'classic' };
+  var ball = { x: 400, y: 150, vx: 1.3, vy: -1.8, r: 34, spikeType: 'none', skin: 'classic' };
   var particles = [];
   var score1 = 0, score2 = 0, gameOver = false, matchRecorded = false, winnerText = "", keys = {};
   var prevHit1 = 0, prevHit2 = 0, prevScore1 = 0, prevScore2 = 0;
@@ -3600,12 +3600,12 @@ window.onload = function() {
     ctx.font = 'bold 12px sans-serif';
     var nameWidth = ctx.measureText(labelStr).width + 14;
     ctx.fillStyle = 'rgba(15, 23, 42, 0.8)';
-    ctx.beginPath(); ctx.roundRect(p.x - nameWidth / 2, p.y - 72, nameWidth, 21, 8); ctx.fill();
+    ctx.beginPath(); ctx.roundRect(p.x - nameWidth / 2, p.y - 80, nameWidth, 21, 8); ctx.fill();
     ctx.fillStyle = p.side === 1 ? '#fde047' : '#e0f2fe';
-    ctx.textAlign = 'center'; ctx.fillText(labelStr, p.x, p.y - 57);
+    ctx.textAlign = 'center'; ctx.fillText(labelStr, p.x, p.y - 65);
     ctx.restore();
 
-    ctx.save(); ctx.translate(p.x, p.y + 32); ctx.scale(2 - p.squash, p.squash); ctx.translate(0, -32);
+    ctx.save(); ctx.translate(p.x, p.y + 32); ctx.scale((2 - p.squash) * 1.18, p.squash * 1.18); ctx.translate(0, -32);
 
     var dir = p.side === 1 ? 1 : -1, speedRatio = Math.abs(p.vx) / p.maxSpeed;
     var tailWag = mul(Math.sin(mul(time, 0.008)), 6);
