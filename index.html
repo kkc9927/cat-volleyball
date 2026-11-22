@@ -2337,11 +2337,11 @@ window.onload = function() {
 
   // 브론즈·실버는 입문자가 편하게 즐길 수 있도록 속도·점프·반응·실수율을 대폭 완화
  var AI_DIFFICULTIES = [
-    { lv: 1, maxSpeed: 3.5,  jumpHeightY: 245, jumpRangeX: 70,  predictLead: 5,  jumpChance: 0.70, errorOffset: 25, spikeChance: 0.00, spikeSkin: 'wind',      skin: 'gray'    }, // 브론즈 (랠리 가능한 초보)
-    { lv: 2, maxSpeed: 4.0,  jumpHeightY: 255, jumpRangeX: 70,  predictLead: 10, jumpChance: 0.80, errorOffset: 15, spikeChance: 0.18, spikeSkin: 'wind',      skin: 'cheese'  }, // 실버 (난이도 소폭 하향)
-    { lv: 3, maxSpeed: 4.5,  jumpHeightY: 275, jumpRangeX: 90,  predictLead: 15, jumpChance: 0.90, errorOffset: 10, spikeChance: 0.55, spikeSkin: 'lightning', skin: 'persian' }, // 골드
-    { lv: 4, maxSpeed: 5.5,  jumpHeightY: 310, jumpRangeX: 110, predictLead: 30, jumpChance: 1.00, errorOffset: 5,  spikeChance: 0.75, spikeSkin: 'ice',       skin: 'siamese' }, // 다이아
-    { lv: 5, maxSpeed: 7.4,  jumpHeightY: 322, jumpRangeX: 125, predictLead: 38, jumpChance: 1.00, errorOffset: 1,  spikeChance: 1.00, spikeSkin: 'meteor',    skin: 'gold'    }  // 챌린저냥
+    { lv: 1, maxSpeed: 3.0,  jumpHeightY: 240, jumpRangeX: 60,  predictLead: 5,  jumpChance: 0.60, errorOffset: 45, spikeChance: 0.00, spikeSkin: 'wind',      skin: 'gray'    }, // 브론즈 (랠리 가능한 초보)
+    { lv: 2, maxSpeed: 3.5,  jumpHeightY: 245, jumpRangeX: 70,  predictLead: 10, jumpChance: 0.70, errorOffset: 35, spikeChance: 0.13, spikeSkin: 'wind',      skin: 'cheese'  }, // 실버 (난이도 소폭 하향)
+    { lv: 3, maxSpeed: 4.0,  jumpHeightY: 255, jumpRangeX: 80,  predictLead: 15, jumpChance: 0.80, errorOffset: 20, spikeChance: 0.45, spikeSkin: 'lightning', skin: 'persian' }, // 골드
+    { lv: 4, maxSpeed: 5.0,  jumpHeightY: 310, jumpRangeX: 110, predictLead: 30, jumpChance: 0.90, errorOffset: 10, spikeChance: 0.75, spikeSkin: 'ice',       skin: 'siamese' }, // 다이아
+    { lv: 5, maxSpeed: 7.0,  jumpHeightY: 322, jumpRangeX: 125, predictLead: 38, jumpChance: 1.00, errorOffset: 5,  spikeChance: 1.00, spikeSkin: 'meteor',    skin: 'gold'    }  // 챌린저냥
   ];
 
   var currentAiConfig = AI_DIFFICULTIES[0];
