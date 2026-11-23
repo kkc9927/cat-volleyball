@@ -2281,7 +2281,41 @@ window.onload = function() {
       }
     }
 
-    return { unlockAndStart: unlockAndStart, toggleMute: toggleMute, playCatMeow: playCatMeow, playSpikeSound: playSpikeSound, playBounce: playBounce, playScore: playScore, playUnlock: playUnlock };
+    function playSlideSound(skinId) {
+      var c = unlockAndStart();
+      if (!c || isMuted) return;
+      var now = c.currentTime;
+
+      // 1) 부드러운 모래/바람 미끄러짐 효과음 (슈웅~)
+      playNoise(0.26, 950, 'bandpass', 0.085);
+
+      // 2) 경쾌한 3음 상행 아르페지오 멜로디 징글 (슬라이딩 전용 미니 BGM)
+      var notes = (skinId === 'gold' || skinId === 'siamese')
+        ? [587.33, 739.99, 987.77]
+        : (skinId === 'black' || skinId === 'persian')
+          ? [493.88, 659.25, 880.00]
+          : [523.25, 659.25, 880.00];
+
+      for (var i = 0; i < notes.length; i++) {
+        var osc = c.createOscillator();
+        var gain = c.createGain();
+        var t0 = now + i * 0.055;
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(notes[i], t0);
+        osc.frequency.exponentialRampToValueAtTime(notes[i] * 1.04, t0 + 0.14);
+
+        gain.gain.setValueAtTime(0.001, t0);
+        gain.gain.linearRampToValueAtTime(0.055, t0 + 0.018);
+        gain.gain.exponentialRampToValueAtTime(0.0005, t0 + 0.16);
+
+        osc.connect(gain);
+        gain.connect(c.destination);
+        osc.start(t0);
+        osc.stop(t0 + 0.17);
+      }
+    }
+
+    return { unlockAndStart: unlockAndStart, toggleMute: toggleMute, playCatMeow: playCatMeow, playSpikeSound: playSpikeSound, playBounce: playBounce, playScore: playScore, playUnlock: playUnlock, playSlideSound: playSlideSound };
   })();
 
   ['touchstart', 'mousedown', 'keydown'].forEach(function(evtName) {
@@ -2344,11 +2378,11 @@ window.onload = function() {
 
   // 브론즈·실버는 입문자가 편하게 즐길 수 있도록 속도·점프·반응·실수율을 대폭 완화
  var AI_DIFFICULTIES = [
-    { lv: 1, maxSpeed: 3.35, jumpHeightY: 245, jumpRangeX: 68,  predictLead: 5,  jumpChance: 0.50, errorOffset: 99, spikeChance: 0.00, slideChance: 0.00, spikeSkin: 'wind',      skin: 'gray'    }, // 브론즈 (여유로운 입문 난이도)
-    { lv: 2, maxSpeed: 3.75, jumpHeightY: 255, jumpRangeX: 70,  predictLead: 8,  jumpChance: 0.60, errorOffset: 89, spikeChance: 0.15, slideChance: 0.00, spikeSkin: 'wind',      skin: 'cheese'  }, // 실버 (가끔 실수하는 초중급)
-    { lv: 3, maxSpeed: 5.2,  jumpHeightY: 290, jumpRangeX: 94,  predictLead: 19, jumpChance: 0.70, errorOffset: 79, spikeChance: 0.62, slideChance: 0.32, spikeSkin: 'lightning', skin: 'persian' }, // 골드 (중급 · 가끔 슬라이딩 수비)
-    { lv: 4, maxSpeed: 6.1,  jumpHeightY: 305, jumpRangeX: 105, predictLead: 26, jumpChance: 0.80, errorOffset: 69, spikeChance: 0.78, slideChance: 0.52, spikeSkin: 'ice',       skin: 'siamese' }, // 다이아 (상급 · 위기 시 슬라이딩 수비)
-    { lv: 5, maxSpeed: 6.9,  jumpHeightY: 316, jumpRangeX: 116, predictLead: 33, jumpChance: 0.90, errorOffset: 59, spikeChance: 0.90, slideChance: 0.70, spikeSkin: 'meteor',    skin: 'gold'    }  // 챌린저냥 (최상급 · 날카로운 슬라이딩 디그)
+    { lv: 1, maxSpeed: 3.15, accel: 0.52, jumpHeightY: 245, jumpRangeX: 66,  predictLead: 4,  jumpChance: 0.55, errorOffset: 28, spikeChance: 0.00, slideChance: 0.00, spikeSkin: 'wind',      skin: 'gray'    }, // 브론즈 (느긋한 이동 & 초보 수비)
+    { lv: 2, maxSpeed: 3.85, accel: 0.66, jumpHeightY: 260, jumpRangeX: 74,  predictLead: 10, jumpChance: 0.68, errorOffset: 24, spikeChance: 0.18, slideChance: 0.00, spikeSkin: 'wind',      skin: 'cheese'  }, // 실버 (기본 수비 & 가끔 약한 스파이크)
+    { lv: 3, maxSpeed: 4.95, accel: 0.84, jumpHeightY: 288, jumpRangeX: 90,  predictLead: 18, jumpChance: 0.82, errorOffset: 18, spikeChance: 0.58, slideChance: 0.47, spikeSkin: 'lightning', skin: 'persian' }, // 골드 (안정적 리시브 & 적극적 슬라이딩 수비)
+    { lv: 4, maxSpeed: 5.95, accel: 1.02, jumpHeightY: 304, jumpRangeX: 104, predictLead: 25, jumpChance: 0.90, errorOffset: 12, spikeChance: 0.78, slideChance: 0.67, spikeSkin: 'ice',       skin: 'siamese' }, // 다이아 (빠른 반응 & 빈번한 슬라이딩 수비)
+    { lv: 5, maxSpeed: 6.85, accel: 1.22, jumpHeightY: 316, jumpRangeX: 116, predictLead: 32, jumpChance: 0.95, errorOffset: 7,  spikeChance: 0.92, slideChance: 0.81, spikeSkin: 'meteor',    skin: 'gold'    }  // 챌린저냥 (최상급 반응 & 과감한 다이빙 디그)
   ];
 
   var currentAiConfig = AI_DIFFICULTIES[0];
@@ -2356,6 +2390,7 @@ window.onload = function() {
   var aiJumpCooldown = 0;
   var aiSlideCooldown = 0;
   var aiWanderBias = 0;
+  var aiServeGrace = false;
 
   var currentSeason = { key: 'W_20260101', label: '' };
 
@@ -2432,7 +2467,7 @@ window.onload = function() {
 
     return { lv: lv, tier: tier, rate: rate, total: total, score: score, summary: summary };
   }
-  
+
   function isRankMet(reqLv) {
     applyWeeklySeasonResetIfNeeded();
     return getRankInfo(userState.wins, userState.losses).lv >= (reqLv || 0);
@@ -2774,10 +2809,10 @@ window.onload = function() {
   }
 
     // --- 5. 플레이어 및 공 객체 ---
-  var p1 = { x: 150, y: 332, vx: 0, vy: 0, r: 42, maxSpeed: 7.5, side: 1, name: '크림냥', tier: '🥉 브론즈', skin: 'cream', spikeSkin: 'wind', hitTimer: 0, hitCooldown: 0, squash: 1, slideTimer: 0, slideStunTimer: 0, slideDir: 1 };
-  var p2 = { x: 650, y: 332, vx: 0, vy: 0, r: 42, maxSpeed: 7.5, side: 2, name: '그레이냥', tier: '🥉 브론즈', skin: 'gray', spikeSkin: 'wind', hitTimer: 0, hitCooldown: 0, squash: 1, slideTimer: 0, slideStunTimer: 0, slideDir: -1 };
+  var p1 = { x: 150, y: 332, vx: 0, vy: 0, r: 42, maxSpeed: 7.2, side: 1, name: '크림냥', tier: '🥉 브론즈', skin: 'cream', spikeSkin: 'wind', hitTimer: 0, hitCooldown: 0, squash: 1, slideTimer: 0, slideStunTimer: 0, slideDir: 1 };
+  var p2 = { x: 650, y: 332, vx: 0, vy: 0, r: 42, maxSpeed: 7.2, side: 2, name: '그레이냥', tier: '🥉 브론즈', skin: 'gray', spikeSkin: 'wind', hitTimer: 0, hitCooldown: 0, squash: 1, slideTimer: 0, slideStunTimer: 0, slideDir: -1 };
 
-  var ball = { x: 400, y: 150, vx: 1.3, vy: -1.8, r: 30, spikeType: 'none', skin: 'classic' };
+  var ball = { x: 400, y: 150, vx: 1.3, vy: -1.8, r: 28, spikeType: 'none', skin: 'classic' };
 
   var particles = [];
   var score1 = 0, score2 = 0, gameOver = false, gameOverStartTime = 0, winnerSide = 0, matchRecorded = false, winnerText = "", keys = {};
@@ -2820,6 +2855,7 @@ window.onload = function() {
     aiJumpCooldown = 0;
     aiSlideCooldown = 0;
     aiWanderBias = 0;
+    aiServeGrace = false;
     particles = [];
   }
 
@@ -2843,7 +2879,6 @@ window.onload = function() {
       p2.tier = rInfo.tier;
     }
   }
-
 
   function hideGameOverOverlay() {
     var ov = document.getElementById("gameOverOverlay");
@@ -2917,6 +2952,17 @@ window.onload = function() {
   }
 
   // --- 6. 방 생성 & 공개 방 리스트 스캔 ---
+  var PEER_NET_CONFIG = {
+    config: {
+      iceServers: [
+        { urls: "stun:stun.relay.metered.ca:80" },
+        { urls: "turn:global.relay.metered.ca:80", username: "d14574fd8e955a4ed1a56ced", credential: "WOiiDqHntogS8Kht" },
+        { urls: "turn:global.relay.metered.ca:80?transport=tcp", username: "d14574fd8e955a4ed1a56ced", credential: "WOiiDqHntogS8Kht" },
+        { urls: "turn:global.relay.metered.ca:443", username: "d14574fd8e955a4ed1a56ced", credential: "WOiiDqHntogS8Kht" },
+        { urls: "turns:global.relay.metered.ca:443?transport=tcp", username: "d14574fd8e955a4ed1a56ced", credential: "WOiiDqHntogS8Kht" }
+      ]
+    }
+  };
   function tryCreateHostSlot(slotIndex, fixedCode) {
     var d = T();
     if (typeof Peer === 'undefined') { lobbyStatus.innerText = d.noInternet; return; }
@@ -2938,34 +2984,6 @@ window.onload = function() {
     mainMenuBox.style.display = 'none'; skinPanel.style.display = 'none'; rankPanel.style.display = 'none'; listPanel.style.display = 'none'; waitPanel.style.display = 'flex';
     document.getElementById("roomCodeDisplay").innerText = targetId;
     lobbyStatus.innerText = d.slotConnecting(slotIndex + 1);
-
-    var PEER_NET_CONFIG = {
-      config: {
-        iceServers: [
-          { urls: "stun:stun.relay.metered.ca:80" },
-          {
-            urls: "turn:global.relay.metered.ca:80",
-            username: "d14574fd8e955a4ed1a56ced",
-            credential: "WOiiDqHntogS8Kht"
-          },
-          {
-            urls: "turn:global.relay.metered.ca:80?transport=tcp",
-            username: "d14574fd8e955a4ed1a56ced",
-            credential: "WOiiDqHntogS8Kht"
-          },
-          {
-            urls: "turn:global.relay.metered.ca:443",
-            username: "d14574fd8e955a4ed1a56ced",
-            credential: "WOiiDqHntogS8Kht"
-          },
-          {
-            urls: "turns:global.relay.metered.ca:443?transport=tcp",
-            username: "d14574fd8e955a4ed1a56ced",
-            credential: "WOiiDqHntogS8Kht"
-          }
-        ]
-      }
-    };
 
     var tempPeer = new Peer(targetId, PEER_NET_CONFIG);
     peer = tempPeer;
@@ -3026,18 +3044,6 @@ window.onload = function() {
 
     roomListBox.innerHTML = '<div style="padding:16px; color:#bae6fd; font-size:0.78rem;">' + d.scanningRooms + '</div>';
     lobbyStatus.innerText = d.scanningRoomsStatus;
-
-    var scanConfig = {
-      config: {
-        iceServers: [
-          { urls: "stun:stun.relay.metered.ca:80" },
-          { urls: "turn:global.relay.metered.ca:80", username: "d14574fd8e955a4ed1a56ced", credential: "WOiiDqHntogS8Kht" },
-          { urls: "turn:global.relay.metered.ca:80?transport=tcp", username: "d14574fd8e955a4ed1a56ced", credential: "WOiiDqHntogS8Kht" },
-          { urls: "turn:global.relay.metered.ca:443", username: "d14574fd8e955a4ed1a56ced", credential: "WOiiDqHntogS8Kht" },
-          { urls: "turns:global.relay.metered.ca:443?transport=tcp", username: "d14574fd8e955a4ed1a56ced", credential: "WOiiDqHntogS8Kht" }
-        ]
-      }
-    };
 
     var foundRooms = [], checkedCount = 0, sp = new Peer(scanConfig);
     scanPeer = sp;
@@ -3104,21 +3110,9 @@ window.onload = function() {
     if (scanPeer) { try { scanPeer.destroy(); } catch (e) {} scanPeer = null; }
     if (peer) { try { peer.destroy(); } catch (e) {} }
 
-    var joinConfig = {
-      config: {
-        iceServers: [
-          { urls: "stun:stun.relay.metered.ca:80" },
-          { urls: "turn:global.relay.metered.ca:80", username: "d14574fd8e955a4ed1a56ced", credential: "WOiiDqHntogS8Kht" },
-          { urls: "turn:global.relay.metered.ca:80?transport=tcp", username: "d14574fd8e955a4ed1a56ced", credential: "WOiiDqHntogS8Kht" },
-          { urls: "turn:global.relay.metered.ca:443", username: "d14574fd8e955a4ed1a56ced", credential: "WOiiDqHntogS8Kht" },
-          { urls: "turns:global.relay.metered.ca:443?transport=tcp", username: "d14574fd8e955a4ed1a56ced", credential: "WOiiDqHntogS8Kht" }
-        ]
-      }
-    };
-
     var rInfo = getRankInfo(userState.wins, userState.losses), myNick = getMyNick(getCatMeta(userState.equippedCat).name);
     lobbyStatus.innerText = d.connectingRoom(code);
-    peer = new Peer(joinConfig);
+    peer = new Peer(PEER_NET_CONFIG);
 
     var joinTimeout = setTimeout(function() {
       if (gameState !== 'playing') {
@@ -3147,6 +3141,8 @@ window.onload = function() {
             if (data.s2 !== prevScore2) SoundEngine.playScore(netMode === 'guest');
             prevHit1 = data.p1.ht; prevHit2 = data.p2.ht; prevScore1 = data.s1; prevScore2 = data.s2;
 
+            if ((data.p1.sl || 0) > 10 && p1.slideTimer <= 0) SoundEngine.playSlideSound(data.p1.sk);
+            if ((data.p2.sl || 0) > 10 && p2.slideTimer <= 0) SoundEngine.playSlideSound(data.p2.sk);
             p1.x = data.p1.x; p1.y = data.p1.y; p1.vx = data.p1.vx; p1.hitTimer = data.p1.ht; p1.squash = data.p1.sq; p1.name = data.p1.nm; p1.tier = data.p1.tr; p1.skin = data.p1.sk; p1.slideTimer = data.p1.sl || 0; p1.slideStunTimer = data.p1.ss || 0; p1.slideDir = data.p1.sd || 1;
             p2.x = data.p2.x; p2.y = data.p2.y; p2.vx = data.p2.vx; p2.hitTimer = data.p2.ht; p2.squash = data.p2.sq; p2.name = data.p2.nm; p2.tier = data.p2.tr; p2.skin = data.p2.sk; p2.slideTimer = data.p2.sl || 0; p2.slideStunTimer = data.p2.ss || 0; p2.slideDir = data.p2.sd || -1;
             ball.x = data.b.x; ball.y = data.b.y; ball.spikeType = data.b.st; ball.skin = data.b.sk;
@@ -3420,7 +3416,7 @@ window.onload = function() {
       p1.squash = 0.72;
       if (p1.slideTimer <= 0) {
         p1.slideTimer = 0;
-        p1.slideStunTimer = 60; // 슬라이딩 직후 1.0초간 기상 경직
+        p1.slideStunTimer = 44; // 슬라이딩 직후 약 0.73초간 기상 경직
       }
     } else if (p1.slideStunTimer > 0) {
       p1.slideStunTimer -= dt;
@@ -3434,19 +3430,21 @@ window.onload = function() {
         p1.vx = mul(moveDir, 11.4);
         p1.squash = 0.72;
         SoundEngine.playCatMeow(p1.skin, true);
+        SoundEngine.playSlideSound(p1.skin);
       } else {
         if (moveDir !== 0) { p1.vx += mul(moveDir, 1.4) * dt; if (p1.vx > p1.maxSpeed) p1.vx = p1.maxSpeed; if (p1.vx < -p1.maxSpeed) p1.vx = -p1.maxSpeed; }
         else { p1.vx = mul(p1.vx, Math.pow(0.76, dt)); if (Math.abs(p1.vx) < 0.15) p1.vx = 0; }
 
-        if ((keys["ArrowUp"] || keys["KeyW"]) && p1Ground) { p1.vy = -11.05; p1.squash = 1.22; SoundEngine.playCatMeow(p1.skin, true); }
+        if ((keys["ArrowUp"] || keys["KeyW"]) && p1Ground) { p1.vy = -12.65; p1.squash = 1.22; SoundEngine.playCatMeow(p1.skin, true); }
       }
     }
 
     var wasAir1 = p1.y < 332;
-    p1.vy += mul(0.36, dt); p1.x += mul(p1.vx, dt); p1.y += mul(p1.vy, dt);
+    var p1Grav = (p1.vy > 0) ? 0.475 : 0.40;
+    p1.vy += mul(p1Grav, dt); p1.x += mul(p1.vx, dt); p1.y += mul(p1.vy, dt);
     if (p1.y >= 332) { p1.y = 332; if (wasAir1) p1.squash = 0.82; p1.vy = 0; }
     if (p1.slideTimer <= 0 && p1.slideStunTimer <= 0) { p1.squash += mul(1 - p1.squash, 0.2) * dt; }
-    if (p1.x < p1.r + 6) { p1.x = p1.r + 6; p1.vx = 0; } if (p1.x > 376 - p1.r) { p1.x = 376 - p1.r; p1.vx = 0; }
+    if (p1.x < p1.r + 6) { p1.x = p1.r + 6; p1.vx = 0; } if (p1.x > 358 - p1.r) { p1.x = 358 - p1.r; p1.vx = 0; }
 
     if (netMode === 'host') {
       var p2Dir = 0;
@@ -3459,7 +3457,7 @@ window.onload = function() {
         p2.squash = 0.72;
         if (p2.slideTimer <= 0) {
           p2.slideTimer = 0;
-          p2.slideStunTimer = 60;
+          p2.slideStunTimer = 44;
         }
       } else if (p2.slideStunTimer > 0) {
         p2.slideStunTimer -= dt;
@@ -3473,10 +3471,11 @@ window.onload = function() {
           p2.vx = mul(p2Dir, 11.4);
           p2.squash = 0.72;
           SoundEngine.playCatMeow(p2.skin, true);
+          SoundEngine.playSlideSound(p2.skin);
         } else {
           if (p2Dir !== 0) { p2.vx += mul(p2Dir, 1.4) * dt; if (p2.vx > p2.maxSpeed) p2.vx = p2.maxSpeed; if (p2.vx < -p2.maxSpeed) p2.vx = -p2.maxSpeed; }
           else { p2.vx = mul(p2.vx, Math.pow(0.76, dt)); if (Math.abs(p2.vx) < 0.15) p2.vx = 0; }
-          if (remoteKeys.U && p2Ground) { p2.vy = -11.05; p2.squash = 1.22; SoundEngine.playCatMeow(p2.skin, true); }
+          if (remoteKeys.U && p2Ground) { p2.vy = -12.65; p2.squash = 1.22; SoundEngine.playCatMeow(p2.skin, true); }
         }
       }
     } else {
@@ -3493,7 +3492,7 @@ window.onload = function() {
         p2.squash = 0.72;
         if (p2.slideTimer <= 0) {
           p2.slideTimer = 0;
-          p2.slideStunTimer = 60; // AI도 슬라이딩 직후 동일한 기상 경직(0.73초) 적용
+          p2.slideStunTimer = 44; // AI도 슬라이딩 직후 동일한 기상 경직(0.73초) 적용
         }
       } else if (p2.slideStunTimer > 0) {
         p2.slideStunTimer -= dt;
@@ -3501,61 +3500,75 @@ window.onload = function() {
         if (Math.abs(p2.vx) < 0.15) p2.vx = 0;
         p2.squash = 0.86;
       } else {
-        // 입문자(브론즈/실버)를 위해 약간의 위치 오차(errorOffset) 적용
-        if (cfg.errorOffset > 0 && Math.random() < 0.03 * dt) {
+        // AI가 자신의 서브권일 때는 첫 터치를 절대 놓치지 않도록 정위치 보장
+        if (ball.x <= 400 && aiServeGrace) {
+          aiServeGrace = false;
+        }
+
+        if (aiServeGrace) {
+          aiWanderBias = 0;
+        } else if (cfg.errorOffset > 0 && Math.random() < 0.025 * dt) {
           aiWanderBias = (Math.random() - 0.5) * 2 * cfg.errorOffset;
         } else if (cfg.errorOffset === 0) {
           aiWanderBias = 0;
         }
 
+        // 공격 코트 위치(homeX): 하위 등급은 코트 중앙 뒤쪽(645)에 느긋하게 대기하여 네트 앞 짧은 공이나 구석 스파이크에 자연스럽게 늦음
+        var homeX = 645 - (cfg.lv - 1) * 14;
         var predictedBallX = ball.x + mul(ball.vx, cfg.predictLead * 0.25);
-        var targetX = ball.x > 380 ? (predictedBallX + 26 + aiWanderBias) : (635 + aiWanderBias * 0.5);
-        if (targetX < 445) targetX = 445;
+        var targetX = aiServeGrace
+          ? (ball.x + 24)
+          : (ball.x > 395 ? (predictedBallX + 30 + aiWanderBias) : (homeX + aiWanderBias * 0.6));
+        if (targetX < 486) targetX = 486;
         if (targetX > 765) targetX = 765;
 
         var diffX = targetX - p2.x;
         var absDiffX = Math.abs(diffX);
 
-        // 골드(Lv.3) 이상부터 공이 AI 진영 낮은 위치(y: 268~352)로 떨어지는데 걸어서 닿기 빠듯할 때만 제한적으로 슬라이딩 수비
+        // 골드(Lv.3) 이상부터 공이 AI 진영 중·하단(y: 245~356)으로 떨어지거나 강스파이크가 날아올 때 적극적으로 다이빙 슬라이딩
+        var isIncomingSpikeDive = (ball.spikeType !== 'none' && ball.y > 228 && ball.y < 355 && absDiffX >= 42 && absDiffX <= 185);
         var isEmergencyLowBall = (
+          !aiServeGrace &&
           (cfg.slideChance || 0) > 0 &&
           p2GroundAI &&
           aiSlideCooldown <= 0 &&
-          ball.x > 425 &&
-          ball.y > 268 &&
-          ball.y < 352 &&
-          ball.vy > 0.6 &&
-          absDiffX >= 68 &&
-          absDiffX <= 155
+          ball.x > 418 &&
+          (isIncomingSpikeDive || (ball.y > 245 && ball.y < 356 && ball.vy > 0.35 && absDiffX >= 48 && absDiffX <= 175))
         );
 
         if (isEmergencyLowBall) {
-          aiSlideCooldown = 140; // 남발 방지용 약 2.3초 쿨타임
           if (Math.random() < cfg.slideChance) {
+            aiSlideCooldown = 95; // 슬라이딩 성공 발동 후 약 1.58초 쿨타임
             p2.slideDir = diffX > 0 ? 1 : -1;
             p2.slideTimer = 14;
             p2.vx = mul(p2.slideDir, 11.4);
             p2.squash = 0.72;
             aiWillSpike = false;
             SoundEngine.playCatMeow(p2.skin, true);
+            SoundEngine.playSlideSound(p2.skin);
+          } else {
+            aiSlideCooldown = 36; // 확률 미발동 시 약 0.6초 뒤 재판정
           }
         }
 
         if (p2.slideTimer <= 0) {
           if (absDiffX > 8) {
             var aiDir = diffX > 0 ? 1 : -1;
-            var accel = 0.72 + (cfg.lv - 1) * 0.16;
+            var accel = aiServeGrace ? 1.15 : (cfg.accel || (0.52 + (cfg.lv - 1) * 0.17));
+            var effMaxSpeed = aiServeGrace ? Math.max(aiMax, 5.5) : aiMax;
             p2.vx += mul(aiDir, accel) * dt;
-            if (p2.vx > aiMax) p2.vx = aiMax;
-            if (p2.vx < -aiMax) p2.vx = -aiMax;
+            if (p2.vx > effMaxSpeed) p2.vx = effMaxSpeed;
+            if (p2.vx < -effMaxSpeed) p2.vx = -effMaxSpeed;
           } else {
             p2.vx = mul(p2.vx, Math.pow(0.76, dt));
           }
 
-          var canJumpAttack = (ball.x > 415 && ball.y > 130 && ball.y < cfg.jumpHeightY && ball.vy > -1.8);
-          if (canJumpAttack && p2GroundAI && aiJumpCooldown <= 0 && Math.abs(p2.x - (ball.x + 20)) < cfg.jumpRangeX) {
+          // 공이 이미 고양이 몸에 겹쳐 있지 않고(dist > 58), 정점~하강 구간(ball.vy > -0.4)일 때만 깔끔하게 원터치 점프
+          var distBallToAi = Math.hypot(ball.x - p2.x, ball.y - (p2.y + 6));
+          var canJumpAttack = (distBallToAi > 58 && ball.x > 422 && ball.y > 115 && ball.y < Math.min(cfg.jumpHeightY, 248) && ball.vy > -0.4);
+          if (canJumpAttack && p2GroundAI && aiJumpCooldown <= 0 && Math.abs(p2.x - (ball.x + 32)) < cfg.jumpRangeX) {
             if (Math.random() < (cfg.jumpChance || 1)) {
-              p2.vy = -11.05;
+              p2.vy = -12.15;
               p2.squash = 1.22;
               aiJumpCooldown = cfg.lv <= 2 ? 46 : 28;
               aiWillSpike = (cfg.spikeChance > 0 && Math.random() < cfg.spikeChance);
@@ -3573,12 +3586,13 @@ window.onload = function() {
     }
 
     var wasAir2 = p2.y < 332;
-    p2.vy += mul(0.36, dt); p2.x += mul(p2.vx, dt); p2.y += mul(p2.vy, dt);
+    var p2Grav = (p2.vy > 0) ? 0.475 : 0.40;
+    p2.vy += mul(p2Grav, dt); p2.x += mul(p2.vx, dt); p2.y += mul(p2.vy, dt);
     if (p2.y >= 332) { p2.y = 332; if (wasAir2) p2.squash = 0.82; p2.vy = 0; }
     if (p2.slideTimer <= 0 && p2.slideStunTimer <= 0) { p2.squash += mul(1 - p2.squash, 0.2) * dt; }
-    if (p2.x < 424 + p2.r) { p2.x = 424 + p2.r; p2.vx = 0; } if (p2.x > 800 - p2.r - 6) { p2.x = 800 - p2.r - 6; p2.vx = 0; }
+    if (p2.x < 442 + p2.r) { p2.x = 442 + p2.r; p2.vx = 0; } if (p2.x > 800 - p2.r - 6) { p2.x = 800 - p2.r - 6; p2.vx = 0; }
 
-    ball.vy += mul(0.095, dt); ball.x += mul(ball.vx, dt); ball.y += mul(ball.vy, dt);
+    ball.vy += mul(0.091, dt); ball.x += mul(ball.vx, dt); ball.y += mul(ball.vy, dt);
     updateParticles(dt);
 
     if (ball.x < ball.r) { ball.x = ball.r; ball.vx = -ball.vx; SoundEngine.playBounce(false); }
@@ -3605,11 +3619,19 @@ window.onload = function() {
       hitBall(p1, p1AirSpike);
     }
 
+    // 비정상적인 공 속도 폭주 상한 제한
+    var maxBallVx = (ball.spikeType !== 'none') ? 10.6 : 4.2;
+    var maxBallVy = (ball.spikeType !== 'none') ? 9.5 : 10.1;
+    if (ball.vx > maxBallVx) ball.vx = maxBallVx;
+    if (ball.vx < -maxBallVx) ball.vx = -maxBallVx;
+    if (ball.vy > maxBallVy) ball.vy = maxBallVy;
+    if (ball.vy < -maxBallVy) ball.vy = -maxBallVy;
+
     if (ball.y + ball.r >= 384) {
       if (ball.x < 400) {
         score2++; SoundEngine.playScore(false);
         if (score2 >= WIN_SCORE) { triggerGameOver(2); if (!matchRecorded) { matchRecorded = true; recordMatchResult(false); } }
-        else { ball.x = 580; ball.y = 140; ball.vx = -1.3; ball.vy = -1.8; ball.spikeType = 'none'; aiWillSpike = false; aiJumpCooldown = 0; particles = []; }
+        else { ball.x = 580; ball.y = 140; ball.vx = -1.3; ball.vy = -1.8; ball.spikeType = 'none'; aiWillSpike = false; aiJumpCooldown = 0; aiServeGrace = true; particles = []; }
       } else {
         score1++; SoundEngine.playScore(true);
         if (score1 >= WIN_SCORE) { triggerGameOver(1); if (!matchRecorded) { matchRecorded = true; recordMatchResult(true); } }
@@ -3631,7 +3653,7 @@ window.onload = function() {
   }
 
   function updateParticles(dt) {
-    if (ball.spikeType !== 'none' && particles.length < 40) {
+    if (ball.spikeType !== 'none' && particles.length < 24) {
       var pColor = '#ffffff', pKind = 'circle', pSize = mul(Math.random(), 6) + 4;
       if (ball.spikeType === 'wind') { pColor = Math.random() > 0.4 ? 'rgba(255,255,255,0.85)' : 'rgba(186,230,253,0.85)'; pKind = 'wind'; pSize = mul(Math.random(), 5) + 5; }
       else if (ball.spikeType === 'meteor') { pColor = Math.random() > 0.45 ? '#f97316' : '#facc15'; pKind = 'circle'; pSize = mul(Math.random(), 8) + 4; }
@@ -3641,7 +3663,7 @@ window.onload = function() {
       else if (ball.spikeType === 'blackhole') { pColor = Math.random() > 0.4 ? '#a855f7' : '#312e81'; pKind = 'void'; }
 
       particles.push({
-        x: ball.x + mul(Math.random() - 0.5, 20), y: ball.y + mul(Math.random() - 0.5, 20),
+        x: ball.x + mul(Math.random() - 0.5, 18), y: ball.y + mul(Math.random() - 0.5, 18),
         vx: mul(Math.random() - 0.5, 2.8) - mul(ball.vx, 0.22), vy: mul(Math.random() - 0.5, 2.8) - mul(ball.vy, 0.22),
         size: pSize, color: pColor, kind: pKind, life: 20
       });
@@ -3653,7 +3675,7 @@ window.onload = function() {
   }
 
   function resolveNetCollision(lockSide, playSfx) {
-    var NET_TOP = 274;
+    var NET_TOP = 260;
     var NET_L = 394, NET_R = 406;
     if (ball.x + ball.r > NET_L && ball.x - ball.r < NET_R && ball.y + ball.r > NET_TOP) {
       if (ball.y < NET_TOP && !lockSide) {
@@ -3677,175 +3699,124 @@ window.onload = function() {
   function hitBall(p, isSpike) {
     var isSlidingNow = (p.slideTimer > 0 || p.slideStunTimer > 0);
     var dirSign = (p.side === 1) ? 1 : -1;
-    var effX = isSlidingNow ? (p.x + mul(p.slideDir || dirSign, 12)) : p.x;
-    var effY = isSlidingNow ? (p.y + 14) : p.y;
-    var dx = ball.x - effX, dy = ball.y - effY, dist = Math.hypot(dx, dy);
-    var hitRange = ball.r + p.r + (isSlidingNow ? 6 : 2);
+    // 실제 화면에 그려지는 고양이 외곽(머리 반경 약 31px)과 일치하는 히트박스 설정
+    var effX = isSlidingNow ? (p.x + mul(p.slideDir || dirSign, 10)) : p.x;
+    var effY = isSlidingNow ? (p.y + 15) : (p.y - 2);
+    var bodyRad = isSlidingNow ? 35 : 31;
+    var dx = ball.x - effX;
+    var dy = ball.y - effY;
+    var dist = Math.hypot(dx, dy);
+    var hitRange = ball.r + bodyRad;
 
     if (dist < hitRange && dist > 0) {
-      // 방금 튕겨낸 공이 쿨다운 중일 때는 위치를 강제로 밀어내지 않음 (네트 앞 양쪽 고양이 줄다리기 순간이동 차단)
-      if (p.hitCooldown > 0) {
-        return;
-      }
+      // 1. 프레임 이동 중 공이 고양이 중심(effX) 쪽으로 파고들어 각도가 중앙으로 쏠리는 현상을 막기 위해,
+      //    상대 이동 벡터를 역추적하여 실제 외곽 표면에 처음 닿은 지점의 법선 벡터 (nx, ny)를 복원
+      var relVx = ball.vx - p.vx;
+      var relVy = ball.vy - p.vy;
+      var preDx = dx - mul(relVx, 0.65);
+      var preDy = dy - mul(relVy, 0.65);
+      var preDist = Math.hypot(preDx, preDy);
+      var nx = (preDist > 4) ? (preDx / preDist) : (dx / dist);
+      var ny = (preDist > 4) ? (preDy / preDist) : (dy / dist);
 
       var overlap = hitRange - dist;
-      var nx = dx / dist, ny = dy / dist;
-
-      // 1. 공이 고양이 몸통 밖으로 겹친 거리만큼만 부드럽게 분리 (최대 6px 제한으로 순간이동 방지)
-      var pushStep = Math.min(overlap + 0.5, 6);
-      ball.x += mul(nx, pushStep);
-      ball.y += mul(ny, pushStep);
-
-      // 2. 네트 기둥(y > 274)과 고양이 몸통 사이 좁은 틈에 공이 닿은 경우,
-      //    좌표를 건너뛰지 않고 위쪽(코트 안쪽 상단)으로 부드럽게 띄워 탈출
       var netWallX = (p.side === 1) ? 394 : 406;
-      var isLowNetPinch = (
-        !isSpike &&
-        p.y >= 306 &&
-        ball.y > 276 &&
-        ((p.side === 1 && ball.x > p.x && ball.x + ball.r >= netWallX - 2) ||
-         (p.side === 2 && ball.x < p.x && ball.x - ball.r <= netWallX + 2))
-      );
 
-      if (isLowNetPinch) {
-        ball.vx = -mul(dirSign, 3.6);
-        ball.vy = -6.6;
-        ball.spikeType = 'none';
-        p.hitTimer = 16;
-        p.hitCooldown = 12;
-        p.squash = 1.14;
-        SoundEngine.playCatMeow(p.skin, false);
-        resolveNetCollision(p.side, false);
+      // 2. 공이 고양이 표면 위에 얹히거나 끌어안기지 않도록 외곽 경계 밖으로 즉시 분리
+      ball.x += mul(nx, overlap + 2.0);
+      ball.y += mul(ny, overlap + 2.0);
+      if (p.side === 1 && ball.x + ball.r > netWallX) ball.x = netWallX - ball.r;
+      if (p.side === 2 && ball.x - ball.r < netWallX) ball.x = netWallX + ball.r;
+
+      // 3. 이미 타격한 직후 쿨다운 중에는 재타격(던지기)을 금지하고, 파고드는 상대 속도만 깔끔히 튕겨냄
+      if (p.hitCooldown > 0) {
+        var curRelVn = (ball.vx - p.vx) * nx + (ball.vy - p.vy) * ny;
+        if (curRelVn < 2.2) {
+          var sepImpulse = 2.6 - curRelVn;
+          ball.vx = Math.max(-7.5, Math.min(7.5, ball.vx + mul(nx, sepImpulse)));
+          ball.vy = Math.max(-9.0, Math.min(9.5, ball.vy + mul(ny, sepImpulse)));
+        }
         return;
       }
 
-      // 네트 경계 보정 후 상대 좌표 재계산
-      resolveNetCollision(p.side, false);
-      dx = ball.x - p.x;
-      dy = ball.y - p.y;
-      var angle = Math.atan2(dy, dx);
-
-      p.hitTimer = 18;
-      p.hitCooldown = 12; // 약 0.2초 재충돌 방지 -> 네트 앞 연쇄 재타격 차단
-      p.squash = 1.15;
+      if (p === p2) aiServeGrace = false;
+      p.hitTimer = 15;
+      p.hitCooldown = 14; // 연속 2단 타격(잡아채서 던지기) 완전 방지
+      p.squash = 1.14;
       SoundEngine.playCatMeow(p.skin, false);
+      SoundEngine.playBounce(false);
 
       if (isSpike) {
         ball.spikeType = p.spikeSkin || 'wind';
-        if (p === p2 && netMode === 'ai') {
-          var vxSpeed = -12.1 - Math.random() * 0.8;
-          var framesToNet = Math.max(11, (ball.x - 400) / Math.abs(vxSpeed));
-          var netClearY = 232;
+        var isAi = (p === p2 && netMode === 'ai');
+        var spPower = isAi ? 9.3 : 10.0;
+        var forwardNx = dirSign * nx; // 앞쪽(네트 방향)이면 +, 뒤통수 쪽이면 -
 
-          var vyForNet = (netClearY - ball.y - 0.5 * 0.095 * framesToNet * framesToNet) / framesToNet;
-          ball.vx = vxSpeed;
-          ball.vy = Math.max(vyForNet, ball.y < 220 ? 1.2 : -2.6);
-          aiWillSpike = false;
-        } else {
-          // 고양이 중심 기준 시계 방향 각도 계산 (1P 오른쪽 기준 / 2P 왼쪽 대칭 반전)
-          // 12시(정수리 바로 위) = 0 rad, 3시(얼굴 정면) = PI/2 rad, 6시(턱·가슴 아래쪽) = PI rad
-          var forwardX = dirSign * dx;
-          var isBlockedAtNet = (Math.abs(400 - p.x) < 58 && forwardX >= -4);
-
-          if (forwardX < -6 && !isBlockedAtNet) {
-            // 정수리 뒤쪽(9시~12시 방향)에 맞으면 자연스러운 반사각으로 넘김
-            var naturalVx = mul(Math.cos(angle), 11.6) + mul(p.vx, 0.14);
-            var naturalVy = mul(Math.sin(angle), 10.2) - 1.5;
-            ball.vx = Math.max(-12.2, Math.min(12.2, naturalVx));
-            ball.vy = Math.max(-8.4, Math.min(3.2, naturalVy));
-          } else {
-            // clockAngle: 0(12시 정수리) -> Math.PI/2(3시 얼굴 앞) -> Math.PI(6시 아래쪽)
-            var clockAngle = Math.atan2(Math.max(0, forwardX), -dy);
-            var HALF_PI = Math.PI * 0.5;
-            var distToNet = Math.max(25, Math.abs(400 - ball.x));
-            var targetX, baseVx;
-
-            if (clockAngle <= HALF_PI) {
-              // [12시 ~ 3시 구간]: 정수리(12시)일수록 상대 코트 깊숙한 끝(758 / 42)으로 뻗는 롱 스파이크,
-              // 3시(얼굴 앞)로 내려올수록 코트 중단(535 / 265)으로 이어짐
-              var tLong = Math.max(0, Math.min(1, clockAngle / HALF_PI));
-              targetX = (p.side === 1) ? (758 - tLong * 223) : (42 + tLong * 223);
-              baseVx = 12.6 - tLong * 1.6;
-            } else {
-              // [3시 ~ 6시 구간]: 얼굴 앞(3시)부터 턱·아래쪽(6시)까지 네트 앞쪽(535 -> 465 / 265 -> 335)으로 짧게 떨어지는 숏 스파이크
-              var tShort = Math.max(0, Math.min(1, (clockAngle - HALF_PI) / HALF_PI));
-              targetX = (p.side === 1) ? (535 - tShort * 70) : (265 + tShort * 70);
-              baseVx = 11.0 - tShort * 2.2;
-            }
-
-            // 1단계: 현재 타점(ball.x, ball.y)에서 목표 착지점(targetX, y=354)으로 바로 꽂히는 포물선 계산
-            var gSpike = 0.095;
-            var tDirect = Math.max(10, Math.abs(targetX - ball.x) / baseVx);
-            var vyDirect = (354 - ball.y - 0.5 * gSpike * tDirect * tDirect) / tDirect;
-            var tNet = distToNet / baseVx;
-            var yAtNet = ball.y + vyDirect * tNet + 0.5 * gSpike * tNet * tNet;
-
-            // 2단계: 네트 상단(y=274, 공 반지름 30 고려 안전 높이 y=232)을 스치듯 넘어가면서
-            //        목표 착지점(targetX)에 정확히 떨어지도록 2점 경유(타점 -> 네트 상단 -> 목표 바닥) 포물선 해 산출
-            var NET_PASS_Y = 232;
-            var finalVxMag = baseVx;
-            var finalVy = vyDirect;
-
-            if (yAtNet > NET_PASS_Y) {
-              var dNet = distToNet;
-              var dLand = Math.max(dNet + 45, Math.abs(targetX - ball.x));
-              var kRatio = dLand / dNet;
-              var dY1 = NET_PASS_Y - ball.y;
-              var dY2 = 354 - ball.y;
-              var numer = dY2 - kRatio * dY1;
-              var denom = 0.5 * gSpike * kRatio * (kRatio - 1);
-
-              // 스파이크 최소 수평 속도 9.2 보장
-              var minSpikeVx = 9.2;
-              if (numer > 1 && denom > 0) {
-                var t1 = Math.sqrt(numer / denom);
-                finalVxMag = Math.max(minSpikeVx, Math.min(13.8, dNet / t1));
-                var t1Clamped = Math.max(3.5, dNet / finalVxMag);
-                finalVy = (dY1 - 0.5 * gSpike * t1Clamped * t1Clamped) / t1Clamped;
-              } else {
-                finalVxMag = Math.max(minSpikeVx, baseVx);
-                var tNetFast = Math.max(3.5, dNet / finalVxMag);
-                finalVy = (dY1 - 0.5 * gSpike * tNetFast * tNetFast) / tNetFast;
-              }
-            }
-
-            // 네트 바로 코앞에서 낮은 타점으로 스파이크할 때 vy가 비정상적으로 치솟아 공이 화면 밖으로 순간이동하는 현상 방지
-            finalVy = Math.max(-7.8, Math.min(7.8, finalVy));
-            ball.vx = dirSign * finalVxMag;
-            ball.vy = finalVy;
-          }
+        // 정수리 상단에 맞았을 때 뒷벽까지 과하게 날아가지 않도록 상향 각도 완화
+        var effNy = ny;
+        var effNx = nx;
+        if (forwardNx >= 0 && effNy < -0.35) {
+          effNy = -0.35;
+          effNx = dirSign * Math.sqrt(Math.max(0.01, 1 - effNy * effNy));
         }
+
+        // 앞쪽은 앞으로(미세 하향 보정), 뒤통수 쪽(forwardNx < 0)은 뒤쪽 그대로 스파이크 발사
+        var spVx = mul(effNx, spPower) + mul(p.vx, 0.12);
+        var spVy = mul(effNy, spPower) + (forwardNx >= 0 ? 0.68 : 0);
+
+        if (forwardNx >= 0) {
+          var minSpVx = isAi ? 7.2 : 7.8; // 스파이크 최저 수평 속도 보장
+          var maxSpVx = isAi ? 9.1 : 9.7;
+          if (dirSign * spVx < minSpVx) spVx = mul(dirSign, minSpVx);
+          if (dirSign * spVx > maxSpVx) spVx = mul(dirSign, maxSpVx);
+        } else if (dirSign * spVx > -6.0) {
+          spVx = -mul(dirSign, 6.0 + Math.abs(forwardNx) * 3.4);
+        }
+
+        // 스파이크 전체 최저 합성 속도 보장
+        var minSpTotal = isAi ? 8.7 : 9.3;
+        var curSpTotal = Math.hypot(spVx, spVy);
+        if (curSpTotal > 0 && curSpTotal < minSpTotal) {
+          var boost = minSpTotal / curSpTotal;
+          spVx = mul(spVx, boost);
+          spVy = mul(spVy, boost);
+        }
+
+        ball.vx = Math.max(-10.1, Math.min(10.1, spVx));
+        ball.vy = Math.max(-5.0, Math.min(9.3, spVy));
+        if (p === p2) aiWillSpike = false;
         SoundEngine.playSpikeSound(ball.spikeType);
       } else {
         ball.spikeType = 'none';
-        if (isSlidingNow) {
-          // 슬라이딩 리시브(디그): 낮은 공을 높고 부드럽게 코트 중앙/네트 쪽으로 걷어 올림
-          var distToNet = Math.max(80, Math.abs(400 - ball.x));
-          ball.vx = mul(dirSign, Math.min(5.2, Math.max(2.8, distToNet * 0.018)));
-          ball.vy = -7.6;
-        } else if (ny > 0.30) {
-          // 공이 고양이 하체/발밑 쪽에 닿았을 때 순간이동 없이 위로 깔끔하게 걷어 올림
-          var footVx = mul(Math.cos(angle), 4.6) + mul(p.vx, 0.03);
-          if (Math.abs(footVx) < 1.4) footVx = mul(dirSign, 2.0);
-          ball.vx = footVx;
-          ball.vy = -6.4;
-        } else {
-          // 일반 리시브: 고양이 이동 속도 영향은 극히 미미하게(3%)만 반영하여 항상 차분하게 토스
-          var bounceVx = mul(Math.cos(angle), 4.8) + mul(p.vx, 0.03);
-          if (Math.abs(bounceVx) < 1.4) {
-            bounceVx = mul(dirSign, 1.8);
-          }
-          ball.vx = bounceVx;
-          ball.vy = Math.min(-3.6, mul(Math.sin(angle), 5.2) - 2.6);
-        }
+        var impactVn = relVx * nx + relVy * ny;
+        // 일반 타격 반발 속도 범위를 부드럽고 안정적으로 조정
+        var hardBounceSpeed = Math.max(4.4, Math.min(5.3, -impactVn * 0.60));
 
-        // 일반 리시브 수평 속도 상한 5.2로 제한 (고양이가 빠르게 달려와 받아도 공이 빨라지지 않음)
-        if (Math.abs(ball.vx) > 5.2) {
-          ball.vx = Math.sign(ball.vx) * 5.2;
+        if (isSlidingNow) {
+          // 슬라이딩 찬스볼(디그): 네트(x=400)를 확실히 넘어가 상대 코트 중앙 공격 타점(1P->560, 2P->240)에 정확히 떨어지도록 탄도 계산
+          var targetOppX = (p.side === 1) ? 560 : 240;
+          var distToTarget = Math.abs(targetOppX - ball.x);
+          var chanceVy = -9.9;
+          var flightFrames = 190;
+          ball.vx = mul(dirSign, Math.max(2.3, Math.min(3.55, distToTarget / flightFrames)));
+          ball.vy = chanceVy;
+        } else if (ny > 0.35 && p.y < 326) {
+          // 점프 중 발바닥(하단)에 공이 닿은 경우 아래 방향으로 즉시 튕김
+          var underVx = mul(nx, hardBounceSpeed) + mul(p.vx, 0.16);
+          ball.vx = Math.max(-3.9, Math.min(3.9, underVx));
+          ball.vy = Math.max(2.1, mul(ny, hardBounceSpeed));
+        } else {
+          // 일반 리시브: 최대 수평·상승 속도를 한 번 더 다듬어 안정감 있게 리시브
+          var sideSign = (nx >= 0) ? 1 : -1;
+          var recvVx = mul(nx, hardBounceSpeed) + mul(p.vx, 0.11);
+          if (Math.abs(recvVx - p.vx) < 2.6) {
+            recvVx = p.vx + mul(sideSign, 2.8);
+          }
+          var recvVy = mul(ny, hardBounceSpeed) - 2.4;
+          ball.vx = Math.max(-3.9, Math.min(3.9, recvVx));
+          ball.vy = Math.max(-6.5, Math.min(-4.1, recvVy));
         }
       }
-
-      resolveNetCollision(p.side, false);
     }
   }
 
@@ -4602,42 +4573,47 @@ window.onload = function() {
 
   function drawBall() {
     var time = performance.now();
+    var bScale = ball.r / 30;
     ctx.save(); ctx.translate(ball.x, ball.y);
 
     if (ball.skin === 'golden') {
       var pulse = Math.sin(mul(time, 0.006));
-      var goldAurora = ctx.createRadialGradient(0, 0, ball.r * 0.7, 0, 0, ball.r + 16 + pulse * 3);
+      var goldAurora = ctx.createRadialGradient(0, 0, ball.r * 0.7, 0, 0, ball.r + 14 + pulse * 2.5);
       goldAurora.addColorStop(0.0, 'rgba(254, 240, 138, 0.55)');
       goldAurora.addColorStop(0.55, 'rgba(52, 211, 153, 0.35)');
       goldAurora.addColorStop(0.82, 'rgba(192, 132, 252, 0.22)');
       goldAurora.addColorStop(1.0, 'rgba(250, 204, 21, 0)');
       ctx.fillStyle = goldAurora;
-      ctx.beginPath(); ctx.arc(0, 0, ball.r + 17, 0, TAU); ctx.fill();
+      ctx.beginPath(); ctx.arc(0, 0, ball.r + 15, 0, TAU); ctx.fill();
 
       ctx.save(); ctx.rotate(mul(time, 0.0025));
-      ctx.strokeStyle = 'rgba(167, 243, 208, 0.75)'; ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.ellipse(0, 0, ball.r + 8, ball.r * 0.45, 0, 0, TAU); ctx.stroke();
+      ctx.strokeStyle = 'rgba(167, 243, 208, 0.75)'; ctx.lineWidth = 1.9;
+      ctx.beginPath(); ctx.ellipse(0, 0, ball.r + 7, ball.r * 0.45, 0, 0, TAU); ctx.stroke();
       ctx.restore();
 
       var bTw1 = Math.sin(mul(time, 0.01));
-      if (bTw1 > -0.2) drawStarSparkle(-22, -16, 6.5 * (0.6 + Math.max(0, bTw1) * 0.6), '#fef9c3');
+      if (bTw1 > -0.2) drawStarSparkle(-20 * bScale, -15 * bScale, 6.0 * (0.6 + Math.max(0, bTw1) * 0.6), '#fef9c3');
       var bTw2 = Math.cos(mul(time, 0.009));
-      if (bTw2 > -0.2) drawStarSparkle(23, 14, 6.0 * (0.6 + Math.max(0, bTw2) * 0.6), '#6ee7b7');
+      if (bTw2 > -0.2) drawStarSparkle(21 * bScale, 13 * bScale, 5.5 * (0.6 + Math.max(0, bTw2) * 0.6), '#6ee7b7');
     }
 
-    if (ball.spikeType === 'wind') { ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, ball.r + 5, 0, TAU); ctx.stroke(); }
-    else if (ball.spikeType === 'meteor') { ctx.fillStyle = 'rgba(249, 115, 22, 0.42)'; ctx.beginPath(); ctx.arc(0, 0, ball.r + 8, 0, TAU); ctx.fill(); }
-    else if (ball.spikeType === 'lightning') { ctx.fillStyle = 'rgba(56, 189, 248, 0.42)'; ctx.beginPath(); ctx.arc(0, 0, ball.r + 8, 0, TAU); ctx.fill(); }
-    else if (ball.spikeType === 'ice') { ctx.fillStyle = 'rgba(186, 230, 253, 0.45)'; ctx.beginPath(); ctx.arc(0, 0, ball.r + 8, 0, TAU); ctx.fill(); }
-    else if (ball.spikeType === 'sakura') { ctx.fillStyle = 'rgba(244, 114, 182, 0.38)'; ctx.beginPath(); ctx.arc(0, 0, ball.r + 8, 0, TAU); ctx.fill(); }
-    else if (ball.spikeType === 'blackhole') { ctx.fillStyle = 'rgba(88, 28, 135, 0.55)'; ctx.beginPath(); ctx.arc(0, 0, ball.r + 10, 0, TAU); ctx.fill(); }
+    if (ball.spikeType === 'wind') { ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)'; ctx.lineWidth = 1.9; ctx.beginPath(); ctx.arc(0, 0, ball.r + 4.5, 0, TAU); ctx.stroke(); }
+    else if (ball.spikeType === 'meteor') { ctx.fillStyle = 'rgba(249, 115, 22, 0.42)'; ctx.beginPath(); ctx.arc(0, 0, ball.r + 7, 0, TAU); ctx.fill(); }
+    else if (ball.spikeType === 'lightning') { ctx.fillStyle = 'rgba(56, 189, 248, 0.42)'; ctx.beginPath(); ctx.arc(0, 0, ball.r + 7, 0, TAU); ctx.fill(); }
+    else if (ball.spikeType === 'ice') { ctx.fillStyle = 'rgba(186, 230, 253, 0.45)'; ctx.beginPath(); ctx.arc(0, 0, ball.r + 7, 0, TAU); ctx.fill(); }
+    else if (ball.spikeType === 'sakura') { ctx.fillStyle = 'rgba(244, 114, 182, 0.38)'; ctx.beginPath(); ctx.arc(0, 0, ball.r + 7, 0, TAU); ctx.fill(); }
+    else if (ball.spikeType === 'blackhole') { ctx.fillStyle = 'rgba(88, 28, 135, 0.55)'; ctx.beginPath(); ctx.arc(0, 0, ball.r + 9, 0, TAU); ctx.fill(); }
 
     ctx.beginPath(); ctx.arc(0, 0, ball.r, 0, TAU); ctx.clip();
 
     if (ball.skin === 'watermelon') {
       ctx.fillStyle = '#22c55e'; ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
-      ctx.strokeStyle = '#14532d'; ctx.lineWidth = 4;
-      ctx.beginPath(); ctx.moveTo(-10, -20); ctx.quadraticCurveTo(-4, 0, -10, 20); ctx.moveTo(0, -20); ctx.quadraticCurveTo(0, 0, 0, 20); ctx.moveTo(10, -20); ctx.quadraticCurveTo(4, 0, 10, 20); ctx.stroke();
+      ctx.strokeStyle = '#14532d'; ctx.lineWidth = 3.7 * bScale;
+      ctx.beginPath();
+      ctx.moveTo(-10 * bScale, -20 * bScale); ctx.quadraticCurveTo(-4 * bScale, 0, -10 * bScale, 20 * bScale);
+      ctx.moveTo(0, -20 * bScale); ctx.quadraticCurveTo(0, 0, 0, 20 * bScale);
+      ctx.moveTo(10 * bScale, -20 * bScale); ctx.quadraticCurveTo(4 * bScale, 0, 10 * bScale, 20 * bScale);
+      ctx.stroke();
     } else if (ball.skin === 'rainbow') {
       ctx.save();
       ctx.rotate(mul(time, 0.004));
@@ -4653,9 +4629,9 @@ window.onload = function() {
       }
       ctx.restore();
 
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.65)'; ctx.lineWidth = 1.6;
-      ctx.beginPath(); ctx.arc(-7, 0, ball.r * 0.72, -1.1, 1.1); ctx.stroke();
-      ctx.beginPath(); ctx.arc(7, 0, ball.r * 0.72, 2.0, 4.2); ctx.stroke();
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.65)'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(-7 * bScale, 0, ball.r * 0.72, -1.1, 1.1); ctx.stroke();
+      ctx.beginPath(); ctx.arc(7 * bScale, 0, ball.r * 0.72, 2.0, 4.2); ctx.stroke();
 
       var holo = ctx.createRadialGradient(-ball.r * 0.32, -ball.r * 0.32, 2, 0, 0, ball.r);
       holo.addColorStop(0, 'rgba(255, 255, 255, 0.85)');
@@ -4682,7 +4658,7 @@ window.onload = function() {
 
       // 1) 중앙 오각형과 외곽 오각형을 잇는 패널 봉제선 (육각형 구획선)
       ctx.strokeStyle = '#334155';
-      ctx.lineWidth = 1.6;
+      ctx.lineWidth = 1.5;
       ctx.lineCap = 'round';
       for (var si = 0; si < 5; si++) {
         var ang = mul(si, TAU / 5) - Math.PI / 2;
@@ -4700,9 +4676,9 @@ window.onload = function() {
         var sideA2 = ang - 0.52;
         ctx.beginPath();
         ctx.moveTo(ox, oy);
-        ctx.lineTo(ox + Math.cos(sideA1) * 14, oy + Math.sin(sideA1) * 14);
+        ctx.lineTo(ox + Math.cos(sideA1) * 13 * bScale, oy + Math.sin(sideA1) * 13 * bScale);
         ctx.moveTo(ox, oy);
-        ctx.lineTo(ox + Math.cos(sideA2) * 14, oy + Math.sin(sideA2) * 14);
+        ctx.lineTo(ox + Math.cos(sideA2) * 13 * bScale, oy + Math.sin(sideA2) * 13 * bScale);
         ctx.stroke();
       }
 
@@ -4741,20 +4717,20 @@ window.onload = function() {
       ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
 
       ctx.strokeStyle = '#f9a8d4';
-      ctx.lineWidth = 1.6;
-      ctx.beginPath(); ctx.arc(-9, 0, ball.r * 0.75, -1.1, 1.1); ctx.stroke();
-      ctx.beginPath(); ctx.arc(9, 0, ball.r * 0.75, 2.0, 4.2); ctx.stroke();
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(-9 * bScale, 0, ball.r * 0.75, -1.1, 1.1); ctx.stroke();
+      ctx.beginPath(); ctx.arc(9 * bScale, 0, ball.r * 0.75, 2.0, 4.2); ctx.stroke();
 
       ctx.fillStyle = '#f43f5e';
       ctx.beginPath();
-      ctx.ellipse(0, 7, 11, 8, 0, 0, TAU);
+      ctx.ellipse(0, 7 * bScale, 11 * bScale, 8 * bScale, 0, 0, TAU);
       ctx.fill();
 
       var toes = [
-        { x: -13.5, y: -4.5, rx: 4.0, ry: 5.0, rot: -0.35 },
-        { x: -5.0,  y: -11.0, rx: 4.0, ry: 5.2, rot: -0.12 },
-        { x: 5.0,   y: -11.0, rx: 4.0, ry: 5.2, rot: 0.12 },
-        { x: 13.5,  y: -4.5, rx: 4.0, ry: 5.0, rot: 0.35 }
+        { x: -13.5 * bScale, y: -4.5 * bScale,  rx: 4.0 * bScale, ry: 5.0 * bScale, rot: -0.35 },
+        { x: -5.0 * bScale,  y: -11.0 * bScale, rx: 4.0 * bScale, ry: 5.2 * bScale, rot: -0.12 },
+        { x: 5.0 * bScale,   y: -11.0 * bScale, rx: 4.0 * bScale, ry: 5.2 * bScale, rot: 0.12 },
+        { x: 13.5 * bScale,  y: -4.5 * bScale,  rx: 4.0 * bScale, ry: 5.0 * bScale, rot: 0.35 }
       ];
       for (var ti = 0; ti < toes.length; ti++) {
         ctx.beginPath();
@@ -4762,15 +4738,15 @@ window.onload = function() {
         ctx.fill();
       }
     } else if (ball.skin === 'golden') {
-      var gGrad = ctx.createRadialGradient(-5, -5, 2, 0, 0, ball.r);
+      var gGrad = ctx.createRadialGradient(-5 * bScale, -5 * bScale, 2, 0, 0, ball.r);
       gGrad.addColorStop(0, '#ffffff'); gGrad.addColorStop(0.35, '#fef08a'); gGrad.addColorStop(0.75, '#facc15'); gGrad.addColorStop(1, '#b45309');
       ctx.fillStyle = gGrad; ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
-      var shineX = Math.cos(mul(time, 0.005)) * 8, shineY = Math.sin(mul(time, 0.005)) * 8;
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.85)'; ctx.beginPath(); ctx.arc(shineX, shineY, 4, 0, TAU); ctx.fill();
+      var shineX = Math.cos(mul(time, 0.005)) * 7.5 * bScale, shineY = Math.sin(mul(time, 0.005)) * 7.5 * bScale;
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.85)'; ctx.beginPath(); ctx.arc(shineX, shineY, 3.7 * bScale, 0, TAU); ctx.fill();
     } else {
       ctx.fillStyle = '#facc15'; ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2);
-      ctx.strokeStyle = '#ca8a04'; ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.arc(-7, 0, 15, -1.1, 1.1); ctx.stroke(); ctx.beginPath(); ctx.arc(7, 0, 15, 2.0, 4.2); ctx.stroke();
+      ctx.strokeStyle = '#ca8a04'; ctx.lineWidth = 1.9;
+      ctx.beginPath(); ctx.arc(-7 * bScale, 0, 15 * bScale, -1.1, 1.1); ctx.stroke(); ctx.beginPath(); ctx.arc(7 * bScale, 0, 15 * bScale, 2.0, 4.2); ctx.stroke();
     }
 
     if (ball.spikeType === 'meteor') { ctx.fillStyle = 'rgba(239, 68, 68, 0.58)'; ctx.fillRect(-ball.r, -ball.r, ball.r * 2, ball.r * 2); }
@@ -4950,11 +4926,22 @@ window.onload = function() {
     ctx.restore();
   }
 
+  var bgCacheCvs = document.createElement("canvas");
+  bgCacheCvs.width = 800; bgCacheCvs.height = 450;
+  var bgCacheCtx = bgCacheCvs.getContext("2d", { alpha: false });
+  var cachedSkyTime = -1;
+
   function drawBackground() {
     var pal = getSkyPalette();
-    var sky = ctx.createLinearGradient(0, 0, 0, 380);
-    sky.addColorStop(0, pal.top); sky.addColorStop(1, pal.bot);
-    ctx.fillStyle = sky; ctx.fillRect(0, 0, 800, 450);
+    if (cachedSkyTime < 0 || Math.abs(worldTime - cachedSkyTime) > 0.0025) {
+      cachedSkyTime = worldTime;
+      var sky = bgCacheCtx.createLinearGradient(0, 0, 0, 380);
+      sky.addColorStop(0, pal.top); sky.addColorStop(1, pal.bot);
+      bgCacheCtx.fillStyle = sky; bgCacheCtx.fillRect(0, 0, 800, 380);
+      bgCacheCtx.fillStyle = pal.sand; bgCacheCtx.fillRect(0, 380, 800, 70);
+      bgCacheCtx.fillStyle = pal.line; bgCacheCtx.fillRect(0, 380, 800, 6);
+    }
+    ctx.drawImage(bgCacheCvs, 0, 0);
 
     var nightAlpha = 0;
     if (worldTime >= 0.46 && worldTime < 0.54) nightAlpha = (worldTime - 0.46) / 0.08;
@@ -5014,9 +5001,6 @@ window.onload = function() {
     }
 
     if (heroCat.active) drawHeroCat(heroCat.x, heroCat.y);
-
-    ctx.fillStyle = pal.sand; ctx.fillRect(0, 380, 800, 70);
-    ctx.fillStyle = pal.line; ctx.fillRect(0, 380, 800, 6);
   }
 
   function draw() {
@@ -5025,7 +5009,7 @@ window.onload = function() {
     ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'right';
     ctx.fillText(T().creatorLabel, 775, 30);
 
-    ctx.fillStyle = '#fff'; ctx.fillRect(394, 274, 12, 106);
+    ctx.fillStyle = '#fff'; ctx.fillRect(394, 260, 12, 120);
     ctx.fillStyle = 'rgba(15,23,42,0.85)'; ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2;
     ctx.fillRect(320, 15, 160, 45); ctx.strokeRect(320, 15, 160, 45);
 
@@ -5089,27 +5073,22 @@ window.onload = function() {
     startIntroSequence();
   }
 
-  var stepAccum = 0;
+  var smoothDt = 1.0;
+
   function loop(now) {
     var elapsedMs = now - lastTime;
     lastTime = now;
-    if (elapsedMs < 0) elapsedMs = 16.6667;
-    if (elapsedMs > 50) elapsedMs = 50; // 탭 전환·일시 지연 시 급격한 점프 방지
+    if (elapsedMs < 1) elapsedMs = 16.6667;
+    if (elapsedMs > 45) elapsedMs = 45; // 탭 전환·순간 지연 시 순간이동 방지
 
-    // 60Hz 기기에서 requestAnimationFrame 간격이 14~19.5ms로 미세하게 흔들릴 때
-    // dt가 매 프레임 0.95 <-> 1.05로 요동치며 공/고양이가 떨리는 현상(micro-jitter) 제거
-    if (elapsedMs >= 14.0 && elapsedMs <= 19.5) {
-      update(1.0);
-    } else {
-      stepAccum += elapsedMs;
-      var subSteps = 0;
-      while (stepAccum >= 16.6667 && subSteps < 3) {
-        update(1.0);
-        stepAccum -= 16.6667;
-        subSteps++;
-      }
-    }
+    // 60Hz / 120Hz / 144Hz 주사율의 미세한 타이머 지터(15.8~17.5ms 등)를 흡수하여 0스텝/2스텝 끊김(버벅임) 제거
+    var rawDt = elapsedMs / 16.6667;
+    if (Math.abs(rawDt - 1.0) < 0.08) rawDt = 1.0;
+    else if (Math.abs(rawDt - 0.5) < 0.04) rawDt = 0.5;
+    else if (Math.abs(rawDt - 0.4167) < 0.035) rawDt = 0.4167;
+    smoothDt += (rawDt - smoothDt) * 0.35;
 
+    update(smoothDt);
     draw();
     requestAnimationFrame(loop);
   }
