@@ -2337,11 +2337,11 @@ window.onload = function() {
 
   // 브론즈·실버는 입문자가 편하게 즐길 수 있도록 속도·점프·반응·실수율을 대폭 완화
  var AI_DIFFICULTIES = [
-    { lv: 1, maxSpeed: 3.0,  jumpHeightY: 240, jumpRangeX: 60,  predictLead: 5,  jumpChance: 0.60, errorOffset: 45, spikeChance: 0.00, spikeSkin: 'wind',      skin: 'gray'    }, // 브론즈 (랠리 가능한 초보)
-    { lv: 2, maxSpeed: 3.5,  jumpHeightY: 245, jumpRangeX: 70,  predictLead: 10, jumpChance: 0.70, errorOffset: 35, spikeChance: 0.13, spikeSkin: 'wind',      skin: 'cheese'  }, // 실버 (난이도 소폭 하향)
-    { lv: 3, maxSpeed: 4.0,  jumpHeightY: 255, jumpRangeX: 80,  predictLead: 15, jumpChance: 0.80, errorOffset: 20, spikeChance: 0.45, spikeSkin: 'lightning', skin: 'persian' }, // 골드
-    { lv: 4, maxSpeed: 5.0,  jumpHeightY: 310, jumpRangeX: 110, predictLead: 30, jumpChance: 0.90, errorOffset: 10, spikeChance: 0.75, spikeSkin: 'ice',       skin: 'siamese' }, // 다이아
-    { lv: 5, maxSpeed: 7.0,  jumpHeightY: 322, jumpRangeX: 125, predictLead: 38, jumpChance: 1.00, errorOffset: 5,  spikeChance: 1.00, spikeSkin: 'meteor',    skin: 'gold'    }  // 챌린저냥
+    { lv: 1, maxSpeed: 3.5,  jumpHeightY: 245, jumpRangeX: 70,  predictLead: 6,  jumpChance: 0.78, errorOffset: 18, spikeChance: 0.00, spikeSkin: 'wind',      skin: 'gray'    }, // 브론즈 (랠리 가능한 초보)
+    { lv: 2, maxSpeed: 3.9,  jumpHeightY: 255, jumpRangeX: 70,  predictLead: 9,  jumpChance: 0.83, errorOffset: 14, spikeChance: 0.18, spikeSkin: 'wind',      skin: 'cheese'  }, // 실버 (난이도 소폭 하향)
+    { lv: 3, maxSpeed: 5.6,  jumpHeightY: 295, jumpRangeX: 100, predictLead: 22, jumpChance: 1.00, errorOffset: 0,  spikeChance: 0.75, spikeSkin: 'lightning', skin: 'persian' }, // 골드
+    { lv: 4, maxSpeed: 6.6,  jumpHeightY: 310, jumpRangeX: 112, predictLead: 30, jumpChance: 1.00, errorOffset: 0,  spikeChance: 0.90, spikeSkin: 'ice',       skin: 'siamese' }, // 다이아
+    { lv: 5, maxSpeed: 7.4,  jumpHeightY: 322, jumpRangeX: 125, predictLead: 38, jumpChance: 1.00, errorOffset: 0,  spikeChance: 1.00, spikeSkin: 'meteor',    skin: 'gold'    }  // 챌린저냥
   ];
 
   var currentAiConfig = AI_DIFFICULTIES[0];
@@ -3405,7 +3405,7 @@ window.onload = function() {
     if (moveDir !== 0) { p1.vx += mul(moveDir, 1.4) * dt; if (p1.vx > p1.maxSpeed) p1.vx = p1.maxSpeed; if (p1.vx < -p1.maxSpeed) p1.vx = -p1.maxSpeed; }
     else { p1.vx = mul(p1.vx, Math.pow(0.76, dt)); if (Math.abs(p1.vx) < 0.15) p1.vx = 0; }
 
-    if ((keys["ArrowUp"] || keys["KeyW"]) && p1.y >= 332) { p1.vy = -10.8; p1.squash = 1.22; SoundEngine.playCatMeow(p1.skin, true); }
+    if ((keys["ArrowUp"] || keys["KeyW"]) && p1.y >= 332) { p1.vy = -12.0; p1.squash = 1.22; SoundEngine.playCatMeow(p1.skin, true); }
 
     var wasAir1 = p1.y < 332;
     p1.vy += mul(0.36, dt); p1.x += mul(p1.vx, dt); p1.y += mul(p1.vy, dt);
@@ -3418,7 +3418,7 @@ window.onload = function() {
       if (remoteKeys.L) p2Dir -= 1; if (remoteKeys.R) p2Dir += 1;
       if (p2Dir !== 0) { p2.vx += mul(p2Dir, 1.4) * dt; if (p2.vx > p2.maxSpeed) p2.vx = p2.maxSpeed; if (p2.vx < -p2.maxSpeed) p2.vx = -p2.maxSpeed; }
       else { p2.vx = mul(p2.vx, Math.pow(0.76, dt)); if (Math.abs(p2.vx) < 0.15) p2.vx = 0; }
-      if (remoteKeys.U && p2.y >= 332) { p2.vy = -10.8; p2.squash = 1.22; SoundEngine.playCatMeow(p2.skin, true); }
+      if (remoteKeys.U && p2.y >= 332) { p2.vy = -12.0; p2.squash = 1.22; SoundEngine.playCatMeow(p2.skin, true); }
     } else {
       if (aiJumpCooldown > 0) aiJumpCooldown -= dt;
 
@@ -3451,7 +3451,7 @@ window.onload = function() {
       var canJumpAttack = (ball.x > 415 && ball.y > 130 && ball.y < cfg.jumpHeightY && ball.vy > -1.8);
       if (canJumpAttack && p2.y >= 332 && aiJumpCooldown <= 0 && Math.abs(p2.x - (ball.x + 20)) < cfg.jumpRangeX) {
         if (Math.random() < (cfg.jumpChance || 1)) {
-          p2.vy = -11.0;
+          p2.vy = -12.0;
           p2.squash = 1.22;
           aiJumpCooldown = cfg.lv <= 2 ? 46 : 28;
           aiWillSpike = (cfg.spikeChance > 0 && Math.random() < cfg.spikeChance);
@@ -3552,17 +3552,40 @@ window.onload = function() {
       if (isSpike) {
         ball.spikeType = p.spikeSkin || 'wind';
         if (p === p2 && netMode === 'ai') {
-          var vxSpeed = -9.6 - Math.random() * 1.4;
-          var framesToNet = Math.max(10, (ball.x - 400) / Math.abs(vxSpeed));
-          var netClearY = 215;
+          var vxSpeed = -9.4 - Math.random() * 0.8;
+          var framesToNet = Math.max(8, (ball.x - 400) / Math.abs(vxSpeed));
+          var netClearY = 224;
 
           var vyForNet = (netClearY - ball.y - 0.5 * 0.095 * framesToNet * framesToNet) / framesToNet;
           ball.vx = vxSpeed;
-          ball.vy = Math.min(-4.8, vyForNet);
+          ball.vy = Math.max(vyForNet, ball.y < 220 ? 1.8 : -2.2);
           aiWillSpike = false;
         } else {
-          ball.vx = mul(Math.cos(angle), 10.2) + mul(p.vx, 0.28);
-          ball.vy = mul(Math.sin(angle), 10.2) - 3.2;
+          // 피카츄 배구 감각의 레이저 직선 스파이크:
+          // 1) 적당히 빠르고 시원한 직진 속도 (9.2 ~ 10.2)
+          var dirSign = (p.side === 1) ? 1 : -1;
+          var isAirborne = (p.y < 322);
+          var rawVx = mul(Math.cos(angle), 9.6) + mul(p.vx, 0.22);
+          var spikeVx = dirSign * Math.max(8.8, Math.min(10.2, Math.abs(rawVx)));
+
+          // 2) 네트 상단(y=260, 공 반지름 32 포함 안전 높이 224)을 스치듯 넘기는 최소 직선 각도 계산
+          var distToNet = Math.max(20, Math.abs(400 - ball.x));
+          var framesToNet = distToNet / Math.abs(spikeVx);
+          var netClearVy = (224 - ball.y - 0.5 * 0.095 * framesToNet * framesToNet) / framesToNet;
+
+          var spikeVy;
+          if (isAirborne) {
+            // 점프 스파이크: 공이 네트보다 높으면 직선 대각선(약 +1.6~+2.6)으로 쭉 뻗고,
+            // 네트와 비슷하거나 낮으면 네트 위를 낮고 빠르게 스치는 라이너로 발사
+            var naturalLineVy = (ball.y < 225) ? (1.4 + (225 - ball.y) * 0.022) : -1.2;
+            spikeVy = Math.max(netClearVy, Math.min(3.2, naturalLineVy));
+          } else {
+            // 지상 스파이크: 포물선 대신 네트를 낮게 스쳐 지나가는 고속 드라이브
+            spikeVy = Math.max(netClearVy - 0.35, -4.6);
+          }
+
+          ball.vx = spikeVx;
+          ball.vy = spikeVy;
         }
         SoundEngine.playSpikeSound(ball.spikeType);
       } else {
