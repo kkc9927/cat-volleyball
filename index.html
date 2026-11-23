@@ -2337,11 +2337,11 @@ window.onload = function() {
 
   // 브론즈·실버는 입문자가 편하게 즐길 수 있도록 속도·점프·반응·실수율을 대폭 완화
  var AI_DIFFICULTIES = [
-    { lv: 1, maxSpeed: 3.5,  jumpHeightY: 245, jumpRangeX: 70,  predictLead: 6,  jumpChance: 0.78, errorOffset: 18, spikeChance: 0.00, spikeSkin: 'wind',      skin: 'gray'    }, // 브론즈 (랠리 가능한 초보)
-    { lv: 2, maxSpeed: 3.9,  jumpHeightY: 255, jumpRangeX: 70,  predictLead: 9,  jumpChance: 0.83, errorOffset: 14, spikeChance: 0.18, spikeSkin: 'wind',      skin: 'cheese'  }, // 실버 (난이도 소폭 하향)
-    { lv: 3, maxSpeed: 5.6,  jumpHeightY: 295, jumpRangeX: 100, predictLead: 22, jumpChance: 1.00, errorOffset: 0,  spikeChance: 0.75, spikeSkin: 'lightning', skin: 'persian' }, // 골드
-    { lv: 4, maxSpeed: 6.6,  jumpHeightY: 310, jumpRangeX: 112, predictLead: 30, jumpChance: 1.00, errorOffset: 0,  spikeChance: 0.90, spikeSkin: 'ice',       skin: 'siamese' }, // 다이아
-    { lv: 5, maxSpeed: 7.4,  jumpHeightY: 322, jumpRangeX: 125, predictLead: 38, jumpChance: 1.00, errorOffset: 0,  spikeChance: 1.00, spikeSkin: 'meteor',    skin: 'gold'    }  // 챌린저냥
+    { lv: 1, maxSpeed: 3.35, jumpHeightY: 245, jumpRangeX: 68,  predictLead: 5,  jumpChance: 0.72, errorOffset: 30, spikeChance: 0.00, spikeSkin: 'wind',      skin: 'gray'    }, // 브론즈 (여유로운 입문 난이도)
+    { lv: 2, maxSpeed: 3.75, jumpHeightY: 255, jumpRangeX: 70,  predictLead: 8,  jumpChance: 0.78, errorOffset: 25, spikeChance: 0.15, spikeSkin: 'wind',      skin: 'cheese'  }, // 실버 (가끔 실수하는 초중급)
+    { lv: 3, maxSpeed: 5.2,  jumpHeightY: 290, jumpRangeX: 94,  predictLead: 19, jumpChance: 0.88, errorOffset: 17, spikeChance: 0.62, spikeSkin: 'lightning', skin: 'persian' }, // 골드 (중급 · 가끔 빈틈 노출)
+    { lv: 4, maxSpeed: 6.1,  jumpHeightY: 305, jumpRangeX: 105, predictLead: 26, jumpChance: 0.92, errorOffset: 12, spikeChance: 0.78, spikeSkin: 'ice',       skin: 'siamese' }, // 다이아 (상급 · 미세 위치 오차)
+    { lv: 5, maxSpeed: 6.9,  jumpHeightY: 316, jumpRangeX: 116, predictLead: 33, jumpChance: 0.95, errorOffset: 8,  spikeChance: 0.90, spikeSkin: 'meteor',    skin: 'gold'    }  // 챌린저냥 (최상급 · 공략 가능한 보스)
   ];
 
   var currentAiConfig = AI_DIFFICULTIES[0];
@@ -2769,7 +2769,7 @@ window.onload = function() {
   var p1 = { x: 150, y: 332, vx: 0, vy: 0, r: 42, maxSpeed: 7.5, side: 1, name: '크림냥', tier: '🥉 브론즈', skin: 'cream', spikeSkin: 'wind', hitTimer: 0, squash: 1 };
   var p2 = { x: 650, y: 332, vx: 0, vy: 0, r: 42, maxSpeed: 7.5, side: 2, name: '그레이냥', tier: '🥉 브론즈', skin: 'gray', spikeSkin: 'wind', hitTimer: 0, squash: 1 };
 
-  var ball = { x: 400, y: 150, vx: 1.3, vy: -1.8, r: 32, spikeType: 'none', skin: 'classic' };
+  var ball = { x: 400, y: 150, vx: 1.3, vy: -1.8, r: 30, spikeType: 'none', skin: 'classic' };
 
   var particles = [];
   var score1 = 0, score2 = 0, gameOver = false, gameOverStartTime = 0, winnerSide = 0, matchRecorded = false, winnerText = "", keys = {};
@@ -3405,7 +3405,7 @@ window.onload = function() {
     if (moveDir !== 0) { p1.vx += mul(moveDir, 1.4) * dt; if (p1.vx > p1.maxSpeed) p1.vx = p1.maxSpeed; if (p1.vx < -p1.maxSpeed) p1.vx = -p1.maxSpeed; }
     else { p1.vx = mul(p1.vx, Math.pow(0.76, dt)); if (Math.abs(p1.vx) < 0.15) p1.vx = 0; }
 
-    if ((keys["ArrowUp"] || keys["KeyW"]) && p1.y >= 332) { p1.vy = -12.0; p1.squash = 1.22; SoundEngine.playCatMeow(p1.skin, true); }
+    if ((keys["ArrowUp"] || keys["KeyW"]) && p1.y >= 332) { p1.vy = -11.05; p1.squash = 1.22; SoundEngine.playCatMeow(p1.skin, true); }
 
     var wasAir1 = p1.y < 332;
     p1.vy += mul(0.36, dt); p1.x += mul(p1.vx, dt); p1.y += mul(p1.vy, dt);
@@ -3418,7 +3418,7 @@ window.onload = function() {
       if (remoteKeys.L) p2Dir -= 1; if (remoteKeys.R) p2Dir += 1;
       if (p2Dir !== 0) { p2.vx += mul(p2Dir, 1.4) * dt; if (p2.vx > p2.maxSpeed) p2.vx = p2.maxSpeed; if (p2.vx < -p2.maxSpeed) p2.vx = -p2.maxSpeed; }
       else { p2.vx = mul(p2.vx, Math.pow(0.76, dt)); if (Math.abs(p2.vx) < 0.15) p2.vx = 0; }
-      if (remoteKeys.U && p2.y >= 332) { p2.vy = -12.0; p2.squash = 1.22; SoundEngine.playCatMeow(p2.skin, true); }
+      if (remoteKeys.U && p2.y >= 332) { p2.vy = -11.05; p2.squash = 1.22; SoundEngine.playCatMeow(p2.skin, true); }
     } else {
       if (aiJumpCooldown > 0) aiJumpCooldown -= dt;
 
@@ -3451,7 +3451,7 @@ window.onload = function() {
       var canJumpAttack = (ball.x > 415 && ball.y > 130 && ball.y < cfg.jumpHeightY && ball.vy > -1.8);
       if (canJumpAttack && p2.y >= 332 && aiJumpCooldown <= 0 && Math.abs(p2.x - (ball.x + 20)) < cfg.jumpRangeX) {
         if (Math.random() < (cfg.jumpChance || 1)) {
-          p2.vy = -12.0;
+          p2.vy = -11.05;
           p2.squash = 1.22;
           aiJumpCooldown = cfg.lv <= 2 ? 46 : 28;
           aiWillSpike = (cfg.spikeChance > 0 && Math.random() < cfg.spikeChance);
@@ -3479,11 +3479,7 @@ window.onload = function() {
     if (ball.x > 800 - ball.r) { ball.x = 800 - ball.r; ball.vx = -ball.vx; SoundEngine.playBounce(false); }
     if (ball.y < ball.r) { ball.y = ball.r; ball.vy = -ball.vy; SoundEngine.playBounce(false); }
 
-    if (ball.x + ball.r > 395 && ball.x - ball.r < 405 && ball.y + ball.r > 260) {
-      if (ball.y < 275) { ball.y = 260 - ball.r; ball.vy = mul(ball.vy, -0.92); }
-      else { ball.vx = mul(ball.vx, -0.85); ball.x = ball.x < 400 ? 395 - ball.r : 405 + ball.r; }
-      SoundEngine.playBounce(true);
-    }
+    resolveNetCollision(0, true);
 
     hitBall(p1, !!keys["Space"]);
 
@@ -3541,58 +3537,122 @@ window.onload = function() {
     }
   }
 
+  function resolveNetCollision(lockSide, playSfx) {
+    var NET_TOP = 274;
+    if (ball.x + ball.r > 395 && ball.x - ball.r < 405 && ball.y + ball.r > NET_TOP) {
+      // 공 중심이 네트 꼭대기(NET_TOP = 274)보다 위쪽에 있을 때만 네트 상단 모서리를 스쳐 넘어가고,
+      // 공 중심이 네트 높이(y >= 274) 이하인 상태에서 네트 중앙/기둥에 맞으면 위로 끌어올리지 않고 옆으로 튕겨 아래로 떨어짐
+      if (ball.y < NET_TOP && !lockSide) {
+        ball.y = NET_TOP - ball.r;
+        if (ball.vy > 0) ball.vy = mul(ball.vy, -0.85);
+      } else {
+        // lockSide(1 또는 2)가 지정되면 고양이와 네트 사이에 공이 끼여 반대 코트로 밀려나는 현상을 차단
+        var pushLeft = lockSide ? (lockSide === 1) : (ball.x < 400);
+        if (pushLeft) {
+          ball.x = 395 - ball.r;
+          if (ball.vx > 0) ball.vx = mul(ball.vx, -0.65);
+        } else {
+          ball.x = 405 + ball.r;
+          if (ball.vx < 0) ball.vx = mul(ball.vx, -0.65);
+        }
+        // 네트 기둥에 맞았을 때 위로 솟지 않고 중력을 받아 아래로 떨어지도록 보정
+        if (ball.vy < 0) ball.vy = mul(ball.vy, 0.35);
+      }
+      if (playSfx) SoundEngine.playBounce(true);
+    }
+  }
+
   function hitBall(p, isSpike) {
     var dx = ball.x - p.x, dy = ball.y - p.y, dist = Math.hypot(dx, dy);
-    if (dist < ball.r + p.r + 6 && dist > 0) {
-      var overlap = (ball.r + p.r + 6) - dist;
-      ball.x += mul(dx / dist, overlap); ball.y += mul(dy / dist, overlap);
+    var hitRange = ball.r + p.r + 6;
+    if (dist < hitRange && dist > 0) {
+      var overlap = hitRange - dist;
+      var dirSign = (p.side === 1) ? 1 : -1;
+      var nearNet = (Math.abs(400 - p.x) < 105);
+
+      // 네트 앞 점프(블로킹) 중 공이 고양이 하체/발 쪽(dy > 6)에 걸렸을 때는
+      // 공을 아래쪽(바닥/발밑)으로 밀어내려 발로 밟지 않고, 위·앞쪽으로 밀어내며 튕겨 올리도록 보정
+      if (nearNet && dy > 6) {
+        ball.x += mul(dirSign, Math.max(4, overlap * 0.65));
+        ball.y = Math.min(ball.y, p.y - 4);
+        dy = ball.y - p.y;
+        dx = ball.x - p.x;
+      } else {
+        ball.x += mul(dx / dist, overlap);
+        ball.y += mul(dy / dist, overlap);
+      }
+
+      // 고양이 몸통이 공을 네트 쪽으로 밀어냈을 때 네트를 뚫고 넘어가지 않도록 즉시 네트 경계 보정
+      resolveNetCollision(p.side, false);
+      // 네트 보정 후 실제 상대 좌표(dx, dy)를 다시 계산해야 정수리/뒤쪽 공이 앞으로 텔레포트하지 않음
+      dx = ball.x - p.x;
+      dy = ball.y - p.y;
+
       p.hitTimer = 18; p.squash = 1.15;
       var angle = Math.atan2(dy, dx);
       SoundEngine.playCatMeow(p.skin, false);
       if (isSpike) {
         ball.spikeType = p.spikeSkin || 'wind';
         if (p === p2 && netMode === 'ai') {
-          var vxSpeed = -9.4 - Math.random() * 0.8;
-          var framesToNet = Math.max(8, (ball.x - 400) / Math.abs(vxSpeed));
-          var netClearY = 224;
+          var vxSpeed = -10.8 - Math.random() * 0.8;
+          var framesToNet = Math.max(12, (ball.x - 400) / Math.abs(vxSpeed));
+          var netClearY = 238;
 
           var vyForNet = (netClearY - ball.y - 0.5 * 0.095 * framesToNet * framesToNet) / framesToNet;
           ball.vx = vxSpeed;
-          ball.vy = Math.max(vyForNet, ball.y < 220 ? 1.8 : -2.2);
+          ball.vy = Math.max(vyForNet, ball.y < 220 ? 2.2 : -2.2);
           aiWillSpike = false;
         } else {
-          // 피카츄 배구 감각의 레이저 직선 스파이크:
-          // 1) 적당히 빠르고 시원한 직진 속도 (9.2 ~ 10.2)
-          var dirSign = (p.side === 1) ? 1 : -1;
-          var isAirborne = (p.y < 322);
-          var rawVx = mul(Math.cos(angle), 9.6) + mul(p.vx, 0.22);
-          var spikeVx = dirSign * Math.max(8.8, Math.min(10.2, Math.abs(rawVx)));
+          var forwardOffset = dirSign * dx;
+          // 네트 바로 앞(코트 끝단)에서 몸이 네트에 막힌 상태일 때만 최소 허용(-4px),
+          // 일반 점프 중에는 정수리 중앙(forwardOffset <= 8)이나 정수리 뒤(forwardOffset < 0)에 있는 공을
+          // 앞으로 스르륵 끌어오지 않고 맞은 위치 그대로 위/뒤 방향으로 튕겨 냄
+          var isBlockedAtNet = (Math.abs(400 - p.x) < 58 && forwardOffset >= -4);
 
-          // 2) 네트 상단(y=260, 공 반지름 32 포함 안전 높이 224)을 스치듯 넘기는 최소 직선 각도 계산
-          var distToNet = Math.max(20, Math.abs(400 - ball.x));
-          var framesToNet = distToNet / Math.abs(spikeVx);
-          var netClearVy = (224 - ball.y - 0.5 * 0.095 * framesToNet * framesToNet) / framesToNet;
-
-          var spikeVy;
-          if (isAirborne) {
-            // 점프 스파이크: 공이 네트보다 높으면 직선 대각선(약 +1.6~+2.6)으로 쭉 뻗고,
-            // 네트와 비슷하거나 낮으면 네트 위를 낮고 빠르게 스치는 라이너로 발사
-            var naturalLineVy = (ball.y < 225) ? (1.4 + (225 - ball.y) * 0.022) : -1.2;
-            spikeVy = Math.max(netClearVy, Math.min(3.2, naturalLineVy));
+          if (forwardOffset <= 8 && !isBlockedAtNet) {
+            var naturalVx = mul(Math.cos(angle), 10.9) + mul(p.vx, 0.22);
+            var naturalVy = mul(Math.sin(angle), 10.0) - 1.2;
+            ball.vx = Math.max(-11.4, Math.min(11.4, naturalVx));
+            ball.vy = Math.max(-8.4, Math.min(3.6, naturalVy));
           } else {
-            // 지상 스파이크: 포물선 대신 네트를 낮게 스쳐 지나가는 고속 드라이브
-            spikeVy = Math.max(netClearVy - 0.35, -4.6);
-          }
+            var isAirborne = (p.y < 322);
+            var rawVx = mul(Math.cos(angle), 10.8) + mul(p.vx, 0.22);
+            var spikeVx = dirSign * Math.max(10.3, Math.min(11.4, Math.abs(rawVx)));
 
-          ball.vx = spikeVx;
-          ball.vy = spikeVy;
+            var distToNet = Math.max(145, Math.abs(400 - ball.x));
+            var framesToNet = distToNet / Math.abs(spikeVx);
+            var netClearVy = (232 - ball.y - 0.5 * 0.095 * framesToNet * framesToNet) / framesToNet;
+
+            var spikeVy;
+            if (isAirborne) {
+              var naturalLineVy = (ball.y < 225) ? (1.8 + (225 - ball.y) * 0.022) : -1.1;
+              spikeVy = Math.max(netClearVy, Math.min(3.6, naturalLineVy));
+            } else {
+              spikeVy = Math.max(netClearVy - 0.35, -4.6);
+            }
+
+            ball.vx = spikeVx;
+            ball.vy = Math.max(-6.8, Math.min(4.6, spikeVy));
+          }
         }
         SoundEngine.playSpikeSound(ball.spikeType);
       } else {
         ball.spikeType = 'none';
-        ball.vx = mul(Math.cos(angle), 5.5) + mul(p.vx, 0.22);
-        ball.vy = mul(Math.sin(angle), 5.5) - 2.3;
+        if (nearNet && p.y < 326) {
+          // 네트 앞 점프 블로킹(스파이크 미입력 상태) 시 공이 발밑이 아닌 네트 위·상대 코트 방향으로 깔끔하게 튕겨 나감
+          ball.vx = mul(dirSign, 5.2) + mul(p.vx, 0.2);
+          ball.vy = Math.min(-4.2, mul(Math.sin(angle), 5.5) - 2.6);
+        } else {
+          ball.vx = mul(Math.cos(angle), 5.5) + mul(p.vx, 0.22);
+          ball.vy = mul(Math.sin(angle), 5.5) - 2.3;
+        }
       }
+      // 일반 터치·스파이크 구분 없이 모든 네트 앞 충돌에서 공이 고양이 발밑(p.y 아래)으로 깔리지 않도록 최종 보장
+      if (nearNet && ball.y > p.y - 2) {
+        ball.y = p.y - 2;
+        if (ball.vy > -1.5) ball.vy = -3.4;
+      }
+      resolveNetCollision(p.side, false);
     }
   }
 
@@ -4458,7 +4518,7 @@ window.onload = function() {
     ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'right';
     ctx.fillText(T().creatorLabel, 775, 30);
 
-    ctx.fillStyle = '#fff'; ctx.fillRect(396, 260, 8, 120);
+    ctx.fillStyle = '#fff'; ctx.fillRect(396, 274, 8, 106);
     ctx.fillStyle = 'rgba(15,23,42,0.85)'; ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2;
     ctx.fillRect(320, 15, 160, 45); ctx.strokeRect(320, 15, 160, 45);
 
