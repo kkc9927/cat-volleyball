@@ -2344,11 +2344,11 @@ window.onload = function() {
 
   // 브론즈·실버는 입문자가 편하게 즐길 수 있도록 속도·점프·반응·실수율을 대폭 완화
  var AI_DIFFICULTIES = [
-    { lv: 1, maxSpeed: 3.35, jumpHeightY: 245, jumpRangeX: 68,  predictLead: 5,  jumpChance: 0.50, errorOffset: 75, spikeChance: 0.00, slideChance: 0.00, spikeSkin: 'wind',      skin: 'gray'    }, // 브론즈 (여유로운 입문 난이도)
-    { lv: 2, maxSpeed: 3.75, jumpHeightY: 255, jumpRangeX: 70,  predictLead: 8,  jumpChance: 0.60, errorOffset: 65, spikeChance: 0.15, slideChance: 0.00, spikeSkin: 'wind',      skin: 'cheese'  }, // 실버 (가끔 실수하는 초중급)
-    { lv: 3, maxSpeed: 5.2,  jumpHeightY: 290, jumpRangeX: 94,  predictLead: 19, jumpChance: 0.70, errorOffset: 55, spikeChance: 0.62, slideChance: 0.32, spikeSkin: 'lightning', skin: 'persian' }, // 골드 (중급 · 가끔 슬라이딩 수비)
-    { lv: 4, maxSpeed: 6.1,  jumpHeightY: 305, jumpRangeX: 105, predictLead: 26, jumpChance: 0.80, errorOffset: 45, spikeChance: 0.78, slideChance: 0.52, spikeSkin: 'ice',       skin: 'siamese' }, // 다이아 (상급 · 위기 시 슬라이딩 수비)
-    { lv: 5, maxSpeed: 6.9,  jumpHeightY: 316, jumpRangeX: 116, predictLead: 33, jumpChance: 0.90, errorOffset: 35, spikeChance: 0.90, slideChance: 0.70, spikeSkin: 'meteor',    skin: 'gold'    }  // 챌린저냥 (최상급 · 날카로운 슬라이딩 디그)
+    { lv: 1, maxSpeed: 3.35, jumpHeightY: 245, jumpRangeX: 68,  predictLead: 5,  jumpChance: 0.50, errorOffset: 99, spikeChance: 0.00, slideChance: 0.00, spikeSkin: 'wind',      skin: 'gray'    }, // 브론즈 (여유로운 입문 난이도)
+    { lv: 2, maxSpeed: 3.75, jumpHeightY: 255, jumpRangeX: 70,  predictLead: 8,  jumpChance: 0.60, errorOffset: 89, spikeChance: 0.15, slideChance: 0.00, spikeSkin: 'wind',      skin: 'cheese'  }, // 실버 (가끔 실수하는 초중급)
+    { lv: 3, maxSpeed: 5.2,  jumpHeightY: 290, jumpRangeX: 94,  predictLead: 19, jumpChance: 0.70, errorOffset: 79, spikeChance: 0.62, slideChance: 0.32, spikeSkin: 'lightning', skin: 'persian' }, // 골드 (중급 · 가끔 슬라이딩 수비)
+    { lv: 4, maxSpeed: 6.1,  jumpHeightY: 305, jumpRangeX: 105, predictLead: 26, jumpChance: 0.80, errorOffset: 69, spikeChance: 0.78, slideChance: 0.52, spikeSkin: 'ice',       skin: 'siamese' }, // 다이아 (상급 · 위기 시 슬라이딩 수비)
+    { lv: 5, maxSpeed: 6.9,  jumpHeightY: 316, jumpRangeX: 116, predictLead: 33, jumpChance: 0.90, errorOffset: 59, spikeChance: 0.90, slideChance: 0.70, spikeSkin: 'meteor',    skin: 'gold'    }  // 챌린저냥 (최상급 · 날카로운 슬라이딩 디그)
   ];
 
   var currentAiConfig = AI_DIFFICULTIES[0];
