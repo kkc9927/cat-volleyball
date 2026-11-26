@@ -2399,21 +2399,21 @@ window.onload = function() {
         SoundEngine.playSpikeSound(ball.spikeType);
       } else {
         ball.spikeType = 'none'; var impactVn = relVx * nx + relVy * ny;
-        // 일반 타격 반발 속도 범위를 부드럽고 안정적으로 조정
-        var hardBounceSpeed = Math.max(5.0, Math.min(6.1, -impactVn * 0.68));
+        // 들어오는 공 속도에 비례한 자연스러운 리시브 탄성 (느린 공은 약하게, 빠른 강타는 강하게 반발)
+        var hardBounceSpeed = Math.max(3.1, Math.min(5.6, -impactVn * 0.56));
         if (isSlidingNow) {
-          // 슬라이딩 찬스볼(디그): 천장에 닿지 않는 최적의 높은 포물선으로 네트를 넘어 상대 코트 중앙(1P->560, 2P->240) 공격 타점에 안착
-          var targetOppX = (p.side === 1) ? 560 : 240; var distToTarget = Math.abs(targetOppX - ball.x); var chanceVy = -6.5; var flightFrames = 145;
-          ball.vx = mul(dirSign, Math.max(2.4, Math.min(3.8, distToTarget / flightFrames))); ball.vy = chanceVy;
+          // 슬라이딩 찬스볼(디그): 천장에 닿지 않는 높은 포물선으로 네트 너머 전·중위권(1P->505, 2P->295)에 띄움
+          var targetOppX = (p.side === 1) ? 505 : 295; var distToTarget = Math.abs(targetOppX - ball.x); var chanceVy = -6.3; var flightFrames = 140;
+          ball.vx = mul(dirSign, Math.max(1.9, Math.min(3.3, distToTarget / flightFrames))); ball.vy = chanceVy;
         } else if (ny > 0.35 && p.y < 326) {
           // 점프 중 발바닥(하단)에 공이 닿은 경우 아래 방향으로 즉시 튕김
-          var underVx = mul(nx, hardBounceSpeed) + mul(p.vx, 0.16); ball.vx = Math.max(-3.9, Math.min(3.9, underVx));
+          var underVx = mul(nx, hardBounceSpeed) + mul(p.vx, 0.14); ball.vx = Math.max(-3.6, Math.min(3.6, underVx));
           ball.vy = Math.max(2.1, mul(ny, hardBounceSpeed));
         } else {
-          // 일반 리시브: 공이 고양이보다 빠르게 튕겨 나가도록 수평 속도 상향
-          var sideSign = (nx >= 0) ? 1 : -1; var recvVx = mul(nx, hardBounceSpeed) + mul(p.vx, 0.14);
-          if (Math.abs(recvVx - p.vx) < 3.4) { recvVx = p.vx + mul(sideSign, 3.6); }
-          var recvVy = mul(ny, hardBounceSpeed) - 2.3; ball.vx = Math.max(-5.2, Math.min(5.2, recvVx)); ball.vy = Math.max(-6.2, Math.min(-4.1, recvVy));
+          // 일반 리시브: 느린 공은 네트 앞~중간에 떨어져 상대의 전진 수비를 유도하고, 강하게 맞힌 공만 깊숙이 뻗도록 밸런스 조정
+          var sideSign = (nx >= 0) ? 1 : -1; var recvVx = mul(nx, hardBounceSpeed) + mul(p.vx, 0.12);
+          if (Math.abs(recvVx - p.vx) < 1.55) { recvVx = p.vx + mul(sideSign, 1.65); }
+          var recvVy = mul(ny, hardBounceSpeed) - 2.15; ball.vx = Math.max(-4.35, Math.min(4.35, recvVx)); ball.vy = Math.max(-5.6, Math.min(-3.8, recvVy));
         }
       }
     }
@@ -2430,22 +2430,53 @@ window.onload = function() {
     ctx.closePath(); ctx.fill(); ctx.restore();
   }
   function drawGoldCatAurora(x, y, time) {
-    ctx.save(); ctx.translate(x, y - 4); var shift = Math.sin(mul(time, 0.004)), shift2 = Math.cos(mul(time, 0.0032));
-    var auraGrad = ctx.createRadialGradient(0, 0, 12, 0, 0, 56 + shift * 5); auraGrad.addColorStop(0.0, 'rgba(254, 240, 138, 0.42)');
-    auraGrad.addColorStop(0.45, 'rgba(52, 211, 153, 0.28)'); auraGrad.addColorStop(0.75, 'rgba(192, 132, 252, 0.22)');
-    auraGrad.addColorStop(1.0, 'rgba(250, 204, 21, 0)'); ctx.fillStyle = auraGrad;
-    ctx.beginPath(); ctx.ellipse(shift * 5, shift2 * 4, 52, 46, shift * 0.2, 0, TAU); ctx.fill(); ctx.save(); ctx.rotate(shift * 0.25);
-    ctx.strokeStyle = 'rgba(110, 231, 183, 0.55)'; ctx.lineWidth = 4; ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(-36, -18 + shift * 6); ctx.bezierCurveTo(-14, -34 - shift2 * 8, 16, -24 + shift * 8, 36, -14 - shift2 * 6); ctx.stroke();
+    ctx.save(); ctx.translate(x, y - 6); var shift = Math.sin(mul(time, 0.004)), shift2 = Math.cos(mul(time, 0.0032));
+    // 1) 황금 태양광 + 오로라 3중 광륜 배경
+    var auraGrad = ctx.createRadialGradient(0, 0, 10, 0, 0, 66 + shift * 6);
+    auraGrad.addColorStop(0.0, 'rgba(255, 251, 235, 0.72)');
+    auraGrad.addColorStop(0.38, 'rgba(250, 204, 21, 0.44)');
+    auraGrad.addColorStop(0.68, 'rgba(52, 211, 153, 0.26)');
+    auraGrad.addColorStop(0.88, 'rgba(192, 132, 252, 0.18)');
+    auraGrad.addColorStop(1.0, 'rgba(250, 204, 21, 0)');
+    ctx.fillStyle = auraGrad; ctx.beginPath(); ctx.ellipse(shift * 4, shift2 * 3, 62, 54, shift * 0.15, 0, TAU); ctx.fill();
+
+    // 2) 등 뒤에서 천천히 회전하는 황금 천체 후광 링 & 8방향 빛살
+    ctx.save(); ctx.translate(0, -10); ctx.rotate(mul(time, 0.0012));
+    ctx.strokeStyle = 'rgba(254, 240, 138, 0.72)'; ctx.lineWidth = 2.2;
+    ctx.beginPath(); ctx.arc(0, 0, 38, 0, TAU); ctx.stroke();
+    ctx.strokeStyle = 'rgba(250, 204, 21, 0.48)'; ctx.lineWidth = 1.6;
+    for (var r = 0; r < 8; r++) {
+      var ra = mul(r, TAU / 8);
+      ctx.beginPath(); ctx.moveTo(Math.cos(ra) * 34, Math.sin(ra) * 34); ctx.lineTo(Math.cos(ra) * 46, Math.sin(ra) * 46); ctx.stroke();
+    }
     ctx.restore();
+
+    // 3) 쌍으로 일렁이는 에메랄드·골드 오로라 리본
+    ctx.save(); ctx.rotate(shift * 0.22);
+    ctx.strokeStyle = 'rgba(110, 231, 183, 0.62)'; ctx.lineWidth = 4.2; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(-42, -18 + shift * 6); ctx.bezierCurveTo(-16, -38 - shift2 * 8, 18, -26 + shift * 8, 42, -14 - shift2 * 6); ctx.stroke();
+    ctx.strokeStyle = 'rgba(253, 224, 71, 0.65)'; ctx.lineWidth = 2.6;
+    ctx.beginPath(); ctx.moveTo(-38, 12 - shift2 * 5); ctx.bezierCurveTo(-12, 28 + shift * 6, 16, 18 - shift * 6, 40, 8 + shift2 * 5); ctx.stroke();
+    ctx.restore();
+
+    // 4) 피어오르는 황금빛 불꽃 입자 + 6방향 별빛 반짝임
+    for (var m = 0; m < 5; m++) {
+      var mProg = ((mul(time, 0.0011) + m * 0.2) % 1);
+      var mx = Math.sin(m * 2.1 + mProg * 5) * 30;
+      var my = 26 - mProg * 68;
+      var mAlpha = Math.sin(mProg * Math.PI) * 0.85;
+      ctx.fillStyle = (m % 2 === 0) ? ('rgba(254, 240, 138, ' + mAlpha.toFixed(2) + ')') : ('rgba(167, 243, 208, ' + mAlpha.toFixed(2) + ')');
+      ctx.beginPath(); ctx.arc(mx, my, 2.3 + (1 - mProg) * 1.4, 0, TAU); ctx.fill();
+    }
     var sparkles = [
-      { ox: -34, oy: -28, ph: 0.0, sz: 7.5, col: '#fef9c3' },
-      { ox: 35,  oy: -24, ph: 1.7, sz: 8.0, col: '#a7f3d0' },
-      { ox: -28, oy: 24,  ph: 3.1, sz: 6.5, col: '#f5d0fe' },
-      { ox: 32,  oy: 20,  ph: 4.5, sz: 7.0, col: '#fde047' }
+      { ox: -40, oy: -32, ph: 0.0, sz: 8.5, col: '#fef9c3' },
+      { ox: 41,  oy: -28, ph: 1.4, sz: 9.0, col: '#a7f3d0' },
+      { ox: -36, oy: 22,  ph: 2.7, sz: 7.5, col: '#f5d0fe' },
+      { ox: 38,  oy: 18,  ph: 4.1, sz: 8.0, col: '#fde047' },
+      { ox: 0,   oy: -48, ph: 5.2, sz: 8.2, col: '#ffffff' }
     ];
     for (var i = 0; i < sparkles.length; i++) {
-      var sp = sparkles[i], tw = Math.sin(mul(time, 0.008) + sp.ph);
+      var sp = sparkles[i], tw = Math.sin(mul(time, 0.0085) + sp.ph);
       if (tw > -0.15) drawStarSparkle(sp.ox, sp.oy, sp.sz * (0.55 + Math.max(0, tw) * 0.65), sp.col);
     }
     ctx.restore();
@@ -2731,8 +2762,17 @@ window.onload = function() {
     if (!isSimple) {
       if (sk.id === 'persian') { ctx.fillStyle = '#bae6fd'; ctx.beginPath(); ctx.ellipse(mul(-dir, 4), 19, 10, 8, 0, 0, TAU); ctx.fill(); }
       else if (sk.id === 'calico') { ctx.fillStyle = '#1e293b'; ctx.beginPath(); ctx.arc(mul(-dir, 6), 16, 6, 0, TAU); ctx.fill(); }
-      ctx.fillStyle = sk.stripe;
-      ctx.beginPath(); ctx.roundRect(mul(dir, 3), 12, 3.8, 8.5, 2); ctx.roundRect(mul(dir, 8.5), 14, 3.8, 6.5, 2); ctx.fill();
+      else if (sk.id === 'gold') {
+        // 황금냥 전용: 순백의 풍성한 사자 갈기/가슴 털 + 붉은 로열 망토 스카프
+        ctx.fillStyle = '#fffbeb'; ctx.beginPath(); ctx.ellipse(mul(dir, 2), 14, 13, 10, 0, 0, TAU); ctx.fill();
+        ctx.fillStyle = '#dc2626'; ctx.strokeStyle = '#7f1d1d'; ctx.lineWidth = 1.4;
+        ctx.beginPath(); ctx.roundRect(-13, 4.5, 26, 5.2, 2.6); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = '#fef08a'; ctx.beginPath(); ctx.arc(mul(dir, 3), 7.1, 2.5, 0, TAU); ctx.fill();
+      }
+      if (sk.id !== 'gold') {
+        ctx.fillStyle = sk.stripe;
+        ctx.beginPath(); ctx.roundRect(mul(dir, 3), 12, 3.8, 8.5, 2); ctx.roundRect(mul(dir, 8.5), 14, 3.8, 6.5, 2); ctx.fill();
+      }
     }
     var paw = mul(Math.sin(mul(time, 0.022)), mul(4.2, speedRatio));
     var pawBaseCol = (sk.id === 'persian' || sk.id === 'siamese') ? '#3e2723' : '#ffffff'; ctx.fillStyle = pawBaseCol;
@@ -2808,8 +2848,24 @@ window.onload = function() {
         ctx.fillStyle = '#1e293b'; ctx.beginPath(); ctx.arc(20, -12, 14, 0, TAU); ctx.fill();
       } else if (sk.id === 'siamese') {
         ctx.fillStyle = '#5d4037'; ctx.beginPath(); ctx.ellipse(dir * 2, 3, 15, 11, 0, 0, TAU); ctx.fill();
+      } else if (sk.id === 'gold') {
+        // 황금냥 전용 얼굴 디자인: 치즈냥 줄무늬 대신 빛나는 메탈릭 골드 그라데이션 + 순백의 입가(머즐)·볼 장식 + 이마 루비 보석 문양
+        var goldFaceGrad = ctx.createRadialGradient(-6, -12, 3, 0, 0, 31);
+        goldFaceGrad.addColorStop(0.0, '#fef9c3');
+        goldFaceGrad.addColorStop(0.45, '#fde047');
+        goldFaceGrad.addColorStop(0.85, '#eab308');
+        goldFaceGrad.addColorStop(1.0, '#ca8a04');
+        ctx.fillStyle = goldFaceGrad; ctx.fillRect(-32, -28, 64, 54);
+        // 순백의 하트형 입가·하관 마스크 & 양 볼 솜털
+        ctx.fillStyle = '#fffbeb';
+        ctx.beginPath(); ctx.ellipse(dir * 1.5, 9, 15.5, 11.5, 0, 0, TAU); ctx.fill();
+        ctx.beginPath(); ctx.arc(-21, 7, 8.5, 0, TAU); ctx.arc(21, 7, 8.5, 0, TAU); ctx.fill();
+        // 이마 중앙 다이아몬드 루비 문양 & 금빛 윙 아이라인
+        ctx.fillStyle = '#e11d48'; ctx.strokeStyle = '#fef9c3'; ctx.lineWidth = 1.2;
+        ctx.beginPath(); ctx.moveTo(dir * 1, -18); ctx.lineTo(dir * 1 + 4, -13); ctx.lineTo(dir * 1, -8); ctx.lineTo(dir * 1 - 4, -13); ctx.closePath();
+        ctx.fill(); ctx.stroke();
       } else { ctx.fillStyle = sk.light; ctx.beginPath(); ctx.ellipse(-6, -15, 13, 6, -0.25, 0, TAU); ctx.fill(); }
-      if (sk.id !== 'siamese') {
+      if (sk.id !== 'siamese' && sk.id !== 'gold') {
         ctx.fillStyle = sk.stripe; ctx.beginPath();
         ctx.roundRect(-7, -26, 2.8, 9, 1.5); ctx.roundRect(-1.4, -26, 2.8, 11, 1.5); ctx.roundRect(4.2, -26, 2.8, 9, 1.5);
         ctx.roundRect(-30, -1, 8.5, 2.5, 1.2); ctx.roundRect(-30, 3.5, 7.5, 2.5, 1.2);
@@ -2817,11 +2873,18 @@ window.onload = function() {
       }
       ctx.restore();
     }
-    ctx.lineWidth = 2.6; ctx.strokeStyle = '#0f172a'; traceCatHeadPath(isSimple); ctx.stroke();
+    ctx.lineWidth = 2.6; ctx.strokeStyle = sk.id === 'gold' ? '#713f12' : '#0f172a'; traceCatHeadPath(isSimple); ctx.stroke();
     if (sk.id === 'gold') {
-      ctx.fillStyle = '#fef08a'; ctx.strokeStyle = '#854d0e'; ctx.lineWidth = 1.6; ctx.beginPath();
-      ctx.moveTo(-9, -24); ctx.lineTo(-11, -35); ctx.lineTo(-4, -29); ctx.lineTo(0, -37); ctx.lineTo(4, -29); ctx.lineTo(11, -35); ctx.lineTo(9, -24);
+      // 양 볼 옆으로 뻗은 늠름한 백금빛 수염/갈기 깃털
+      ctx.fillStyle = '#fef9c3'; ctx.strokeStyle = '#854d0e'; ctx.lineWidth = 1.6;
+      ctx.beginPath(); ctx.moveTo(-27, 2); ctx.lineTo(-35, -1); ctx.lineTo(-31, 6); ctx.lineTo(-36, 10); ctx.lineTo(-26, 11); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(27, 2); ctx.lineTo(35, -1); ctx.lineTo(31, 6); ctx.lineTo(36, 10); ctx.lineTo(26, 11); ctx.closePath(); ctx.fill(); ctx.stroke();
+      // 보석이 박힌 3봉우리 챌린저 황금 왕관
+      ctx.fillStyle = '#fef08a'; ctx.strokeStyle = '#854d0e'; ctx.lineWidth = 1.7; ctx.beginPath();
+      ctx.moveTo(-11, -23); ctx.lineTo(-13, -36); ctx.lineTo(-5, -29); ctx.lineTo(0, -39); ctx.lineTo(5, -29); ctx.lineTo(13, -36); ctx.lineTo(11, -23);
       ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#e11d48'; ctx.beginPath(); ctx.arc(0, -29, 2.3, 0, TAU); ctx.fill();
+      ctx.fillStyle = '#0284c7'; ctx.beginPath(); ctx.arc(-7.5, -27.5, 1.6, 0, TAU); ctx.arc(7.5, -27.5, 1.6, 0, TAU); ctx.fill();
     }
     ctx.fillStyle = 'rgba(244, 63, 94, 0.35)';
     ctx.beginPath(); ctx.ellipse(-15, 4, 4.5, 3, 0, 0, TAU); ctx.ellipse(15, 4, 4.5, 3, 0, 0, TAU); ctx.fill();
@@ -2858,14 +2921,22 @@ window.onload = function() {
       ctx.strokeStyle = lineStroke; ctx.lineWidth = 2.6; ctx.lineCap = 'round';
       ctx.beginPath(); ctx.moveTo(-12, -4); ctx.lineTo(-8, -7.5); ctx.lineTo(-4, -4); ctx.moveTo(4, -4); ctx.lineTo(8, -7.5); ctx.lineTo(12, -4); ctx.stroke();
     } else {
-      var eyeX1 = -8.5 + dir, eyeX2 = 8.5 + dir; ctx.fillStyle = isBlackCat ? '#facc15' : (isSiamese ? '#38bdf8' : '#0f172a');
-      ctx.beginPath(); ctx.ellipse(eyeX1, -2.5, 3.8, 4.4, 0, 0, TAU); ctx.ellipse(eyeX2, -2.5, 3.8, 4.4, 0, 0, TAU); ctx.fill();
-      if (isBlackCat || isSiamese) {
+      var eyeX1 = -8.5 + dir, eyeX2 = 8.5 + dir; var isGoldCat = (sk.id === 'gold');
+      ctx.fillStyle = isBlackCat ? '#facc15' : (isSiamese ? '#38bdf8' : (isGoldCat ? '#059669' : '#0f172a'));
+      ctx.beginPath(); ctx.ellipse(eyeX1, -2.5, isGoldCat ? 4.2 : 3.8, isGoldCat ? 4.7 : 4.4, 0, 0, TAU);
+      ctx.ellipse(eyeX2, -2.5, isGoldCat ? 4.2 : 3.8, isGoldCat ? 4.7 : 4.4, 0, 0, TAU); ctx.fill();
+      if (isGoldCat) {
+        ctx.strokeStyle = '#713f12'; ctx.lineWidth = 1.6;
+        ctx.beginPath(); ctx.moveTo(eyeX1 - 5.2, -5.2); ctx.lineTo(eyeX1 + 3.2, -6.2);
+        ctx.moveTo(eyeX2 + 5.2, -5.2); ctx.lineTo(eyeX2 - 3.2, -6.2); ctx.stroke();
+        ctx.fillStyle = '#fde047';
+        ctx.beginPath(); ctx.ellipse(eyeX1, -1.6, 2.3, 2.2, 0, 0, TAU); ctx.ellipse(eyeX2, -1.6, 2.3, 2.2, 0, 0, TAU); ctx.fill();
+      } else if (isBlackCat || isSiamese) {
         ctx.fillStyle = '#0f172a';
         ctx.beginPath(); ctx.ellipse(eyeX1, -2.5, 1.4, 3.5, 0, 0, TAU); ctx.ellipse(eyeX2, -2.5, 1.4, 3.5, 0, 0, TAU); ctx.fill();
       }
       ctx.fillStyle = '#ffffff';
-      ctx.beginPath(); ctx.arc(eyeX1 - 1.2, -4, 1.5, 0, TAU); ctx.arc(eyeX2 - 1.2, -4, 1.5, 0, TAU); ctx.fill();
+      ctx.beginPath(); ctx.arc(eyeX1 - 1.2, -4, isGoldCat ? 1.8 : 1.5, 0, TAU); ctx.arc(eyeX2 - 1.2, -4, isGoldCat ? 1.8 : 1.5, 0, TAU); ctx.fill();
     }
     var noseX = dir;
     ctx.fillStyle = '#fb7185'; ctx.beginPath(); ctx.ellipse(noseX, 2.5, 2.5, 1.8, 0, 0, TAU); ctx.fill();
