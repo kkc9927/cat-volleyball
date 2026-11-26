@@ -104,12 +104,11 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.45);
 }
 
-/* 메인 대기화면(로비) 오버레이 */
+/* 메인 대기화면(로비) 오버레이 - 투명 유리 카드 스타일로 배경 고양이·나비 애니메이션이 생생하게 비치도록 개선 */
 .lobby-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(15, 23, 42, 0.92);
-  backdrop-filter: blur(4px);
+  background: radial-gradient(circle at 50% 42%, rgba(15, 23, 42, 0.34), rgba(15, 23, 42, 0.62) 85%);
   border-radius: 10px;
   border: 3px solid #38bdf8;
   display: flex;
@@ -138,45 +137,54 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 
 .menu-box { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 5px; }
 
-/* 닉네임 + 스킨 + TOP10 랭킹 버튼 행 */
+/* 닉네임 + TOP10 랭킹 + 눈에 띄는 [상점 · 캐릭터 변경] 버튼 행 */
 .profile-row { display: flex; gap: 5px; width: 100%; }
-.nick-row { flex: 1.3; display: flex; align-items: center; gap: 4px; background: #1e293b; border: 1.5px solid #38bdf8; border-radius: 10px; padding: 2px 7px; }
-.nick-label { font-size: 0.7rem; color: #7dd3fc; font-weight: bold; white-space: nowrap; }
+.nick-row { flex: 1.45; display: flex; align-items: center; gap: 4px; background: rgba(15, 23, 42, 0.90); border: 1.5px solid #38bdf8; border-radius: 10px; padding: 3px 8px; }
+.nick-label { font-size: 0.72rem; color: #7dd3fc; font-weight: bold; white-space: nowrap; }
 .nick-input {
   width: 100%;
   background: transparent;
   border: none;
   color: #fff;
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   font-weight: bold;
   padding: 2px;
   outline: none;
   user-select: text;
   -webkit-user-select: text;
 }
-.btn-skin-open {
-  flex: 0.85;
-  background: linear-gradient(135deg, #9333ea, #7e22ce);
-  border: 1.5px solid #d8b4fe;
-  border-radius: 10px;
-  color: #fff;
-  font-size: 0.72rem;
-  font-weight: bold;
-  cursor: pointer;
-  padding: 4px 6px;
-  white-space: nowrap;
-}
 .btn-rank-open {
-  flex: 0.72;
+  flex: 0.85;
   background: linear-gradient(135deg, #d97706, #b45309);
   border: 1.5px solid #fde047;
   border-radius: 10px;
   color: #fff;
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   font-weight: bold;
   cursor: pointer;
-  padding: 4px 6px;
+  padding: 5px 8px;
   white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+}
+.btn-skin-open {
+  width: 100%;
+  background: linear-gradient(135deg, #ec4899, #9333ea 55%, #6d28d9);
+  border: 2px solid #fde047;
+  border-radius: 11px;
+  color: #fff;
+  font-size: 0.86rem;
+  font-weight: 900;
+  cursor: pointer;
+  padding: 7px 12px;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  box-shadow: 0 3px 12px rgba(236, 72, 153, 0.45), inset 0 1px 0 rgba(255,255,255,0.35);
+  animation: shopPulse 2.4s ease-in-out infinite;
+}
+.btn-skin-open:active { transform: scale(0.97); }
+@keyframes shopPulse {
+  0%, 100% { box-shadow: 0 3px 12px rgba(236, 72, 153, 0.42), 0 0 0 0 rgba(250, 204, 21, 0.35); }
+  50% { box-shadow: 0 4px 16px rgba(168, 85, 247, 0.72), 0 0 0 3px rgba(250, 204, 21, 0.25); }
 }
 
 .menu-btn {
@@ -227,56 +235,62 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   overflow: hidden;
 }
 
-/* 스킨 & 이펙트 꾸미기 패널 */
+/* 상점 & 캐릭터 꾸미기 패널 (가독성 및 버튼 크기 확대) */
 .skin-panel {
   display: none;
   flex-direction: column;
   width: 100%;
-  max-width: 450px;
-  gap: 4px;
+  max-width: 520px;
+  gap: 5px;
+  background: rgba(15, 23, 42, 0.94);
+  border: 2px solid #c084fc;
+  border-radius: 12px;
+  padding: 7px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
 }
 .skin-scroll {
   width: 100%;
-  max-height: 122px;
+  max-height: 158px;
   overflow-y: auto;
   background: rgba(30, 41, 59, 0.96);
   border: 1.5px solid #a855f7;
   border-radius: 10px;
-  padding: 6px;
+  padding: 7px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   text-align: left;
 }
-.skin-cat-title { font-size: 0.68rem; font-weight: bold; color: #d8b4fe; margin-bottom: 2px; }
-.skin-grid { display: flex; flex-wrap: wrap; gap: 4px; }
+.skin-cat-title { font-size: 0.76rem; font-weight: bold; color: #f0abfc; margin-bottom: 3px; }
+.skin-grid { display: flex; flex-wrap: wrap; gap: 5px; }
 .skin-chip {
   flex: 1 1 30%;
-  min-width: 96px;
+  min-width: 106px;
   background: #0f172a;
   border: 1.5px solid #475569;
-  border-radius: 8px;
-  padding: 4px 5px;
-  color: #e2e8f0;
-  font-size: 0.68rem;
+  border-radius: 9px;
+  padding: 6px 6px;
+  color: #f1f5f9;
+  font-size: 0.76rem;
+  font-weight: bold;
   text-align: center;
   cursor: pointer;
 }
-.skin-chip.equipped { border-color: #facc15; background: rgba(250, 204, 21, 0.16); color: #fef08a; font-weight: bold; }
-.skin-chip.ready-ad { border-color: #38bdf8; background: rgba(56, 189, 248, 0.12); color: #bae6fd; }
-.skin-chip.rank-locked { border-color: #475569; background: rgba(15, 23, 42, 0.65); color: #94a3b8; }
-.skin-sub { display: block; font-size: 0.59rem; opacity: 0.9; margin-top: 2px; line-height: 1.15; }
+.skin-chip.equipped { border-color: #facc15; background: rgba(250, 204, 21, 0.22); color: #fef08a; font-weight: bold; }
+.skin-chip.ready-ad { border-color: #38bdf8; background: rgba(56, 189, 248, 0.16); color: #bae6fd; }
+.skin-chip.rank-locked { border-color: #475569; background: rgba(15, 23, 42, 0.72); color: #94a3b8; }
+.skin-sub { display: block; font-size: 0.65rem; font-weight: normal; opacity: 0.92; margin-top: 2px; line-height: 1.18; }
 
 /* 선택 스킨 상세 설명 카드 */
 .skin-detail-box {
   width: 100%;
-  background: rgba(15, 23, 42, 0.95);
+  background: rgba(15, 23, 42, 0.96);
   border: 1.5px solid #38bdf8;
   border-radius: 9px;
-  padding: 5px 8px;
+  padding: 6px 9px;
   text-align: left;
-  font-size: 0.67rem;
-  line-height: 1.28;
+  font-size: 0.72rem;
+  line-height: 1.32;
 }
 .skin-detail-top { display: flex; justify-content: space-between; align-items: center; font-weight: bold; color: #fde047; margin-bottom: 2px; gap: 4px; }
 .skin-detail-cond { font-size: 0.61rem; color: #7dd3fc; text-align: right; }
@@ -805,10 +819,10 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
           <span class="nick-label" id="nickLabel">닉네임</span>
           <input type="text" class="nick-input" id="nickInput" maxlength="8" placeholder="닉네임 입력">
         </div>
-        <button class="btn-skin-open" id="btnOpenSkins">🎨 스킨</button>
         <button class="btn-rank-open" id="btnOpenRank">🏆 랭킹</button>
       </div>
 
+      <button class="btn-skin-open" id="btnOpenSkins">🛍️ 상점 · 캐릭터 변경</button>
       <button class="menu-btn btn-ai" id="btnStartAI">🐱 1인 플레이 (AI 대전 · Lv.1)</button>
       <button class="menu-btn btn-create" id="btnCreateRoom">🏠 방 만들기 (공개방 생성)</button>
       <button class="menu-btn btn-list" id="btnOpenRoomList">🔍 참여하기 (방 리스트 보기)</button>
@@ -943,7 +957,7 @@ window.onload = function() {
       langToggleBtn: "EN",
       nickLabel: "닉네임",
       nickPlaceholder: "닉네임 입력",
-      skinBtn: "🎨 스킨",
+      skinBtn: "🛍️ 상점 · 캐릭터 변경",
       rankBtn: "🏆 랭킹",
       aiBtnFmt: function(lv) { return "🐱 1인 플레이 (AI Lv." + lv + " 대전)"; },
       createRoomBtn: "🏠 방 만들기 (공개방 생성)",
@@ -1119,7 +1133,7 @@ window.onload = function() {
       langToggleBtn: "KO",
       nickLabel: "Nick",
       nickPlaceholder: "Enter nickname",
-      skinBtn: "🎨 Skins",
+      skinBtn: "🛍️ Shop · Change Cat",
       rankBtn: "🏆 Rank",
       aiBtnFmt: function(lv) { return "🐱 Solo Play (vs AI Lv." + lv + ")"; },
       createRoomBtn: "🏠 Create Public Room",
@@ -3246,6 +3260,14 @@ window.onload = function() {
   document.getElementById("roomCodeDisplay").onclick = function() { copyTextSafe(myRoomId); };
   document.getElementById("btnCancelRoom").onclick = function() { returnToLobby(T().roomCancelled); };
   btnHome.onclick = function() { returnToLobby(); };
+  lobbyOverlay.addEventListener('click', function(e) {
+    if (e.target === lobbyOverlay) {
+      if (lobbyEp.actors.length === 0) startNextLobbyEpisode();
+      triggerLobbyCuteBurst();
+      var showSkin = (lobbyEp.actors[0] && lobbyEp.actors[0].skin) ? lobbyEp.actors[0].skin : 'gold';
+      SoundEngine.playCatMeow(showSkin, false);
+    }
+  });
 
   // --- 8. 터치 및 키보드 조작 (왼쪽: 좌우 전용 조이패드 / 오른쪽: 점프 + 스파이크 버튼) ---
   window.onkeydown = function(e) {
@@ -3410,10 +3432,363 @@ window.onload = function() {
   btnSpike.addEventListener('mouseup', spikeUp);
   btnSpike.addEventListener('mouseleave', spikeUp);
 
+
+  // =========================================================================
+  // 대기화면(로비) 에피소드 연출 시스템 (실제 스킨 100% 동일 렌더링 · 최대 2마리 등장 후 자연 퇴장)
+  // =========================================================================
+  var LOBBY_SHOWCASE_CATS = [
+    { skin: 'gold',    tierLv: 4 }, // 👑 챌린저냥 · 황금냥
+    { skin: 'siamese', tierLv: 3 }, // 💎 다이아 · 샴냥
+    { skin: 'calico',  tierLv: 2 }, // 🥇 골드 · 삼색냥
+    { skin: 'persian', tierLv: 1 }, // 🥈 실버 · 페르시안냥
+    { skin: 'black',   tierLv: 1 }, // 🥈 실버 · 검둥이냥
+    { skin: 'cheese',  tierLv: 0 }  // 🥉 브론즈 · 치즈냥
+  ];
+  var LOBBY_SHOWCASE_BALLS = ['golden', 'rainbow', 'paw', 'soccer', 'watermelon'];
+
+  var lobbyEp = {
+    type: 'ball_play',
+    phase: 'enter', // enter -> act -> exit -> pause
+    timer: 0,
+    pauseTimer: 25,
+    epIndex: 0,
+    skinCursor: 0,
+    ballCursor: 0,
+    actors: [],
+    butterfly: { active: false, x: -40, y: 270, vx: 1.4, phase: 0, col1: '#fde047', col2: '#f97316' },
+    floorBall: { active: false, x: -60, y: 356, vx: 0, vy: 0, rot: 0, skin: 'golden' }
+  };
+
+  function makeLobbyActor(skinItem, startX, side, forceDir) {
+    var meta = getCatMeta(skinItem.skin);
+    var tierObj = T().tiers[skinItem.tierLv] || T().tiers[0];
+    return {
+      x: startX, y: 332, vx: 0, vy: 0, r: 42, maxSpeed: 6.0,
+      side: side, forceDir: forceDir,
+      name: meta.name, tier: tierObj.badge.split(' ')[0],
+      skin: skinItem.skin, spikeSkin: 'wind',
+      hitTimer: 0, hitCooldown: 0, squash: 1,
+      slideTimer: 0, slideStunTimer: 0, slideDir: forceDir,
+      cutePose: false, emoteText: '', customScale: 1.02,
+      targetX: 250, exitX: 870, actionDone: false
+    };
+  }
+
+  function startNextLobbyEpisode() {
+    var types = ['ball_play', 'butterfly_chase', 'cute_affection', 'ball_dribble_duo'];
+    var epType = types[lobbyEp.epIndex % types.length];
+    lobbyEp.epIndex++;
+    lobbyEp.type = epType;
+    lobbyEp.phase = 'enter';
+    lobbyEp.timer = 0;
+    lobbyEp.actors = [];
+    lobbyEp.butterfly.active = false;
+    lobbyEp.floorBall.active = false;
+
+    var itemA = LOBBY_SHOWCASE_CATS[lobbyEp.skinCursor % LOBBY_SHOWCASE_CATS.length];
+    lobbyEp.skinCursor++;
+    var itemB = LOBBY_SHOWCASE_CATS[lobbyEp.skinCursor % LOBBY_SHOWCASE_CATS.length];
+    lobbyEp.skinCursor++;
+    var ballSkin = LOBBY_SHOWCASE_BALLS[lobbyEp.ballCursor % LOBBY_SHOWCASE_BALLS.length];
+    lobbyEp.ballCursor++;
+
+    if (epType === 'ball_play') {
+      // 1마리 단독: 왼쪽에서 등장해 바닥에 놓인 희귀 공을 통통 차며 놀다가 오른쪽 화면 끝까지 몰고 퇴장
+      var fromLeft = (lobbyEp.epIndex % 2 === 1);
+      var cat1 = makeLobbyActor(itemA, fromLeft ? -55 : 855, fromLeft ? 1 : 2, fromLeft ? 1 : -1);
+      cat1.targetX = fromLeft ? 230 : 570;
+      cat1.exitX = fromLeft ? 875 : -75;
+      lobbyEp.actors.push(cat1);
+
+      lobbyEp.floorBall.active = true;
+      lobbyEp.floorBall.skin = ballSkin;
+      lobbyEp.floorBall.x = fromLeft ? 285 : 515;
+      lobbyEp.floorBall.y = 356;
+      lobbyEp.floorBall.vx = 0;
+      lobbyEp.floorBall.vy = 0;
+    } else if (epType === 'butterfly_chase') {
+      // 2마리: 나비를 쫓아 왼쪽에서 오른쪽 화면 끝까지 신나게 뛰어가는 에피소드
+      var c1 = makeLobbyActor(itemA, -55, 1, 1);
+      var c2 = makeLobbyActor(itemB, -135, 1, 1);
+      c1.exitX = 880;
+      c2.exitX = 880;
+      lobbyEp.actors.push(c1, c2);
+
+      lobbyEp.butterfly.active = true;
+      lobbyEp.butterfly.x = 60;
+      lobbyEp.butterfly.y = 268;
+      lobbyEp.butterfly.vx = 2.05;
+      lobbyEp.butterfly.col1 = (lobbyEp.epIndex % 2 === 0) ? '#fde047' : '#f9a8d4';
+      lobbyEp.butterfly.col2 = (lobbyEp.epIndex % 2 === 0) ? '#f97316' : '#ec4899';
+    } else if (epType === 'cute_affection') {
+      // 2마리: 좌우에서 각각 등장해 중앙 근처에서 만나 애교 부리기(^ ^, ♥, ♪) 후 각자 방향으로 자연 퇴장
+      var leftCat = makeLobbyActor(itemA, -55, 1, 1);
+      var rightCat = makeLobbyActor(itemB, 855, 2, -1);
+      leftCat.targetX = 330;
+      rightCat.targetX = 470;
+      leftCat.exitX = -75;
+      rightCat.exitX = 875;
+      lobbyEp.actors.push(leftCat, rightCat);
+    } else {
+      // 2마리: 바닥의 공을 주거니 받거니 차며 놀다가 마지막엔 한쪽 끝으로 공을 몰고 함께 퇴장
+      var pA = makeLobbyActor(itemA, -55, 1, 1);
+      var pB = makeLobbyActor(itemB, 855, 2, -1);
+      pA.targetX = 220;
+      pB.targetX = 580;
+      pA.exitX = 880;
+      pB.exitX = 880;
+      lobbyEp.actors.push(pA, pB);
+
+      lobbyEp.floorBall.active = true;
+      lobbyEp.floorBall.skin = ballSkin;
+      lobbyEp.floorBall.x = 275;
+      lobbyEp.floorBall.y = 356;
+      lobbyEp.floorBall.vx = 0;
+      lobbyEp.floorBall.vy = 0;
+    }
+  }
+
+  function triggerLobbyCuteBurst() {
+    for (var i = 0; i < lobbyEp.actors.length; i++) {
+      var a = lobbyEp.actors[i];
+      a.cutePose = true;
+      a.emoteText = (i === 0) ? '♥' : '냥~';
+      if (a.y >= 332) a.vy = -7.2;
+    }
+  }
+
+  function updateLobbyScene(dt) {
+    if (lobbyEp.actors.length === 0) {
+      lobbyEp.pauseTimer -= dt;
+      if (lobbyEp.pauseTimer <= 0) {
+        startNextLobbyEpisode();
+      }
+      return;
+    }
+
+    lobbyEp.timer += dt;
+    var epType = lobbyEp.type;
+    var fb = lobbyEp.floorBall;
+    var bf = lobbyEp.butterfly;
+
+    // 바닥 공 물리 (바닥 y = 356 위에서 통통 튀고 굴러감)
+    if (fb.active) {
+      fb.vy += mul(0.32, dt);
+      fb.x += mul(fb.vx, dt);
+      fb.y += mul(fb.vy, dt);
+      if (fb.y >= 356) {
+        fb.y = 356;
+        if (Math.abs(fb.vy) > 1.4) fb.vy = -fb.vy * 0.58;
+        else fb.vy = 0;
+        fb.vx *= Math.pow(0.94, dt);
+      }
+    }
+
+    // 나비 비행
+    if (bf.active) {
+      bf.phase += mul(0.26, dt);
+      bf.x += mul(bf.vx, dt);
+      bf.y = 264 + Math.sin(bf.phase * 0.42) * 24;
+    }
+
+    if (epType === 'ball_play') {
+      var cat = lobbyEp.actors[0];
+      var goRight = (cat.exitX > 400);
+      var dir = goRight ? 1 : -1;
+      cat.forceDir = dir;
+
+      if (lobbyEp.phase === 'enter') {
+        cat.vx = mul(dir, 3.2);
+        if ((goRight && cat.x >= cat.targetX) || (!goRight && cat.x <= cat.targetX)) {
+          lobbyEp.phase = 'act';
+          lobbyEp.timer = 0;
+        }
+      } else if (lobbyEp.phase === 'act') {
+        // 공에 다가가서 통통 차며 놀기
+        var distB = fb.x - cat.x;
+        if (Math.abs(distB) > 36) {
+          cat.vx = mul(Math.sign(distB), 2.8);
+          cat.forceDir = Math.sign(distB);
+        } else {
+          cat.vx = mul(dir, 1.4);
+          cat.forceDir = dir;
+          if (fb.y >= 352) {
+            fb.vx = mul(dir, 4.4);
+            fb.vy = -5.6;
+            cat.vy = -5.2;
+            cat.squash = 1.15;
+            cat.emoteText = '♪';
+          }
+        }
+        if (lobbyEp.timer > 155) {
+          lobbyEp.phase = 'exit';
+          cat.emoteText = '★';
+        }
+      } else if (lobbyEp.phase === 'exit') {
+        // 화면 끝까지 공을 차면서 자연스럽게 퇴장
+        cat.forceDir = dir;
+        cat.vx = mul(dir, 3.9);
+        if (Math.abs(fb.x - cat.x) < 48 && fb.y >= 352) {
+          fb.vx = mul(dir, 5.2);
+          fb.vy = -4.8;
+          if (cat.y >= 332 && Math.random() < 0.25) cat.vy = -4.5;
+        }
+        if ((goRight && cat.x > 875 && fb.x > 860) || (!goRight && cat.x < -75 && fb.x < -60)) {
+          lobbyEp.actors = [];
+          fb.active = false;
+          lobbyEp.pauseTimer = 35;
+          return;
+        }
+      }
+    } else if (epType === 'butterfly_chase') {
+      // 나비를 쫓아 두 마리가 화면을 가로질러 퇴장
+      for (var i = 0; i < lobbyEp.actors.length; i++) {
+        var c = lobbyEp.actors[i];
+        c.forceDir = 1;
+        c.vx = 2.45 + (i === 0 ? 0.15 : 0);
+        if (c.y >= 332 && Math.abs(bf.x - c.x) < 95 && Math.random() < mul(0.045, dt)) {
+          c.vy = -6.8;
+          c.squash = 1.16;
+          c.emoteText = (i === 0) ? '♥' : '냥!';
+        }
+      }
+      if (lobbyEp.actors[1].x > 880) {
+        lobbyEp.actors = [];
+        bf.active = false;
+        lobbyEp.pauseTimer = 35;
+        return;
+      }
+    } else if (epType === 'cute_affection') {
+      var cL = lobbyEp.actors[0], cR = lobbyEp.actors[1];
+      if (lobbyEp.phase === 'enter') {
+        cL.forceDir = 1; cL.vx = 3.0;
+        cR.forceDir = -1; cR.vx = -3.0;
+        if (cL.x >= cL.targetX) { cL.x = cL.targetX; cL.vx = 0; }
+        if (cR.x <= cR.targetX) { cR.x = cR.targetX; cR.vx = 0; }
+        if (cL.vx === 0 && cR.vx === 0) {
+          lobbyEp.phase = 'act';
+          lobbyEp.timer = 0;
+          cL.cutePose = true; cL.emoteText = '♥'; cL.vy = -6.2;
+          cR.cutePose = true; cR.emoteText = '♪';
+        }
+      } else if (lobbyEp.phase === 'act') {
+        cL.vx = 0; cR.vx = 0;
+        if (lobbyEp.timer > 70 && !cR.actionDone) {
+          cR.actionDone = true;
+          cR.vy = -6.2;
+          cR.emoteText = '♥';
+          cL.emoteText = '냥~';
+        }
+        if (lobbyEp.timer > 155) {
+          lobbyEp.phase = 'exit';
+          cL.cutePose = false; cR.cutePose = false;
+          cL.emoteText = ''; cR.emoteText = '';
+        }
+      } else if (lobbyEp.phase === 'exit') {
+        cL.forceDir = -1; cL.vx = -3.1;
+        cR.forceDir = 1; cR.vx = 3.1;
+        if (cL.x < -75 && cR.x > 875) {
+          lobbyEp.actors = [];
+          lobbyEp.pauseTimer = 35;
+          return;
+        }
+      }
+    } else {
+      // ball_dribble_duo: 2마리가 바닥 공을 주고받다가 오른쪽 끝으로 몰고 퇴장
+      var p1A = lobbyEp.actors[0], p2B = lobbyEp.actors[1];
+      if (lobbyEp.phase === 'enter') {
+        p1A.forceDir = 1; p1A.vx = 3.1;
+        p2B.forceDir = -1; p2B.vx = -3.1;
+        if (p1A.x >= p1A.targetX) { p1A.x = p1A.targetX; p1A.vx = 0; }
+        if (p2B.x <= p2B.targetX) { p2B.x = p2B.targetX; p2B.vx = 0; }
+        if (p1A.vx === 0 && p2B.vx === 0) {
+          lobbyEp.phase = 'act';
+          lobbyEp.timer = 0;
+          fb.vx = 6.2; fb.vy = -5.8;
+          p1A.vy = -5.0; p1A.emoteText = '야옹!';
+        }
+      } else if (lobbyEp.phase === 'act') {
+        // 오른쪽 고양이가 공을 받아 다시 왼쪽으로 패스
+        if (fb.x >= p2B.x - 38 && fb.vx > 0 && !p2B.actionDone) {
+          p2B.actionDone = true;
+          fb.vx = -6.2; fb.vy = -5.8;
+          p2B.vy = -5.4; p2B.emoteText = '♥';
+        }
+        // 왼쪽 고양이가 다시 받아 오른쪽 끝으로 몰고 가기 시작
+        if (p2B.actionDone && fb.x <= p1A.x + 38 && fb.vx < 0) {
+          fb.vx = 5.4; fb.vy = -5.0;
+          p1A.vy = -5.0; p1A.emoteText = '♪';
+          lobbyEp.phase = 'exit';
+        }
+        if (lobbyEp.timer > 210) {
+          lobbyEp.phase = 'exit';
+        }
+      } else if (lobbyEp.phase === 'exit') {
+        p1A.forceDir = 1; p1A.vx = 3.7;
+        p2B.forceDir = 1; p2B.vx = 4.1;
+        if (Math.abs(fb.x - p2B.x) < 46 && fb.y >= 352) {
+          fb.vx = 5.5; fb.vy = -4.6;
+        }
+        if (p1A.x > 880 && p2B.x > 880 && fb.x > 860) {
+          lobbyEp.actors = [];
+          fb.active = false;
+          lobbyEp.pauseTimer = 35;
+          return;
+        }
+      }
+    }
+
+    // 로비 액터 중력 & 스쿼시 업데이트
+    for (var k = 0; k < lobbyEp.actors.length; k++) {
+      var act = lobbyEp.actors[k];
+      var wasAir = act.y < 332;
+      act.vy += mul(0.38, dt);
+      act.x += mul(act.vx, dt);
+      act.y += mul(act.vy, dt);
+      if (act.y >= 332) {
+        act.y = 332;
+        if (wasAir) act.squash = 0.84;
+        act.vy = 0;
+      }
+      act.squash += mul(1 - act.squash, 0.2) * dt;
+    }
+  }
+
+  function drawButterfly(bf) {
+    if (!bf.active) return;
+    ctx.save();
+    ctx.translate(bf.x, bf.y);
+    var flap = Math.abs(Math.sin(bf.phase));
+    var dir = bf.vx >= 0 ? 1 : -1;
+    ctx.scale(dir, 1);
+
+    ctx.fillStyle = bf.col1;
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.ellipse(-3, -4, 7 * (0.35 + flap * 0.65), 9, -0.35, 0, TAU);
+    ctx.fill(); ctx.stroke();
+
+    ctx.fillStyle = bf.col2;
+    ctx.beginPath();
+    ctx.ellipse(-2, 4, 5.5 * (0.35 + flap * 0.65), 6.5, 0.3, 0, TAU);
+    ctx.fill(); ctx.stroke();
+
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(0, -6); ctx.lineTo(0, 6); ctx.stroke();
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(0, -6); ctx.quadraticCurveTo(4, -12, 7, -11);
+    ctx.moveTo(0, -6); ctx.quadraticCurveTo(2, -13, 4, -13);
+    ctx.stroke();
+    ctx.restore();
+  }
+
   // --- 9. 게임 물리 및 스파이크 이펙트 업데이트 ---
   function update(dt) {
     updateEnvironment(dt);
-    if (gameState !== 'playing') { p1.skin = userState.equippedCat; ball.skin = userState.equippedBall; return; }
+    if (gameState !== 'playing') { p1.skin = userState.equippedCat; ball.skin = userState.equippedBall; updateLobbyScene(dt); return; }
 
     if (netMode === 'guest' || netMode === 'spectator') {
       if (netMode === 'guest' && conn && conn.open) {
@@ -4097,12 +4472,22 @@ window.onload = function() {
     ctx.beginPath(); ctx.roundRect(p.x - nameWidth / 2, p.y - 68, nameWidth, 21, 8); ctx.fill();
     ctx.fillStyle = p.side === 1 ? '#fde047' : '#e0f2fe';
     ctx.textAlign = 'center'; ctx.fillText(labelStr, p.x, p.y - 53);
+    if (p.emoteText) {
+      var eBob = Math.sin(time * 0.012) * 3;
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.90)';
+      ctx.strokeStyle = '#fde047';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.roundRect(p.x - 19, p.y - 93 + eBob, 38, 20, 8); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = (p.emoteText === '♥') ? '#fb7185' : '#fde047';
+      ctx.font = 'bold 12px sans-serif';
+      ctx.fillText(p.emoteText, p.x, p.y - 79 + eBob);
+    }
     ctx.restore();
 
     var isPostMatch = (gameOver && winnerSide !== 0);
-    var isWinPose = isPostMatch && (p.side === winnerSide);
+    var isWinPose = (isPostMatch && (p.side === winnerSide)) || !!p.cutePose;
     var isLosePose = isPostMatch && (p.side !== winnerSide);
-    var baseDir = p.side === 1 ? 1 : -1;
+    var baseDir = (typeof p.forceDir === 'number') ? p.forceDir : (p.side === 1 ? 1 : -1);
     var dir = baseDir;
 
     var poseOffX = 0, poseOffY = 0, poseRot = 0, poseScaleX = 1, poseScaleY = 1;
@@ -4242,7 +4627,8 @@ window.onload = function() {
     ctx.save();
     ctx.translate(p.x + poseOffX, p.y + 45 + poseOffY);
     ctx.rotate(poseRot);
-    ctx.scale((2 - p.squash) * 1.18 * poseScaleX, p.squash * 1.18 * poseScaleY);
+    var baseScale = p.customScale || 1.18;
+    ctx.scale((2 - p.squash) * baseScale * poseScaleX, p.squash * baseScale * poseScaleY);
     ctx.translate(0, -34);
 
     var speedRatio = Math.abs(p.vx) / p.maxSpeed;
@@ -5032,6 +5418,25 @@ window.onload = function() {
     ctx.fillText(T().creatorLabel, 775, 30);
 
     ctx.fillStyle = '#fff'; ctx.fillRect(397, 260, 6, 120);
+
+    if (gameState === 'lobby') {
+      // 대기화면 전용: 실제 스킨 그대로의 고양이(최대 2마리) 에피소드 연출
+      for (var ai = 0; ai < lobbyEp.actors.length; ai++) {
+        drawChar(lobbyEp.actors[ai]);
+      }
+      if (lobbyEp.butterfly.active) {
+        drawButterfly(lobbyEp.butterfly);
+      }
+      if (lobbyEp.floorBall.active) {
+        ball.skin = lobbyEp.floorBall.skin;
+        ball.x = lobbyEp.floorBall.x;
+        ball.y = lobbyEp.floorBall.y;
+        ball.spikeType = 'none';
+        drawBall();
+      }
+      return;
+    }
+
     ctx.fillStyle = 'rgba(15,23,42,0.85)'; ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2;
     ctx.fillRect(320, 15, 160, 45); ctx.strokeRect(320, 15, 160, 45);
 
@@ -5083,6 +5488,7 @@ window.onload = function() {
   currentLang = detectInitialLang();
   loadUserState();
   applyLanguageUI();
+  startNextLobbyEpisode();
   if (AD_CONFIG.lobbyBannerHtml) {
     document.getElementById("lobbyAdSlot").innerHTML = AD_CONFIG.lobbyBannerHtml;
   }
