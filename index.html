@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>냐옹이 배구 온라인</title>
 <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 <!-- Google tag (gtag.js) -->
@@ -470,14 +470,15 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 12px;
-  padding: 2px 12px 6px;
+  gap: clamp(6px, 2vw, 12px);
+  padding: 2px max(8px, env(safe-area-inset-right)) 6px max(8px, env(safe-area-inset-left));
+  overflow: hidden;
 }
 
 .joypad-zone {
   position: relative;
-  width: 146px;
-  height: 146px;
+  width: clamp(114px, 32vw, 146px);
+  height: clamp(114px, 32vw, 146px);
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -486,8 +487,8 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 
 .joy-base {
   position: relative;
-  width: 136px;
-  height: 136px;
+  width: clamp(106px, 30vw, 136px);
+  height: clamp(106px, 30vw, 136px);
   border-radius: 50%;
   background: radial-gradient(circle at 35% 30%, rgba(56, 189, 248, 0.30), rgba(15, 23, 42, 0.90) 72%);
   border: 2.5px solid rgba(125, 211, 252, 0.70);
@@ -571,19 +572,27 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 .action-group {
   display: flex;
   align-items: center;
-  gap: 10px;
-  height: 118px;
+  justify-content: flex-end;
+  gap: clamp(6px, 2vw, 10px);
+  height: clamp(98px, 27vw, 118px);
+  flex: 1;
+  min-width: 0;
+  max-width: 226px;
 }
 
 .jump-btn {
-  width: 104px;
+  flex: 1;
+  min-width: 0;
+  max-width: 104px;
   height: 100%;
-  border-radius: 24px;
+  border-radius: 22px;
   border: 2.5px solid #38bdf8;
   background: radial-gradient(circle at 35% 25%, rgba(56, 189, 248, 0.62), rgba(2, 132, 199, 0.55));
   color: #fff;
   font-weight: bold;
-  font-size: 1.0rem;
+  font-size: clamp(0.82rem, 3.6vw, 1.0rem);
+  padding: 0 4px;
+  line-height: 1.15;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -598,14 +607,19 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
 }
 
 .spike-btn {
-  width: 112px;
+  flex: 1.12;
+  min-width: 0;
+  max-width: 112px;
   height: 100%;
-  border-radius: 24px;
+  border-radius: 22px;
   border: 2.5px solid #fb923c;
   background: radial-gradient(circle at 35% 25%, rgba(251, 146, 60, 0.65), rgba(194, 65, 12, 0.55));
   color: #fff;
   font-weight: bold;
-  font-size: 1.0rem;
+  font-size: clamp(0.76rem, 3.3vw, 0.96rem);
+  padding: 0 4px;
+  line-height: 1.15;
+  word-break: keep-all;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -653,47 +667,54 @@ canvas { border: 3px solid #fff; border-radius: 10px; width: 100%; height: 100%;
     left: max(18px, env(safe-area-inset-left));
     right: max(18px, env(safe-area-inset-right));
     bottom: max(12px, env(safe-area-inset-bottom));
+    width: auto;
     max-width: none;
     max-height: none;
     padding: 0;
     align-items: flex-end;
     pointer-events: none;
     z-index: 15;
+    overflow: visible;
   }
 
   /* 왼쪽 조이패드 확대 */
   .joypad-zone {
-    width: 156px;
-    height: 156px;
+    width: 148px;
+    height: 148px;
     pointer-events: auto;
     opacity: 0.92;
   }
   .joy-base {
-    width: 146px;
-    height: 146px;
+    width: 138px;
+    height: 138px;
   }
   .joy-stick {
-    width: 56px;
-    height: 56px;
-    margin-left: -28px;
-    margin-top: -28px;
-    font-size: 1.12rem;
+    width: 54px;
+    height: 54px;
+    margin-left: -27px;
+    margin-top: -27px;
+    font-size: 1.1rem;
   }
 
   /* 오른쪽 점프 + 스파이크 버튼을 큼직한 둥근 패드로 가로 배치 */
   .action-group {
+    flex: 0 0 auto;
+    max-width: none;
     flex-direction: row;
     align-items: flex-end;
     gap: 8px;
     height: auto;
     pointer-events: auto;
-    opacity: 0.9;
+    opacity: 0.92;
   }
   .jump-btn, .spike-btn {
-    width: 86px;
-    height: 96px;
+    flex: 0 0 auto;
+    width: 84px;
+    max-width: 84px;
+    height: 94px;
     border-radius: 20px;
-    font-size: 0.88rem;
+    font-size: 0.82rem;
+    padding: 0 4px;
   }
   .sub-label {
     display: none;
@@ -3269,8 +3290,9 @@ window.onload = function() {
     var rect = joyBase.getBoundingClientRect();
     var cx = rect.left + rect.width * 0.5;
     var dx = clientX - cx;
+    var dynRadius = Math.max(32, rect.width * 0.34);
 
-    var clampedX = Math.max(-JOY_MAX_RADIUS, Math.min(JOY_MAX_RADIUS, dx));
+    var clampedX = Math.max(-dynRadius, Math.min(dynRadius, dx));
     joyBase.classList.add('dragging');
     joyStick.style.transform = 'translate(' + clampedX.toFixed(1) + 'px, 0px)';
 
@@ -3444,7 +3466,7 @@ window.onload = function() {
     p1.vy += mul(p1Grav, dt); p1.x += mul(p1.vx, dt); p1.y += mul(p1.vy, dt);
     if (p1.y >= 332) { p1.y = 332; if (wasAir1) p1.squash = 0.82; p1.vy = 0; }
     if (p1.slideTimer <= 0 && p1.slideStunTimer <= 0) { p1.squash += mul(1 - p1.squash, 0.2) * dt; }
-    if (p1.x < p1.r + 6) { p1.x = p1.r + 6; p1.vx = 0; } if (p1.x > 358 - p1.r) { p1.x = 358 - p1.r; p1.vx = 0; }
+    if (p1.x < p1.r + 6) { p1.x = p1.r + 6; p1.vx = 0; } if (p1.x > 390 - p1.r) { p1.x = 390 - p1.r; p1.vx = 0; }
 
     if (netMode === 'host') {
       var p2Dir = 0;
@@ -3519,7 +3541,7 @@ window.onload = function() {
         var targetX = aiServeGrace
           ? (ball.x + 24)
           : (ball.x > 395 ? (predictedBallX + 30 + aiWanderBias) : (homeX + aiWanderBias * 0.6));
-        if (targetX < 486) targetX = 486;
+        if (targetX < 454) targetX = 454;
         if (targetX > 765) targetX = 765;
 
         var diffX = targetX - p2.x;
@@ -3590,14 +3612,14 @@ window.onload = function() {
     p2.vy += mul(p2Grav, dt); p2.x += mul(p2.vx, dt); p2.y += mul(p2.vy, dt);
     if (p2.y >= 332) { p2.y = 332; if (wasAir2) p2.squash = 0.82; p2.vy = 0; }
     if (p2.slideTimer <= 0 && p2.slideStunTimer <= 0) { p2.squash += mul(1 - p2.squash, 0.2) * dt; }
-    if (p2.x < 442 + p2.r) { p2.x = 442 + p2.r; p2.vx = 0; } if (p2.x > 800 - p2.r - 6) { p2.x = 800 - p2.r - 6; p2.vx = 0; }
+    if (p2.x < 410 + p2.r) { p2.x = 410 + p2.r; p2.vx = 0; } if (p2.x > 800 - p2.r - 6) { p2.x = 800 - p2.r - 6; p2.vx = 0; }
 
-    ball.vy += mul(0.091, dt); ball.x += mul(ball.vx, dt); ball.y += mul(ball.vy, dt);
+    ball.vy += mul(0.078, dt); ball.x += mul(ball.vx, dt); ball.y += mul(ball.vy, dt);
     updateParticles(dt);
 
     if (ball.x < ball.r) { ball.x = ball.r; ball.vx = -ball.vx; SoundEngine.playBounce(false); }
     if (ball.x > 800 - ball.r) { ball.x = 800 - ball.r; ball.vx = -ball.vx; SoundEngine.playBounce(false); }
-    if (ball.y < ball.r) { ball.y = ball.r; ball.vy = -ball.vy; SoundEngine.playBounce(false); }
+    if (ball.y < ball.r) { ball.y = ball.r; ball.vy = Math.min(5.2, Math.abs(ball.vy) * 0.62); SoundEngine.playBounce(false); }
 
     resolveNetCollision(0, true);
 
@@ -3621,7 +3643,7 @@ window.onload = function() {
 
     // 비정상적인 공 속도 폭주 상한 제한
     var maxBallVx = (ball.spikeType !== 'none') ? 10.6 : 4.2;
-    var maxBallVy = (ball.spikeType !== 'none') ? 9.5 : 10.1;
+    var maxBallVy = (ball.spikeType !== 'none') ? 9.2 : 8.4;
     if (ball.vx > maxBallVx) ball.vx = maxBallVx;
     if (ball.vx < -maxBallVx) ball.vx = -maxBallVx;
     if (ball.vy > maxBallVy) ball.vy = maxBallVy;
@@ -3676,7 +3698,7 @@ window.onload = function() {
 
   function resolveNetCollision(lockSide, playSfx) {
     var NET_TOP = 260;
-    var NET_L = 394, NET_R = 406;
+    var NET_L = 397, NET_R = 403;
     if (ball.x + ball.r > NET_L && ball.x - ball.r < NET_R && ball.y + ball.r > NET_TOP) {
       if (ball.y < NET_TOP && !lockSide) {
         ball.y = NET_TOP - ball.r;
@@ -3720,7 +3742,7 @@ window.onload = function() {
       var ny = (preDist > 4) ? (preDy / preDist) : (dy / dist);
 
       var overlap = hitRange - dist;
-      var netWallX = (p.side === 1) ? 394 : 406;
+      var netWallX = (p.side === 1) ? 397 : 403;
 
       // 2. 공이 고양이 표면 위에 얹히거나 끌어안기지 않도록 외곽 경계 밖으로 즉시 분리
       ball.x += mul(nx, overlap + 2.0);
@@ -3793,12 +3815,12 @@ window.onload = function() {
         var hardBounceSpeed = Math.max(4.4, Math.min(5.3, -impactVn * 0.60));
 
         if (isSlidingNow) {
-          // 슬라이딩 찬스볼(디그): 네트(x=400)를 확실히 넘어가 상대 코트 중앙 공격 타점(1P->560, 2P->240)에 정확히 떨어지도록 탄도 계산
+          // 슬라이딩 찬스볼(디그): 천장에 닿지 않는 최적의 높은 포물선으로 네트를 넘어 상대 코트 중앙(1P->560, 2P->240) 공격 타점에 안착
           var targetOppX = (p.side === 1) ? 560 : 240;
           var distToTarget = Math.abs(targetOppX - ball.x);
-          var chanceVy = -9.9;
-          var flightFrames = 190;
-          ball.vx = mul(dirSign, Math.max(2.3, Math.min(3.55, distToTarget / flightFrames)));
+          var chanceVy = -6.5;
+          var flightFrames = 145;
+          ball.vx = mul(dirSign, Math.max(2.4, Math.min(3.8, distToTarget / flightFrames)));
           ball.vy = chanceVy;
         } else if (ny > 0.35 && p.y < 326) {
           // 점프 중 발바닥(하단)에 공이 닿은 경우 아래 방향으로 즉시 튕김
@@ -3812,9 +3834,9 @@ window.onload = function() {
           if (Math.abs(recvVx - p.vx) < 2.6) {
             recvVx = p.vx + mul(sideSign, 2.8);
           }
-          var recvVy = mul(ny, hardBounceSpeed) - 2.4;
+          var recvVy = mul(ny, hardBounceSpeed) - 2.1;
           ball.vx = Math.max(-3.9, Math.min(3.9, recvVx));
-          ball.vy = Math.max(-6.5, Math.min(-4.1, recvVy));
+          ball.vy = Math.max(-5.8, Math.min(-3.7, recvVy));
         }
       }
     }
@@ -5009,7 +5031,7 @@ window.onload = function() {
     ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'right';
     ctx.fillText(T().creatorLabel, 775, 30);
 
-    ctx.fillStyle = '#fff'; ctx.fillRect(394, 260, 12, 120);
+    ctx.fillStyle = '#fff'; ctx.fillRect(397, 260, 6, 120);
     ctx.fillStyle = 'rgba(15,23,42,0.85)'; ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2;
     ctx.fillRect(320, 15, 160, 45); ctx.strokeRect(320, 15, 160, 45);
 
